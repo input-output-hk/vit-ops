@@ -33,13 +33,8 @@ in {
     domain = "vit.iohk.io";
     s3Bucket = "iohk-vit-bitte";
     s3CachePubKey =
-      "iohk-vit-bitte-0:CM87AnQ46Y1fbPC9NT7LfxEd7eDqfg51b9Ly2jlG+CA=";
-    adminNames = [
-      "shay.bergmann"
-      "michael.fellinger"
-      "samuel.evans-powell"
-      "michael.bishop"
-    ];
+      "vit-testnet-0:0lvkEoYh+XrBh7pr4bXjsUisUkUxsyLvvWBIJwym/RM=";
+    adminNames = [ "michael.fellinger" "michael.bishop" ];
 
     terraformOrganization = "vit";
 
