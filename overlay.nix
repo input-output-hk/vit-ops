@@ -13,10 +13,7 @@ final: prev: {
     };
   in bitte-nixpkgs.bitte;
 
-  inherit (import self.inputs.rust-libs {
-    nixpkgs = self.inputs.nixpkgs;
-    inherit system;
-  }) vit-servicing-station;
+  inherit (self.inputs.rust-libs.legacyPackages.${system}) vit-servicing-station;
 
   nixFlakes = self.inputs.bitte.legacyPackages.${system}.nixFlakes;
 
@@ -45,7 +42,7 @@ final: prev: {
     inherit self system;
   };
 
-  nomadJobs = final.callPackage ./jobs/benchmark.nix { };
+  nomadJobs = final.callPackage ./jobs/vit.nix { };
 
   inherit (self.inputs.bitte.legacyPackages.${system})
     vault-bin mkNomadJob mkNomadTaskSandbox terraform-with-plugins;
