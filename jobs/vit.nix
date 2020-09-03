@@ -1,108 +1,70 @@
-{ mkNomadJob, vit-servicing-station, lib, writeShellScript, writeText }:
-
+{ mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, block0, db
+, vit-servicing-station, wget, gzip, gnutar, cacert }:
 let
-  zone = "us-east-2";
-  runNode = writeShellScript "run-vit" ''
-    export PATH=${lib.makeBinPath [ vit-servicing-station ]}
-    mkdir -pv db
-    vit-servicing-station-server \
-      --block0-path TODO
-  '';
-  bar = {
-    Job = {
-      Affinities = null;
-      AllAtOnce = null;
-      Constraints = null;
-      Datacenters = [ zone ];
-      ID = "vit-servicing-station";
-      Meta = null;
-      Migrate = null;
-      name = "vit-servicing-station";
-      Namespace = null;
-      ParameterizedJob = null;
-      Periodic = null;
-      Priority = null;
-      Region = null;
-      Reschedule = null;
-      Spreads = null;
-      TaskGroups = [
-        {
-          Affinities = null;
-          Constraints = null;
-          Count = 1;
-          EphemeralDisk = null;
-          Meta = null;
-          Migrate = null;
-          Name = "vit-servicing-station";
-          Networks = [ { Mode = "bridge"; } ];
-          Restart = null;
-          Services = [
-            {
-              Connect = null;
-              Name = "vit-servicing-station-node";
-              PortLabel = null;
-            }
-          ];
-          ShutdownDelay = null;
-          Spreads = null;
-          Tasks = [
-            {
-              Artifact = null;
-              Config = {
-                command = "/bin/sh";
-                args = [
-                  "-c"
-                  ''
-                    nix-store -r ${runNode}
-                    exec nix-build -E 'builtins.derivation { name = "name-'$NOMAD_ALLOC_ID'"; outputHashAlgo = "sha256"; outputHashMode = "recursive"; outputHash = "0000000000000000000000000000000000000000000000000000"; builder = [ (builtins.storePath ${runNode}) ]; args = []; system = builtins.currentSystem; allowSubstitutes = false; }'
-                  ''
-                ];
-              };
-              Constraints = null;
-              Driver = "raw_exec";
-              Env = null;
-              KillSignal = "";
-              Name = "vit-servicing-station-node";
-              Resources = {
-                Cpu = 100;
-                MemoryMB = 1024;
-              };
-              ShutdownDelay = 0;
-              User = "";
-            }
-          ];
-          Update = null;
-        }
-      ];
-      Type = "service";
-      Update = null;
-    };
-  };
+  run-vit = writeShellScript "vit" ''
+    set -exuo pipefail
 
+    home="''${NOMAD_ALLOC_DIR}"
+    cd $home
+
+    db="''${NOMAD_ALLOC_DIR}/database.db"
+    cp ${db} "$db"
+    chmod u+wr "$db"
+
+    ${vit-servicing-station}/bin/vit-servicing-station-server \
+      --block0-path ${block0} --db-url "$db"
+  '';
+
+  run-jormungandr = writeShellScript "jormungandr" ''
+    set -exuo pipefail
+
+    cd "''${NOMAD_ALLOC_DIR}"
+
+    id
+
+    wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/nightly.20200903/jormungandr-0.9.1-nightly.20200903-x86_64-unknown-linux-musl-generic.tar.gz
+    tar --no-same-permissions xvf jormungandr.tar.gz
+    exec ./jormungandr
+  '';
 in {
-  #writeText "foo.json" (builtins.toJSON bar)
   vit = mkNomadJob "vit" {
-    datacenters = [ zone ];
+    datacenters = [ "us-east-2" ];
     type = "service";
-    taskGroups.vit = {
+
+    taskGroups.vit-servicing-station = {
       count = 1;
-      services.vit = {};
-      tasks.vit = {
-        name = "vit";
-        driver = "raw_exec";
+      services.vit-servicing-station = { };
+      tasks.vit-servicing-station = systemdSandbox {
+        name = "vit-servicing-station";
+        command = run-vit;
+
+        env = { PATH = lib.makeBinPath [ coreutils ]; };
+
         resources = {
           cpu = 100;
           memoryMB = 1024;
         };
-        config = {
-          command = "/bin/sh";
-          args = [
-            "-c"
-            ''
-              nix-store -r ${runNode}
-              exec nix-build -E 'builtins.derivation { name = "name-'$NOMAD_ALLOC_ID'"; outputHashAlgo = "sha256"; outputHashMode = "recursive"; outputHash = "0000000000000000000000000000000000000000000000000000"; builder = [ (builtins.storePath ${runNode}) ]; args = []; system = builtins.currentSystem; allowSubstitutes = false; }'
-            ''
-          ];
+      };
+    };
+
+    taskGroups.jormungandr = {
+      count = 1;
+
+      services.jormungandr = { };
+
+      tasks.jormungandr = systemdSandbox {
+        name = "jormungandr";
+
+        command = run-jormungandr;
+
+        env = {
+          PATH = lib.makeBinPath [ coreutils wget gnutar gzip ];
+          SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
+        };
+
+        resources = {
+          cpu = 100;
+          memoryMB = 1024;
         };
       };
     };

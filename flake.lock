@@ -225,7 +225,8 @@
           "bitte",
           "terranix"
         ],
-        "utils": "utils_4"
+        "utils": "utils_4",
+        "vit-servicing-station": "vit-servicing-station"
       }
     },
     "rust-libs": {
@@ -370,6 +371,22 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vit-servicing-station": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1598860782,
+        "narHash": "sha256-ehBxODoWwEF6jKOKl8mF891j/MRZQYGeRIt8GMgqoaA=",
+        "owner": "input-output-hk",
+        "repo": "vit-servicing-station",
+        "rev": "5e77728fa7d6f4d3e89608a2ecdab9f14e9ece7c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "vit-servicing-station",
         "type": "github"
       }
     }

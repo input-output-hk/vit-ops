@@ -13,7 +13,8 @@ final: prev: {
     };
   in bitte-nixpkgs.bitte;
 
-  inherit (self.inputs.rust-libs.legacyPackages.${system}) vit-servicing-station;
+  inherit (self.inputs.rust-libs.legacyPackages.${system})
+    vit-servicing-station;
 
   nixFlakes = self.inputs.bitte.legacyPackages.${system}.nixFlakes;
 
@@ -42,8 +43,13 @@ final: prev: {
     inherit self system;
   };
 
-  nomadJobs = final.callPackage ./jobs/vit.nix { };
+  nomadJobs = final.callPackage ./jobs/vit.nix {
+    block0 = "${self.inputs.vit-servicing-station}/docker/master/block0.bin";
+    db = "${self.inputs.vit-servicing-station}/docker/master/database.db";
+  };
 
   inherit (self.inputs.bitte.legacyPackages.${system})
     vault-bin mkNomadJob mkNomadTaskSandbox terraform-with-plugins;
+
+  systemdSandbox = final.callPackage ./jobs/sandbox.nix {};
 }
