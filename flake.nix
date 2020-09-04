@@ -8,7 +8,8 @@
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";
     utils.url = "github:numtide/flake-utils";
-    rust-libs.url = "github:input-output-hk/rust-libs.nix/vit-servicing-station";
+    rust-libs.url =
+      "github:input-output-hk/rust-libs.nix/vit-servicing-station";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     vit-servicing-station = {
       url = "github:input-output-hk/vit-servicing-station";
@@ -47,8 +48,7 @@
         # * config.system.build.zfsImage
         # * config.system.build.uploadAmi
         zfs-ami = import "${nixpkgs}/nixos" {
-          configuration = { pkgs, lib, ... }:
-          {
+          configuration = { pkgs, lib, ... }: {
             imports = [
               ops-lib.nixosModules.make-zfs-image
               ops-lib.nixosModules.zfs-runtime
@@ -60,10 +60,8 @@
               experimental-features = nix-command flakes
             '';
             systemd.services.amazon-shell-init.path = [ pkgs.sops ];
-            nixpkgs.config.allowUnfreePredicate = x: builtins.elem (lib.getName x) [
-              "ec2-ami-tools"
-              "ec2-api-tools"
-            ];
+            nixpkgs.config.allowUnfreePredicate = x:
+              builtins.elem (lib.getName x) [ "ec2-ami-tools" "ec2-api-tools" ];
             zfs.regions = [
               "eu-west-1"
               "ap-northeast-1"

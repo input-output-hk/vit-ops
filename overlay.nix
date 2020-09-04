@@ -51,5 +51,5 @@ final: prev: {
   inherit (self.inputs.bitte.legacyPackages.${system})
     vault-bin mkNomadJob mkNomadTaskSandbox terraform-with-plugins;
 
-  systemdSandbox = final.callPackage ./jobs/sandbox.nix {};
+  systemdSandbox = final.callPackage ./jobs/sandbox.nix { };
 }

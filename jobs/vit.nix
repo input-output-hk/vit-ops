@@ -20,8 +20,6 @@ let
 
     cd "''${NOMAD_ALLOC_DIR}"
 
-    id
-
     wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/nightly.20200903/jormungandr-0.9.1-nightly.20200903-x86_64-unknown-linux-musl-generic.tar.gz
     tar --no-same-permissions xvf jormungandr.tar.gz
     exec ./jormungandr

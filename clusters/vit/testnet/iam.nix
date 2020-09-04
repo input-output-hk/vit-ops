@@ -61,10 +61,11 @@ in {
         };
 
         policies = let
-          s3Secrets = allowS3For "secrets" "infra/secrets/${cluster.name}/${kms}" [
-            "client"
-            "source"
-          ];
+          s3Secrets =
+            allowS3For "secrets" "infra/secrets/${cluster.name}/${kms}" [
+              "client"
+              "source"
+            ];
           s3Cache = allowS3For "cache" "infra" [ "binary-cache" ];
         in s3Secrets // s3Cache // {
           ssm = {
@@ -164,11 +165,12 @@ in {
         };
 
         policies = let
-          s3Secrets = allowS3For "secret" "infra/secrets/${cluster.name}/${kms}" [
-            "server"
-            "client"
-            "source"
-          ];
+          s3Secrets =
+            allowS3For "secret" "infra/secrets/${cluster.name}/${kms}" [
+              "server"
+              "client"
+              "source"
+            ];
           s3Cache = allowS3For "cache" "infra" [ "binary-cache" ];
         in s3Secrets // s3Cache // {
           kms = {
