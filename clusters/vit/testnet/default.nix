@@ -109,6 +109,8 @@ in {
             # amazon-shell-init
             set -exuo pipefail
 
+            ${pkgs.zfs}/bin/zpool online -e tank nvme0n1p3
+
             export CACHES="https://hydra.iohk.io https://cache.nixos.org ${cluster.s3Cache}"
             export CACHE_KEYS="hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ${cluster.s3CachePubKey}"
             pushd /run/keys
