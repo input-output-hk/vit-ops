@@ -1,2 +1,3 @@
 secrets/
 /.terraform
+/config.tf.json

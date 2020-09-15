@@ -23,8 +23,7 @@ in {
     kms = "arn:aws:kms:eu-central-1:432820653916:key/c24899f3-2371-4492-bf9e-2d1e53bde6ec";
     domain = "vit.iohk.io";
     s3Bucket = "iohk-vit-bitte";
-    s3CachePubKey =
-      "vit-testnet-0:0lvkEoYh+XrBh7pr4bXjsUisUkUxsyLvvWBIJwym/RM=";
+    s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
     adminNames = [ "michael.fellinger" "michael.bishop" ];
 
     terraformOrganization = "vit";
