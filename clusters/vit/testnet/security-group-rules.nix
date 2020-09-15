@@ -6,7 +6,7 @@ let
 
   global = [ "0.0.0.0/0" ];
   internal = [ config.cluster.vpc.cidr ]
-    ++ (lib.flip lib.mapAttrsToList vpcs (region: vpc: vpc.cidr_block));
+    ++ (lib.forEach vpcs (vpc: vpc.cidr));
 in {
   # TODO: derive needed security groups from networking.firewall?
   securityGroupRules = {
