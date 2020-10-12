@@ -42,7 +42,7 @@
         system = "x86_64-linux";
       };
     in {
-      inherit (pkgs) clusters nomadJobs;
+      inherit (pkgs) clusters nomadJobs dockerImages;
       nixosConfigurations = pkgs.nixosConfigurations // {
         # attrs of interest:
         # * config.system.build.zfsImage

@@ -6,16 +6,17 @@
         "inclusive": "inclusive_2",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-crystal": "nixpkgs-crystal_2",
+        "nixpkgs-terraform": "nixpkgs-terraform",
         "ops-lib": "ops-lib",
         "terranix": "terranix",
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1600169761,
-        "narHash": "sha256-qDO8siDzuNTvSKcmsp9q5KQ7y0FTHLMyADmQKjimImY=",
+        "lastModified": 1602489499,
+        "narHash": "sha256-WAlrWtIfoh1W1KOXJHRmhpkO82LzS3pf7Mip06FLSr4=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "4f5786a32b947b6f4555eaacb1451cc0c922b595",
+        "rev": "1c72ed2140f6f904580dbd0e4df2fb08a656bcd9",
         "type": "github"
       },
       "original": {
@@ -32,11 +33,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1599210429,
-        "narHash": "sha256-qJTru2dzfaCd9RmiVK3HjDbjQ4JZ1Lrah5G3CJwgsh0=",
+        "lastModified": 1602489451,
+        "narHash": "sha256-8Ikcv3qc8/4KGGS2JGuJgox1B6JQJL4tZeJvaAsKB1E=",
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "rev": "727975515cdd4b9f48195c9186bff6feefaab703",
+        "rev": "0c6945eea09c724c5e228f2d0660bbacc597bc2f",
         "type": "github"
       },
       "original": {
@@ -141,6 +142,22 @@
       "original": {
         "owner": "manveru",
         "ref": "crystal-0.35",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-terraform": {
+      "locked": {
+        "lastModified": 1601377216,
+        "narHash": "sha256-tYwmPuCgibq72ReYrSTXND4RlZllsP9sVrpncggnBz0=",
+        "owner": "manveru",
+        "repo": "nixpkgs",
+        "rev": "e23f63315b452837bfd49b7f17a4fe9cba6e9094",
+        "type": "github"
+      },
+      "original": {
+        "owner": "manveru",
+        "ref": "terraform-providers",
         "repo": "nixpkgs",
         "type": "github"
       }

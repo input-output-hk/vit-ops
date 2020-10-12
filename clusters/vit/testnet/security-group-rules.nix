@@ -54,6 +54,11 @@ in {
       cidrs = global;
     };
 
+    docker-registry = {
+      port = config.services.dockerRegistry.port;
+      cidrs = global;
+    };
+
     consul-serf-lan = {
       port = 8301;
       protocols = [ "tcp" "udp" ];

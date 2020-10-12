@@ -24,7 +24,7 @@ in {
     domain = "vit.iohk.io";
     s3Bucket = "iohk-vit-bitte";
     s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
-    adminNames = [ "michael.fellinger" "michael.bishop" ];
+    adminNames = [ "michael.fellinger" "michael.bishop" "samuel.leathers" ];
 
     terraformOrganization = "vit";
 
@@ -33,7 +33,7 @@ in {
     autoscalingGroups = listToAttrs (forEach [
       {
         region = "eu-central-1";
-        desiredCapacity = 1;
+        desiredCapacity = 0;
       }
       {
         region = "us-east-2";
@@ -55,7 +55,7 @@ in {
         '';
         attrs = ({
           desiredCapacity = 1;
-          instanceType = "t3a.medium";
+          instanceType = "t3a.large";
           associatePublicIP = true;
           maxInstanceLifetime = 604800;
           iam.role = cluster.iam.roles.client;
@@ -158,12 +158,14 @@ in {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
         subnet = subnets.core-1;
-        route53.domains = [ "monitoring" ];
+        route53.domains = [ "monitoring" "docker" ];
 
-        modules = [ (bitte + /profiles/monitoring.nix) ./secrets.nix ];
+        modules = [ (bitte + /profiles/monitoring.nix) ./secrets.nix
+        ./docker-registry.nix
+      ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http;
+          inherit (securityGroupRules) internet internal ssh http docker-registry;
         };
       };
     };
