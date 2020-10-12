@@ -4,7 +4,6 @@ let
   inherit (builtins) readFile replaceStrings;
   inherit (lib) mapAttrs' nameValuePair flip attrValues listToAttrs forEach;
   inherit (config) cluster;
-  inherit (cluster.vpc) subnets;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 
@@ -20,14 +19,17 @@ in {
 
   cluster = {
     name = "vit-testnet";
-    kms = "arn:aws:kms:eu-central-1:432820653916:key/c24899f3-2371-4492-bf9e-2d1e53bde6ec";
-    domain = "vit.iohk.io";
-    s3Bucket = "iohk-vit-bitte";
-    s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
-    adminNames = [ "michael.fellinger" "michael.bishop" "samuel.leathers" ];
 
+    adminNames = [ "michael.fellinger" "michael.bishop" "samuel.leathers" ];
+    developerGithubNames = [ ];
+    developerGithubTeamNames = [ "jormungandr" ];
+    domain = "vit.iohk.io";
+    kms =
+      "arn:aws:kms:eu-central-1:432820653916:key/c24899f3-2371-4492-bf9e-2d1e53bde6ec";
+    s3Bucket = "iohk-vit-bitte";
     terraformOrganization = "vit";
 
+    s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
     flakePath = ../../..;
 
     autoscalingGroups = listToAttrs (forEach [
@@ -67,6 +69,7 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             "${extraConfig}"
+            ./secrets.nix
           ];
 
           securityGroupRules = {
@@ -99,8 +102,7 @@ in {
       core-1 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.0.10";
-        subnet = subnets.core-1;
-        route53.domains = [ "consul" "vault" "nomad" ];
+        subnet = cluster.vpc.subnets.core-1;
 
         modules = [
           (bitte + /profiles/core.nix)
@@ -133,7 +135,7 @@ in {
       core-2 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.1.10";
-        subnet = subnets.core-2;
+        subnet = cluster.vpc.subnets.core-2;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 
@@ -145,7 +147,7 @@ in {
       core-3 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.2.10";
-        subnet = subnets.core-3;
+        subnet = cluster.vpc.subnets.core-3;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 
@@ -157,15 +159,30 @@ in {
       monitoring = {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
-        subnet = subnets.core-1;
-        route53.domains = [ "monitoring" "docker" ];
+        subnet = cluster.vpc.subnets.core-1;
+        volumeSize = 40;
+        route53.domains = [
+          "monitoring.${cluster.domain}"
+          "consul.${cluster.domain}"
+          "vault.${cluster.domain}"
+          "nomad.${cluster.domain}"
+        ];
 
-        modules = [ (bitte + /profiles/monitoring.nix) ./secrets.nix
-        ./docker-registry.nix
-      ];
+        modules = let
+          extraConfig = pkgs.writeText "extra-config.nix" ''
+            { ... }: {
+              services.vault-agent-core.vaultAddress =
+                "https://${cluster.instances.core-1.privateIP}:8200";
+            }
+          '';
+        in [
+          (bitte + /profiles/monitoring.nix)
+          ./secrets.nix
+          "${extraConfig}"
+        ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http docker-registry;
+          inherit (securityGroupRules) internet internal ssh http;
         };
       };
     };

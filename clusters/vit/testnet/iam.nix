@@ -260,11 +260,26 @@ in {
             resources = [ "*" ];
             actions = [
               "ec2:DescribeInstances"
+              "iam:AddUserToGroup"
+              "iam:AttachUserPolicy"
+              "iam:CreateAccessKey"
+              "iam:CreateUser"
+              "iam:DeleteAccessKey"
+              "iam:DeleteUser"
+              "iam:DeleteUserPolicy"
+              "iam:DetachUserPolicy"
               "iam:GetInstanceProfile"
-              "iam:GetUser"
               "iam:GetRole"
+              "iam:GetUser"
+              "iam:ListAccessKeys"
+              "iam:ListAttachedUserPolicies"
+              "iam:ListGroupsForUser"
+              "iam:ListUserPolicies"
+              "iam:PutUserPolicy"
+              "iam:RemoveUserFromGroup"
               "logs:CreateLogStream"
               "logs:PutLogEvents"
+              # TODO: "Resource": ["arn:aws:iam::ACCOUNT-ID-WITHOUT-HYPHENS:user/vault-*"]
             ];
           };
         };
