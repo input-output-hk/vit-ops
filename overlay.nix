@@ -62,6 +62,11 @@ in {
     in { inherit push image; };
   };
 
+  jormungandr-monitor = final.callPackage
+    (self.inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
+      jormungandr-cli = "."; # pick up from "./bin/jcli" local path
+    };
+
   devShell = let
     cluster = "vit-testnet";
     domain = final.clusters.${cluster}.proto.config.cluster.domain;
@@ -115,7 +120,7 @@ in {
 
   inherit (self.inputs.bitte.legacyPackages.${system})
     vault-bin mkNomadJob terraform-with-plugins systemdSandbox nixFlakes nomad
-    consul consul-template bitte-tokens;
+    consul consul-template bitte-tokens systemd-runner;
 
   # inject vault-bin into bitte wrapper
   bitte = let

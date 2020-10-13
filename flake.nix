@@ -11,6 +11,10 @@
     rust-libs.url =
       "github:input-output-hk/rust-libs.nix/vit-servicing-station";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
+    jormungandr-nix = {
+      url ="github:input-output-hk/jormungandr-nix";
+      flake = false;
+    };
     vit-servicing-station = {
       url = "github:input-output-hk/vit-servicing-station";
       flake = false;

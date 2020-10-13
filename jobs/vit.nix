@@ -1,11 +1,14 @@
 { mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, block0, db
-, vit-servicing-station, wget, gzip, gnutar, cacert }:
+, vit-servicing-station, wget, gzip, gnutar, cacert, curl, dnsutils, gawk
+, gnugrep, iproute, jq, lsof, netcat, nettools, procps, jormungandr-monitor
+, telegraf }:
 let
+  jormungandr-version = "0.9.2-test.1";
+
   run-vit = writeShellScript "vit" ''
     set -exuo pipefail
 
-    home="''${NOMAD_ALLOC_DIR}"
-    cd $home
+    cd "$NOMAD_ALLOC_DIR"
 
     db="''${NOMAD_ALLOC_DIR}/database.db"
     cp ${db} "$db"
@@ -15,25 +18,42 @@ let
       --block0-path ${block0} --db-url "$db"
   '';
 
-  run-jormungandr = args:
-    writeShellScript "jormungandr" ''
-      set -exuo pipefail
+  run-jormungandr = writeShellScript "jormungandr" ''
+    set -exuo pipefail
 
-      cd "''${NOMAD_ALLOC_DIR}"
+    cd "$NOMAD_ALLOC_DIR"
 
-      wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/nightly.20200903/jormungandr-0.9.1-nightly.20200903-x86_64-unknown-linux-musl-generic.tar.gz
-      tar --no-same-permissions xvf jormungandr.tar.gz
-      exec ./jormungandr ${toString args}
-    '';
+    export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
+
+    env
+
+    wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/v${jormungandr-version}/jormungandr-${jormungandr-version}-x86_64-unknown-linux-musl-generic.tar.gz
+    tar --no-same-permissions -xvf jormungandr.tar.gz
+    exec ./jormungandr \
+      --config $NOMAD_TASK_DIR/node-config.yaml \
+      --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
+      --secret $NOMAD_TASK_DIR/bft-secret.yaml
+  '';
 
   env = {
-    PATH = lib.makeBinPath [ coreutils wget gnutar gzip ];
-    SSL_CERT_FILE = "${cacert}/etc/ssl/certs/ca-bundle.crt";
-  };
-
-  resources = {
-    cpu = 100; # mhz
-    memoryMB = 1 * 1024;
+    # Adds some extra commands to the store and path for debugging inside
+    # nomad jobs with `nomad alloc exec $ALLOC_ID /bin/sh`
+    PATH = lib.makeBinPath [
+      coreutils
+      curl
+      dnsutils
+      gawk
+      gnugrep
+      gnutar
+      gzip
+      iproute
+      jq
+      lsof
+      netcat
+      nettools
+      procps
+      wget
+    ];
   };
 
   genesis = "d5a882ea91947a2160557671991b5349f440d5e4a603f814f0b9ee3d01f6dd8e";
@@ -57,7 +77,7 @@ let
     };
   };
 
-  mkVitConfig = peers:
+  mkVitConfig = { localRpcPort, localRestPort, peers }:
     let
       original = builtins.toJSON {
         bootstrap_from_trusted_peers = true;
@@ -82,7 +102,7 @@ let
               view_max = 20;
             };
           };
-          listen_address = ''/ip4/127.0.0.1/tcp/{{ env "NOMAD_PORT_rpc" }}'';
+          listen_address = "/ip4/0.0.0.0/tcp/${toString localRpcPort}";
           max_bootstrap_attempts = 3;
           max_client_connections = 192;
           max_connections = 256;
@@ -91,7 +111,8 @@ let
             quarantine_duration = "5s";
             quarantine_whitelist = peers;
           };
-          public_address = ''/ip4/127.0.0.1/tcp/{{ env "NOMAD_PORT_rpc" }}'';
+          public_address =
+            ''/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/${toString localRpcPort}'';
           topics_of_interest = {
             blocks = "high";
             messages = "high";
@@ -99,38 +120,56 @@ let
           trusted_peers = map (p: { address = p; }) peers;
         };
 
-        rest = { listen = "127.0.0.1:8001"; };
+        rest = { listen = ''0.0.0.0:${toString localRestPort }''; };
         skip_bootstrap = false;
         storage = "storage";
       };
+      # TODO: this is a pretty hacky fix...
     in lib.replaceStrings [ ''{{ env \"'' ''\" }}'' ] [ ''{{ env "'' ''" }}'' ]
     original;
 
   mkVit = num:
     let
-      localBindPort = 7000 + num;
-      name = "vit-node-leader-${toString num}";
+      localRpcPort = 7000 + num;
+      localRestPort = 9000 + num;
+      prefix = "vit-node-leader-";
+      name = "${prefix}${toString num}";
 
-      upstreams = [
+      nodeUpstreams = [
         {
-          destinationName = "vit-node-leader-0";
+          destinationName = "${prefix}0";
           localBindPort = 7000;
         }
         {
-          destinationName = "vit-node-leader-1";
+          destinationName = "${prefix}1";
           localBindPort = 7001;
         }
         {
-          destinationName = "vit-node-leader-2";
+          destinationName = "${prefix}2";
           localBindPort = 7002;
         }
       ];
 
-      peers = lib.pipe upstreams [
-        (lib.filter (upstream: upstream.destinationName != name))
-        (map
-          (upstreams: "/ip4/127.0.0.1/tcp/${toString upstreams.localBindPort}"))
+      monitorUpstreams = [
+        {
+          destinationName = "${prefix}0-monitor";
+          localBindPort = 9000;
+        }
+        {
+          destinationName = "${prefix}1-monitor";
+          localBindPort = 9001;
+        }
+        {
+          destinationName = "${prefix}2-monitor";
+          localBindPort = 9002;
+        }
       ];
+
+      notSelf =
+        lib.filter (upstream: upstream.destinationName != name) nodeUpstreams;
+
+      peers = lib.forEach notSelf
+        (upstream: "/ip4/127.0.0.1/tcp/${toString upstream.localBindPort}");
     in {
       ${name} = {
         count = 1;
@@ -138,47 +177,88 @@ let
         networks = [{ mode = "bridge"; }];
 
         services.${name} = {
-          name = "rpc";
-          portLabel = "9001";
-
-          connect.sidecarService = { proxy = { inherit upstreams; }; };
+          portLabel = toString localRpcPort;
+          connect.sidecarService.proxy = { upstreams = nodeUpstreams; };
         };
 
-        tasks.${name} = {
-          driver = "docker";
+        services."vit-monitor" = {
+          portLabel = toString localRestPort;
+          connect.sidecarService.proxy = { upstreams = monitorUpstreams; };
+        };
 
-          # vault.policies = [ "nomad-cluster" ];
+        tasks."vit-monitor" = systemdSandbox {
+          name = "vit-monitor";
 
-          config = {
-            image = "docker.vit.iohk.io/vit:latest";
-            command = "jormungandr";
-            args = [
-              "--config"
-              "local/node-config.yaml"
-              "--genesis-block"
-              "local/block0.bin"
-              "--secret"
-              "local/bft-secret.yaml"
-            ];
+          resources = {
+            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
-          # templates = [
-          #   {
-          #     data = mkVitConfig peers;
-          #     destination = "local/node-config.yaml";
-          #   }
-          #   {
-          #     data = ''
-          #       genesis:
+          services.vit-monitor-prometheus = { portLabel = "prometheus"; };
 
-          #       bft:
-          #         signing_key: {{with secret "kv/data/nomad-cluster/bft/0"}}{{.Data.data.value}}{{end}}
-          #     '';
-          #     destination = "local/bft-secret.yaml";
-          #   }
-          # ];
+          env = env // { SLEEP_TIME = "10"; };
 
-          inherit env resources;
+          command = writeShellScript "vit-monitor" ''
+            set -exuo pipefail
+
+            cd "$NOMAD_ALLOC_DIR"
+
+            env
+
+            export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
+            export PORT="$NOMAD_PORT_prometheus"
+            export JORMUNGANDR_API="http://$NOMAD_UPSTREAM_ADDR_${
+              lib.replaceStrings [ "-" ] [ "_" ] name
+            }_monitor/api";
+
+            env
+
+            wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/v${jormungandr-version}/jormungandr-${jormungandr-version}-x86_64-unknown-linux-musl-generic.tar.gz
+            tar --no-same-permissions -xvf jormungandr.tar.gz
+            mkdir -p bin
+            mv jcli bin
+
+            exec ${jormungandr-monitor}
+          '';
+        };
+
+        tasks.${name} = systemdSandbox {
+          inherit name env;
+
+          resources = {
+            cpu = 100; # mhz
+            memoryMB = 1 * 1024;
+            networks = [{
+              dynamicPorts = [ { label = "rpc"; } { label = "rest"; } ];
+              # reservedPorts = [{
+              #   label = "metrics";
+              #   value = 13798;
+              # }];
+            }];
+          };
+
+          vault.policies = [ "nomad-cluster" ];
+          command = run-jormungandr;
+
+          artifacts = [{
+            source =
+              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
+            destination = "local/block0.bin";
+          }];
+
+          templates = [
+            {
+              data = mkVitConfig { inherit localRpcPort localRestPort peers; };
+              destination = "local/node-config.yaml";
+            }
+            {
+              data = ''
+                genesis:
+                bft:
+                  signing_key: {{with secret "kv/data/nomad-cluster/bft/0"}}{{.Data.data.value}}{{end}}
+              '';
+              destination = "local/bft-secret.yaml";
+            }
+          ];
         };
       };
     };
@@ -189,7 +269,7 @@ in {
 
     taskGroups = {
       vit-servicing-station = {
-        count = 0;
+        count = 1;
 
         services.vit-servicing-station = { };
 
@@ -206,5 +286,53 @@ in {
         };
       };
     } // (mkVit 0) // (mkVit 1) // (mkVit 2);
+  };
+
+  metrics = mkNomadJob "metrics" {
+    datacenters = [ "us-east-2" ];
+    type = "system";
+
+    taskGroups = {
+      metrics = {
+        count = 1;
+
+        services.metrics = { };
+
+        tasks.metrics = systemdSandbox {
+          name = "metrics";
+
+          command = writeShellScript "telegraf" ''
+            set -exuo pipefail
+
+            exec ${telegraf}/bin/telegraf -config $NOMAD_TASK_DIR/telegraf.config
+          '';
+
+          templates = [{
+            data = ''
+              [agent]
+              flush_interval = "10s"
+              interval = "10s"
+              omit_hostname = false
+
+              [global_tags]
+              role = "vit"
+
+              [inputs.prometheus]
+              metric_version = 1
+              urls = [
+                {{ range service "vit-monitor-prometheus" -}}
+                  "http://{{ .Address }}:{{ .Port }}",
+                {{ end -}}
+              ]
+
+              [outputs.influxdb]
+              database = "telegraf"
+              urls = ["http://monitoring.node.consul:8428"]
+            '';
+            destination = "local/telegraf.config";
+          }];
+        };
+      };
+    };
   };
 }

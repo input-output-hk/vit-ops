@@ -67,7 +67,8 @@ in {
               "source"
             ];
           s3Cache = allowS3For "cache" "infra" [ "binary-cache" ];
-        in s3Secrets // s3Cache // {
+          s3Artifacts = allowS3For "artifacts" "infra" [ "artifacts" ];
+        in s3Secrets // s3Cache // s3Artifacts // {
           ssm = {
             effect = "Allow";
             resources = [ "*" ];

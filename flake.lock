@@ -5,18 +5,22 @@
         "bitte-cli": "bitte-cli",
         "inclusive": "inclusive_2",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-crystal": "nixpkgs-crystal_2",
+        "nixpkgs-crystal": [
+          "bitte",
+          "bitte-cli",
+          "nixpkgs-crystal"
+        ],
         "nixpkgs-terraform": "nixpkgs-terraform",
         "ops-lib": "ops-lib",
         "terranix": "terranix",
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1602489499,
-        "narHash": "sha256-WAlrWtIfoh1W1KOXJHRmhpkO82LzS3pf7Mip06FLSr4=",
+        "lastModified": 1602582537,
+        "narHash": "sha256-pRTdE7uVO+p/mnC83G56nINO9JVJX8Vx46zjeYdM66I=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "1c72ed2140f6f904580dbd0e4df2fb08a656bcd9",
+        "rev": "a1daaf4e8b585e6687acc7c44d2318451d527189",
         "type": "github"
       },
       "original": {
@@ -82,6 +86,22 @@
         "type": "github"
       }
     },
+    "jormungandr-nix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1593011183,
+        "narHash": "sha256-1pWYThx+etgPaEQj1xs2M3mwOi4kx6fx3sE84m4L2WU=",
+        "owner": "input-output-hk",
+        "repo": "jormungandr-nix",
+        "rev": "fddf5dfe7716b3dc5bf17f5d483f957c38eb205d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "jormungandr-nix",
+        "type": "github"
+      }
+    },
     "kes-mmm-sumed25519": {
       "flake": false,
       "locked": {
@@ -115,22 +135,6 @@
       }
     },
     "nixpkgs-crystal": {
-      "locked": {
-        "lastModified": 1591785879,
-        "narHash": "sha256-RfTjvYLCdXw3dyOwbeDU4pDK9ex+QxrRQtMxqesWQOE=",
-        "owner": "manveru",
-        "repo": "nixpkgs",
-        "rev": "62267e49f4e13ed34d1ed328b3b5ff54be5efd18",
-        "type": "github"
-      },
-      "original": {
-        "owner": "manveru",
-        "ref": "crystal-0.35",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-crystal_2": {
       "locked": {
         "lastModified": 1591785879,
         "narHash": "sha256-RfTjvYLCdXw3dyOwbeDU4pDK9ex+QxrRQtMxqesWQOE=",
@@ -232,6 +236,7 @@
           "bitte",
           "bitte-cli"
         ],
+        "jormungandr-nix": "jormungandr-nix",
         "nixpkgs": [
           "bitte",
           "nixpkgs"

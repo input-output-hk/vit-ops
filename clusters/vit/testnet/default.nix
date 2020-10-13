@@ -17,6 +17,11 @@ let
 in {
   imports = [ ./iam.nix ];
 
+  services.consul.policies.developer.servicePrefix."vit-" = {
+    policy = "write";
+    intentions = "write";
+  };
+
   cluster = {
     name = "vit-testnet";
 
