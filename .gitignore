@@ -1,3 +1,11 @@
 secrets/
 /.terraform
 /config.tf.json
+*.sk
+*.pk
+*.skey
+*.vkey
+*.txbody
+*.txsigned
+*.sig
+state*
