@@ -167,10 +167,7 @@ in {
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
         route53.domains = [
-          "monitoring.${cluster.domain}"
-          "consul.${cluster.domain}"
-          "vault.${cluster.domain}"
-          "nomad.${cluster.domain}"
+          "*.${cluster.domain}"
         ];
 
         modules = let
@@ -184,6 +181,7 @@ in {
           (bitte + /profiles/monitoring.nix)
           ./secrets.nix
           "${extraConfig}"
+          ./ingress.nix
         ];
 
         securityGroupRules = {

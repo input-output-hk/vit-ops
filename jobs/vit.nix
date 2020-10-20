@@ -3,6 +3,8 @@
 , gnugrep, iproute, jq, lsof, netcat, nettools, procps, jormungandr-monitor
 , telegraf }:
 let
+  jobPrefix = "vit-testnet";
+
   jormungandr-version = "0.9.2-test.1";
 
   run-vit = writeShellScript "vit" ''
@@ -15,7 +17,9 @@ let
     chmod u+wr "$db"
 
     ${vit-servicing-station}/bin/vit-servicing-station-server \
-      --block0-path ${block0} --db-url "$db"
+      --block0-path ${block0} \
+      --db-url "$db" \
+      --address "$NOMAD_ADDR_web"
   '';
 
   run-jormungandr = writeShellScript "jormungandr" ''
@@ -59,13 +63,13 @@ let
   genesis = "d5a882ea91947a2160557671991b5349f440d5e4a603f814f0b9ee3d01f6dd8e";
 
   vit-servicing-station-server-config = {
-    address = "0.0.0.0:3030";
     tls = {
       cert_file = null;
       priv_key_file = null;
     };
     cors = {
-      allowed_origins = [ "https://api.vit.iohk.io" "http://127.0.0.1" ];
+      allowed_origins =
+        [ "https://servicing-station.vit.iohk.io" "http://127.0.0.1" ];
       max_age_secs = null;
     };
     db_url = "./db/database.sqlite3";
@@ -120,7 +124,7 @@ let
           trusted_peers = map (p: { address = p; }) peers;
         };
 
-        rest = { listen = ''0.0.0.0:${toString localRestPort }''; };
+        rest = { listen = "0.0.0.0:${toString localRestPort}"; };
         skip_bootstrap = false;
         storage = "storage";
       };
@@ -132,35 +136,35 @@ let
     let
       localRpcPort = 7000 + num;
       localRestPort = 9000 + num;
-      prefix = "vit-node-leader-";
-      name = "${prefix}${toString num}";
+      prefix = "${jobPrefix}-node-leader";
+      name = "${prefix}-${toString num}";
 
       nodeUpstreams = [
         {
-          destinationName = "${prefix}0";
+          destinationName = "${prefix}-0";
           localBindPort = 7000;
         }
         {
-          destinationName = "${prefix}1";
+          destinationName = "${prefix}-1";
           localBindPort = 7001;
         }
         {
-          destinationName = "${prefix}2";
+          destinationName = "${prefix}-2";
           localBindPort = 7002;
         }
       ];
 
       monitorUpstreams = [
         {
-          destinationName = "${prefix}0-monitor";
+          destinationName = "${prefix}-0-monitor";
           localBindPort = 9000;
         }
         {
-          destinationName = "${prefix}1-monitor";
+          destinationName = "${prefix}-1-monitor";
           localBindPort = 9001;
         }
         {
-          destinationName = "${prefix}2-monitor";
+          destinationName = "${prefix}-2-monitor";
           localBindPort = 9002;
         }
       ];
@@ -181,19 +185,19 @@ let
           connect.sidecarService.proxy = { upstreams = nodeUpstreams; };
         };
 
-        services."vit-monitor" = {
+        services."${name}-monitor" = {
           portLabel = toString localRestPort;
           connect.sidecarService.proxy = { upstreams = monitorUpstreams; };
         };
 
-        tasks."vit-monitor" = systemdSandbox {
-          name = "vit-monitor";
+        tasks."${name}-monitor" = systemdSandbox {
+          name = "${name}-monitor";
 
           resources = {
             networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
-          services.vit-monitor-prometheus = { portLabel = "prometheus"; };
+          services."${name}-monitor-prometheus" = { portLabel = "prometheus"; };
 
           env = env // { SLEEP_TIME = "10"; };
 
@@ -219,6 +223,43 @@ let
 
             exec ${jormungandr-monitor}
           '';
+        };
+
+        tasks."${name}-telegraf" = systemdSandbox {
+          name = "${name}-telegraf";
+
+          vault.policies = [ "nomad-cluster" ];
+
+          command = writeShellScript "telegraf" ''
+            set -exuo pipefail
+
+            ${coreutils}/bin/env
+
+            exec ${telegraf}/bin/telegraf -config $NOMAD_TASK_DIR/telegraf.config
+          '';
+
+          templates = [{
+            data = ''
+              [agent]
+              flush_interval = "10s"
+              interval = "10s"
+              omit_hostname = false
+
+              [global_tags]
+              client_id = "${name}"
+
+              [inputs.prometheus]
+              metric_version = 1
+              urls = [ "http://{{ env "NOMAD_ADDR_${
+                lib.replaceStrings [ "-" ] [ "_" ] name
+              }_monitor" }}" ]
+
+              [outputs.influxdb]
+              database = "telegraf"
+              urls = ["http://monitoring.node.consul:8428"]
+            '';
+            destination = "local/telegraf.config";
+          }];
         };
 
         tasks.${name} = systemdSandbox {
@@ -263,76 +304,29 @@ let
       };
     };
 in {
-  vit = mkNomadJob "vit" {
+  ${jobPrefix} = mkNomadJob jobPrefix {
     datacenters = [ "us-east-2" ];
     type = "service";
 
     taskGroups = {
-      vit-servicing-station = {
+      "${jobPrefix}-servicing-station" = {
         count = 1;
 
-        services.vit-servicing-station = { };
-
-        tasks.vit-servicing-station = systemdSandbox {
-          name = "vit-servicing-station";
+        tasks."${jobPrefix}-servicing-station" = systemdSandbox {
+          name = "${jobPrefix}-servicing-station";
           command = run-vit;
 
-          env = { PATH = lib.makeBinPath [ coreutils ]; };
+          services."${jobPrefix}-servicing-station" = { portLabel = "web"; };
 
           resources = {
-            cpu = 100;
-            memoryMB = 1 * 1024;
+            cpu = 100; # mhz
+            memoryMB = 1 * 512;
+            networks = [{ dynamicPorts = [{ label = "web"; }]; }];
           };
+
+          env = { PATH = lib.makeBinPath [ coreutils ]; };
         };
       };
     } // (mkVit 0) // (mkVit 1) // (mkVit 2);
-  };
-
-  metrics = mkNomadJob "metrics" {
-    datacenters = [ "us-east-2" ];
-    type = "system";
-
-    taskGroups = {
-      metrics = {
-        count = 1;
-
-        services.metrics = { };
-
-        tasks.metrics = systemdSandbox {
-          name = "metrics";
-
-          command = writeShellScript "telegraf" ''
-            set -exuo pipefail
-
-            exec ${telegraf}/bin/telegraf -config $NOMAD_TASK_DIR/telegraf.config
-          '';
-
-          templates = [{
-            data = ''
-              [agent]
-              flush_interval = "10s"
-              interval = "10s"
-              omit_hostname = false
-
-              [global_tags]
-              role = "vit"
-
-              [inputs.prometheus]
-              metric_version = 1
-              urls = [
-                {{ range service "vit-monitor-prometheus" -}}
-                  "http://{{ .Address }}:{{ .Port }}",
-                {{ end -}}
-              ]
-
-              [outputs.influxdb]
-              database = "telegraf"
-              urls = ["http://monitoring.node.consul:8428"]
-            '';
-            destination = "local/telegraf.config";
-          }];
-        };
-      };
-    };
   };
 }
