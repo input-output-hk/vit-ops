@@ -105,7 +105,7 @@ in {
 
   # Used for caching
   devShellPath = prev.symlinkJoin {
-    paths = final.devShell.buildInputs ++ [ final.nixFlakes ];
+    paths = final.devShell.buildInputs ++ [ final.nixFlakes final.vit-servicing-station ];
     name = "devShell";
   };
 
