@@ -316,7 +316,18 @@ in {
           name = "${jobPrefix}-servicing-station";
           command = run-vit;
 
-          services."${jobPrefix}-servicing-station" = { portLabel = "web"; };
+          services."${jobPrefix}-servicing-station" = {
+            portLabel = "web";
+            tags = [ "ingress" jobPrefix ];
+            meta = {
+              ingressHost = "servicing-station.vit.vit.iohk.io";
+              ingressCheck = ''
+                http-check send meth GET uri /api/v0/graphql/playground
+                http-check expect status 200
+              '';
+              ingressServer = "_vit-servicing-station._tcp.service.consul";
+            };
+          };
 
           resources = {
             cpu = 100; # mhz

@@ -175,6 +175,8 @@ in {
             { ... }: {
               services.vault-agent-core.vaultAddress =
                 "https://${cluster.instances.core-1.privateIP}:8200";
+              services.ingress.enable = true;
+              services.ingress-config.enable = true;
             }
           '';
         in [
