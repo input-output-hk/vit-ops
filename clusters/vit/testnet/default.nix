@@ -40,7 +40,7 @@ in {
     autoscalingGroups = listToAttrs (forEach [
       {
         region = "eu-central-1";
-        desiredCapacity = 0;
+        desiredCapacity = 1;
       }
       {
         region = "us-east-2";
@@ -75,6 +75,8 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             "${extraConfig}"
             ./secrets.nix
+            ./host_volumes.nix
+            ./seaweedfs.nix
           ];
 
           securityGroupRules = {
@@ -116,8 +118,7 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules)
-            internet internal ssh http https haproxyStats vault-http grpc;
+          inherit (securityGroupRules) internet internal ssh;
         };
 
         initialVaultSecrets = {
@@ -187,7 +188,7 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http;
+          inherit (securityGroupRules) internet internal ssh http https vit-public-rpc;
         };
       };
     };

@@ -1,9 +1,5 @@
 { system, self }:
-let
-  extraJobArgs = {
-    block0 = "${self.inputs.vit-servicing-station}/docker/master/block0.bin";
-    db = "${self.inputs.vit-servicing-station}/docker/master/database.db";
-  };
+let extraJobArgs = { };
 in final: prev:
 let lib = final.lib;
 in {
@@ -98,14 +94,14 @@ in {
       final.python38Packages.pyhcl
       final.direnv
       final.nixFlakes
-      final.bitte-tokens
       final.jq
     ];
   };
 
   # Used for caching
   devShellPath = prev.symlinkJoin {
-    paths = final.devShell.buildInputs ++ [ final.nixFlakes final.vit-servicing-station ];
+    paths = final.devShell.buildInputs
+      ++ [ final.nixFlakes final.vit-servicing-station ];
     name = "devShell";
   };
 
@@ -120,7 +116,7 @@ in {
 
   inherit (self.inputs.bitte.legacyPackages.${system})
     vault-bin mkNomadJob terraform-with-plugins systemdSandbox nixFlakes nomad
-    consul consul-template bitte-tokens systemd-runner;
+    consul consul-template systemd-runner seaweedfs grpcdump;
 
   # inject vault-bin into bitte wrapper
   bitte = let

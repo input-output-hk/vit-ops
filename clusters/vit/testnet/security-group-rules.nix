@@ -94,5 +94,10 @@ in {
       port = 4646;
       cidrs = internal;
     };
+
+    vit-public-rpc = {
+      port = 7100;
+      cidrs = global;
+    };
   };
 }
