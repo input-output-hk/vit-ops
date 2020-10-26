@@ -6,9 +6,7 @@ in {
     taskGroups = {
       ${jobPrefix} = {
         tasks.${jobPrefix} = systemdSandbox {
-          mountPaths = {
-            "${jobPrefix}" = "/persistent";
-          };
+          mountPaths = { "${jobPrefix}" = "/persistent"; };
 
           name = jobPrefix;
 
@@ -17,14 +15,14 @@ in {
 
             set -x
 
-            echo Attempt 6
+            echo Attempt 7
 
             for i in $(seq 1 120); do
               echo "$i $(date)"
               ls -laR
               cat persistent/goodbye || true
               echo $i $RANDOM > persistent/goodbye || true
-              sleep 1
+              sleep 10
             done
           '';
 

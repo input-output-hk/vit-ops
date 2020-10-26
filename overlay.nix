@@ -15,52 +15,23 @@ in {
       (fileName: final.callPackage (jobsDir + "/${fileName}") extraJobArgs);
   in lib.foldl' lib.recursiveUpdate { } imported;
 
-  dockerImages = {
-    vit = let
-      pkgs = self.legacyPackages.${system};
-      inherit (self.inputs.nixpkgs) lib;
-
-      source = pkgs.fetchurl {
-        url =
-          "https://github.com/input-output-hk/jormungandr/releases/download/nightly.20200922/jormungandr-0.10.0-nightly.20200922-x86_64-unknown-linux-musl-generic.tar.gz";
-        sha256 = "sha256-deA5WjnwtDxTbxWqP/KMro0Ps4zTcnfcpeoawFpstgY=";
-      };
-
-      jormungandr = pkgs.runCommand "jormungandr" { } ''
-        set -exuo pipefail
-        tar xvf ${source}
-        mkdir -p $out/{bin,share}
-        cp j* $out/bin
-        cp ${./jobs/block0.bin} $out/share/block0.bin
-      '';
-
-      push = pkgs.writeShellScriptBin "upload" ''
-        set -exuo pipefail
-        docker load -i ${image}
-        docker push docker.vit.iohk.io/vit:latest
-      '';
-
-      image =
-        (self.inputs.nixpkgs.legacyPackages.${system}).dockerTools.buildLayeredImage {
-          name = "docker.vit.iohk.io/vit";
-          tag = "latest";
-
-          contents = [ jormungandr pkgs.busybox ];
-
-          config = {
-            Entrypoint = [ "${jormungandr}/bin/jormungandr" ];
-
-            Env = lib.mapAttrsToList (key: value: "${key}=${value}") {
-              PATH = lib.makeBinPath [ jormungandr pkgs.busybox ];
-            };
-          };
-        };
-    in { inherit push image; };
+  jormungandr = let
+    version = "0.10.0-alpha.1";
+  src = final.fetchurl {
+    url =
+      "https://github.com/input-output-hk/jormungandr/releases/download/v${version}/jormungandr-${version}-x86_64-unknown-linux-musl-generic.tar.gz";
+    sha256 = "sha256-DMIU+YLCMXY8PB4lHVw9j87ffNrNM1k0aeq/9OaK/88=";
   };
+  in
+    final.runCommand "jormungandr" { buildInputs = [ final.gnutar ]; } ''
+      mkdir -p $out/bin
+      cd $out/bin
+      tar -zxvf ${src}
+    '';
 
   jormungandr-monitor = final.callPackage
     (self.inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
-      jormungandr-cli = "."; # pick up from "./bin/jcli" local path
+      jormungandr-cli = final.jormungandr;
     };
 
   devShell = let
@@ -95,6 +66,7 @@ in {
       final.direnv
       final.nixFlakes
       final.jq
+      final.jormungandr
     ];
   };
 

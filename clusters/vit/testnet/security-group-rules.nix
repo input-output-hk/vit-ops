@@ -5,8 +5,7 @@ let
   vpcs = pkgs.terralib.vpcs config.cluster;
 
   global = [ "0.0.0.0/0" ];
-  internal = [ config.cluster.vpc.cidr ]
-    ++ (lib.forEach vpcs (vpc: vpc.cidr));
+  internal = [ config.cluster.vpc.cidr ] ++ (lib.forEach vpcs (vpc: vpc.cidr));
 in {
   # TODO: derive needed security groups from networking.firewall?
   securityGroupRules = {

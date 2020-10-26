@@ -64,7 +64,7 @@ in {
           desiredCapacity = 1;
           instanceType = "t3a.large";
           associatePublicIP = true;
-          maxInstanceLifetime = 604800;
+          maxInstanceLifetime = 0;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
@@ -167,9 +167,7 @@ in {
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
-        route53.domains = [
-          "*.${cluster.domain}"
-        ];
+        route53.domains = [ "*.${cluster.domain}" ];
 
         modules = let
           extraConfig = pkgs.writeText "extra-config.nix" ''
@@ -188,7 +186,8 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http https vit-public-rpc;
+          inherit (securityGroupRules)
+            internet internal ssh http https vit-public-rpc;
         };
       };
     };

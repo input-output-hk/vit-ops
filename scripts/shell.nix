@@ -1,21 +1,26 @@
 let
-  sources = import ./nix/sources.nix {};
-  pkgs = import sources.nixpkgs {};
+  sources = import ./nix/sources.nix { };
+  pkgs = import sources.nixpkgs { };
 
   src = pkgs.fetchurl {
-    url = "https://github.com/input-output-hk/jormungandr/releases/download/v0.9.3/jormungandr-0.9.3-x86_64-unknown-linux-musl-generic.tar.gz";
+    url =
+      "https://github.com/input-output-hk/jormungandr/releases/download/v0.9.3/jormungandr-0.9.3-x86_64-unknown-linux-musl-generic.tar.gz";
     sha256 = "sha256:14giz9yz94mdjrdr96rz5xsj21aacdw8mqrfdz031czh4qgnmnzh";
   };
-  jormungandr = pkgs.runCommand "jormungandr" { buildInputs = [ pkgs.gnutar ]; } ''
-    mkdir -p $out/bin
-    cd $out/bin
-    tar -zxvf ${src}
-  '';
-  cardanolib-py = (import (sources.cardano-node + "/nix") { gitrev = sources.cardano-node.rev;}).cardanolib-py;
-  cardano-node-nix = import (sources.cardano-node) { gitrev = sources.cardano-node.rev;};
+  jormungandr =
+    pkgs.runCommand "jormungandr" { buildInputs = [ pkgs.gnutar ]; } ''
+      mkdir -p $out/bin
+      cd $out/bin
+      tar -zxvf ${src}
+    '';
+  cardanolib-py = (import (sources.cardano-node + "/nix") {
+    gitrev = sources.cardano-node.rev;
+  }).cardanolib-py;
+  cardano-node-nix =
+    import (sources.cardano-node) { gitrev = sources.cardano-node.rev; };
   bech32 = cardano-node-nix.bech32;
   cardano-cli = cardano-node-nix.cardano-cli;
-  vit-kedqr = import sources.vit-kedqr {};
+  vit-kedqr = import sources.vit-kedqr { };
 in pkgs.stdenv.mkDerivation {
   name = "vit-meta-shell";
   buildInputs = [

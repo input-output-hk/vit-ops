@@ -1,27 +1,11 @@
 { mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib
-, vit-servicing-station, wget, gzip, gnutar, cacert, curl, dnsutils, gawk
-, gnugrep, iproute, jq, lsof, netcat, nettools, procps, jormungandr-monitor
-, telegraf }:
+, vit-servicing-station, cacert, curl, dnsutils, gawk, gnugrep, iproute, jq
+, lsof, netcat, nettools, procps, jormungandr-monitor, jormungandr, telegraf
+, remarshal }:
 let
   jobPrefix = "vit-testnet";
 
   jormungandr-version = "0.10.0-alpha.1";
-
-  run-vit = writeShellScript "vit" ''
-    set -exuo pipefail
-
-    cd "$NOMAD_ALLOC_DIR"
-
-    db="$NOMAD_ALLOC_DIR/db/database.sqlite3"
-    mkdir -p "$(dirname "$db")"
-    cp "$NOMAD_TASK_DIR/database.sqlite3/database.sqlite3" "$db"
-    chmod u+wr "$db"
-
-    ${vit-servicing-station}/bin/vit-servicing-station-server \
-      --block0-path "$NOMAD_TASK_DIR/block0.bin/block0.bin" \
-      --db-url "$db" \
-      --address "$NOMAD_ADDR_web"
-  '';
 
   env = {
     # Adds some extra commands to the store and path for debugging inside
@@ -32,15 +16,14 @@ let
       dnsutils
       gawk
       gnugrep
-      gnutar
-      gzip
       iproute
       jq
       lsof
       netcat
       nettools
       procps
-      wget
+      jormungandr
+      remarshal
     ];
   };
 
@@ -63,59 +46,73 @@ let
     };
   };
 
-  mkVitConfig =
-    { localRpcPort, localRestPort, peers, public, explorer ? false }:
-    let
-      original = builtins.toJSON {
-        bootstrap_from_trusted_peers = true;
-        explorer.enabled = explorer;
-        leadership = { logs_capacity = 1024; };
-        log = [{
-          format = "plain";
-          level = "info";
-          output = "stdout";
-        }];
+  mkVitConfig = { public, explorer ? false, skipBootstrap ? false }: ''
+    {
+      "bootstrap_from_trusted_peers": true,
+      "explorer": {
+        "enabled": ${lib.boolToString explorer}
+      },
+      "leadership": {
+        "logs_capacity": 1024
+      },
+      "log": [
+        {
+          "format": "plain",
+          "level": "info",
+          "output": "stdout"
+        }
+      ],
+      "mempool": {
+        "log_max_entries": 100000,
+        "pool_max_entries": 100000
+      },
+      "p2p": {
+        "allow_private_addresses": true,
+        "layers": {
+          "preferred_list": {
+            "peers": [
+              {{ range $index, $service := service "${jobPrefix}-node-leader" }}
+                {{ if ne $index 0 }},{{ end }}
+                { "address": "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}" }
+              {{ end }}
+            ],
+            "view_max": 20
+          }
+        },
+        "listen_address": "/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/{{ env "NOMAD_PORT_rpc" }}",
+        "max_bootstrap_attempts": 3,
+        "max_client_connections": 192,
+        "max_connections": 256,
+        "max_unreachable_nodes_to_connect_per_event": 20,
+        "policy": {
+          "quarantine_duration": "5s",
+          "quarantine_whitelist": [
+            {{ range $index, $service := service "${jobPrefix}-node-leader" }}
+              {{ if ne $index 0 }},{{ end }}
+              "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}"
+            {{ end }}
+          ]
+        },
+        "public_address": "/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/{{ env "NOMAD_PORT_rpc" }}",
+        "topics_of_interest": {
+          "blocks": "high",
+          "messages": "high"
+        },
+        "trusted_peers": [
+          {{ range $index, $service := service "${jobPrefix}-node-leader" }}
+            {{ if ne $index 0 }},{{ end }}
+            { "address": "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}" }
+          {{ end }}
+        ]
+      },
+      "rest": {
+        "listen": "{{ env "NOMAD_IP_rest" }}:{{ env "NOMAD_PORT_rest" }}"
+      },
+      "skip_bootstrap": ${lib.boolToString skipBootstrap}
+    }
+  '';
 
-        mempool = {
-          log_max_entries = 100000;
-          pool_max_entries = 100000;
-        };
-
-        p2p = {
-          allow_private_addresses = true;
-          layers = {
-            preferred_list = {
-              peers = map (p: { address = p; }) peers;
-              view_max = 20;
-            };
-          };
-          listen_address = "/ip4/0.0.0.0/tcp/${toString localRpcPort}";
-          max_bootstrap_attempts = 3;
-          max_client_connections = 192;
-          max_connections = 256;
-          max_unreachable_nodes_to_connect_per_event = 20;
-          policy = {
-            quarantine_duration = "5s";
-            quarantine_whitelist = peers;
-          };
-          public_address =
-            ''/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/${toString localRpcPort}'';
-          topics_of_interest = {
-            blocks = "high";
-            messages = "high";
-          };
-          trusted_peers = map (p: { address = p; }) peers;
-        };
-
-        rest = { listen = "0.0.0.0:${toString localRestPort}"; };
-        skip_bootstrap = false;
-        storage = "storage";
-      };
-      # TODO: this is a pretty hacky fix...
-    in lib.replaceStrings [ ''{{ env \"'' ''\" }}'' ] [ ''{{ env "'' ''" }}'' ]
-    original;
-
-  mkVit = { index, public ? false }:
+  mkVit = { index, requiredPeerCount, public ? false }:
     let
       localRpcPort = (if public then 10000 else 7000) + index;
       localRestPort = (if public then 11000 else 9000) + index;
@@ -129,91 +126,19 @@ let
         "${prefix}-${toString index}"
       else
         "${prefix}-${toString index}";
-
-      nodeUpstreams = [
-        {
-          destinationName = "${jobPrefix}-node-leader-0";
-          localBindPort = 7000;
-        }
-        {
-          destinationName = "${jobPrefix}-node-leader--1";
-          localBindPort = 7001;
-        }
-        {
-          destinationName = "${jobPrefix}-node-leader-2";
-          localBindPort = 7002;
-        }
-      ];
-
-      monitorUpstreams = [
-        {
-          destinationName = "${prefix}-0-monitor";
-          localBindPort = 9000;
-        }
-        {
-          destinationName = "${prefix}-1-monitor";
-          localBindPort = 9001;
-        }
-        {
-          destinationName = "${prefix}-2-monitor";
-          localBindPort = 9002;
-        }
-      ];
-
-      notSelf =
-        lib.filter (upstream: upstream.destinationName != name) nodeUpstreams;
-
-      peers = lib.forEach notSelf
-        (upstream: "/ip4/127.0.0.1/tcp/${toString upstream.localBindPort}");
     in {
       ${name} = {
         count = 1;
 
         networks = [{ mode = "bridge"; }];
 
-        services.${name} = {
-          portLabel = toString localRpcPort;
-          connect.sidecarService.proxy = { upstreams = nodeUpstreams; };
-
-          tags = lib.optionals public [ "ingress" name ];
-          meta = lib.optionalAttrs public {
-            ingressHost = "${name}.vit.iohk.io";
-            ingressPort = toString publicPort;
-            ingressBind = "*:${toString publicPort}";
-            ingressMode = "tcp";
-            ingressServer = "_${name}._tcp.service.consul";
-            ingressBackendExtra = ''
-              option tcplog
-            '';
-          };
-        };
-
-        # services."${name}-rest" = {
-        #   portLabel = toString localRestPort;
-        #   connect.sidecarService.proxy = { upstreams = nodeUpstreams; };
-
-        #   tags = lib.optionals public [ "ingress" name ];
-        #   meta = lib.optionalAttrs public {
-        #     ingressHost = "servicing-station.vit.iohk.io";
-        #     ingressBind = "*:443";
-        #     ingressMode = "http";
-        #     ingressIf = "{ path_beg /api }";
-        #     ingressServer = "_${name}-rest._tcp.service.consul";
-        #   };
-        # };
-
-        services."${name}-monitor" = {
-          portLabel = toString localRestPort;
-          connect.sidecarService.proxy = { upstreams = monitorUpstreams; };
-        };
-
         tasks."${name}-monitor" = systemdSandbox {
           name = "${name}-monitor";
 
           resources = {
-            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
             cpu = 100; # mhz
             memoryMB = 256;
+            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
           services."${name}-monitor-prometheus" = { portLabel = "prometheus"; };
@@ -229,16 +154,9 @@ let
 
             export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
             export PORT="$NOMAD_PORT_prometheus"
-            export JORMUNGANDR_API="http://$NOMAD_UPSTREAM_ADDR_${
+            export JORMUNGANDR_API="http://$NOMAD_ADDR_${
               lib.replaceStrings [ "-" ] [ "_" ] name
-            }_monitor/api";
-
-            env
-
-            wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/v${jormungandr-version}/jormungandr-${jormungandr-version}-x86_64-unknown-linux-musl-generic.tar.gz
-            tar --no-same-permissions -xvf jormungandr.tar.gz
-            mkdir -p bin
-            mv jcli bin
+            }_rest/api";
 
             exec ${jormungandr-monitor}
           '';
@@ -250,9 +168,9 @@ let
           vault.policies = [ "nomad-cluster" ];
 
           resources = {
-            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
             cpu = 100; # mhz
             memoryMB = 128;
+            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
           command = writeShellScript "telegraf" ''
@@ -276,7 +194,9 @@ let
               [inputs.prometheus]
               metric_version = 1
 
-              # NOMAD_ADDR_${ lib.replaceStrings [ "-" ] [ "_" ] name }_monitor_prometheus
+              # NOMAD_ADDR_${
+                lib.replaceStrings [ "-" ] [ "_" ] name
+              }_monitor_prometheus
 
               urls = [ "http://{{ env "NOMAD_ADDR_${
                 lib.replaceStrings [ "-" ] [ "_" ] name
@@ -290,8 +210,24 @@ let
           }];
         };
 
-        tasks.${name} = systemdSandbox {
+        tasks.${prefix} = systemdSandbox {
           inherit name env;
+          mountPaths = { "${jobPrefix}" = "/persistent"; };
+
+          services.${prefix} = {
+            portLabel = "rpc";
+            tags = lib.optionals public [ "ingress" name ];
+            meta = lib.optionalAttrs public {
+              ingressHost = "${name}.vit.iohk.io";
+              ingressPort = toString publicPort;
+              ingressBind = "*:${toString publicPort}";
+              ingressMode = "tcp";
+              ingressServer = "_${name}._tcp.service.consul";
+              ingressBackendExtra = ''
+                option tcplog
+              '';
+            };
+          };
 
           resources = {
             cpu = 100; # mhz
@@ -301,19 +237,32 @@ let
           };
 
           vault.policies = [ "nomad-cluster" ];
+
           command = writeShellScript "jormungandr" ''
             set -exuo pipefail
 
-            cd "$NOMAD_ALLOC_DIR"
+            cd "$NOMAD_TASK_DIR"
 
             export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
+            storage="$NOMAD_TASK_DIR/persistent/${name}/storage"
+            mkdir -p "$storage"
 
-            env
+            set +x
+            echo "waiting for ${toString requiredPeerCount} peers"
+            until [ "$(jq -r '.p2p.trusted_peers | length' < node-config.json)" -ge ${
+              toString requiredPeerCount
+            } ]; do
+              sleep 0.1
+            done
+            set -x
 
-            wget -O jormungandr.tar.gz https://github.com/input-output-hk/jormungandr/releases/download/v${jormungandr-version}/jormungandr-${jormungandr-version}-x86_64-unknown-linux-musl-generic.tar.gz
-            tar --no-same-permissions -xvf jormungandr.tar.gz
-            exec ./jormungandr \
-              --config $NOMAD_TASK_DIR/node-config.yaml \
+            remarshal --if json --of yaml node-config.json > running.yaml
+
+            chown --reference . --recursive . || true
+
+            exec jormungandr \
+              --storage "$storage" \
+              --config "$NOMAD_TASK_DIR/running.yaml" \
               --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
               ${
                 lib.optionalString (!public)
@@ -328,9 +277,12 @@ let
           }];
 
           templates = [{
-            data =
-              mkVitConfig { inherit localRpcPort localRestPort peers public; };
-            destination = "local/node-config.yaml";
+            data = mkVitConfig {
+              inherit public;
+              skipBootstrap = requiredPeerCount == 0;
+            };
+            changeMode = "noop";
+            destination = "local/node-config.json";
           }] ++ (lib.optional (!public) {
             data = ''
               genesis:
@@ -355,7 +307,22 @@ in {
 
         tasks."${jobPrefix}-servicing-station" = systemdSandbox {
           name = "${jobPrefix}-servicing-station";
-          command = run-vit;
+          mountPaths = { "${jobPrefix}" = "/persistent"; };
+          command = writeShellScript "vit-servicing-station" ''
+            set -exuo pipefail
+
+            cd "$NOMAD_TASK_DIR"
+
+            db="$NOMAD_TASK_DIR/persistent/db/database.sqlite3"
+            mkdir -p "$(dirname "$db")"
+            cp "$NOMAD_TASK_DIR/database.sqlite3/database.sqlite3" "$db"
+            chmod u+wr "$db"
+
+            ${vit-servicing-station}/bin/vit-servicing-station-server \
+              --block0-path "$NOMAD_TASK_DIR/block0.bin/block0.bin" \
+              --db-url "$db" \
+              --address "$NOMAD_ADDR_web"
+          '';
 
           services."${jobPrefix}-servicing-station" = {
             portLabel = "web";
@@ -369,7 +336,8 @@ in {
               ingressMode = "http";
               ingressBind = "*:443";
               # ingressIf = "{ path_beg /api }";
-              ingressServer = "_${jobPrefix}-servicing-station._tcp.service.consul";
+              ingressServer =
+                "_${jobPrefix}-servicing-station._tcp.service.consul";
             };
           };
 
@@ -398,15 +366,19 @@ in {
     } // (mkVit {
       index = 0;
       public = false;
+      requiredPeerCount = 0;
     }) // (mkVit {
       index = 1;
       public = false;
+      requiredPeerCount = 1;
     }) // (mkVit {
       index = 2;
       public = false;
+      requiredPeerCount = 2;
     }) // (mkVit {
       index = 0;
       public = true;
+      requiredPeerCount = 3;
     });
   };
 }
