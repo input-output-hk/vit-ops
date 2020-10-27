@@ -1,7 +1,7 @@
 { mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib
 , vit-servicing-station, cacert, curl, dnsutils, gawk, gnugrep, iproute, jq
 , lsof, netcat, nettools, procps, jormungandr-monitor, jormungandr, telegraf
-, remarshal }:
+, remarshal, dockerImages }:
 let
   jobPrefix = "vit-testnet";
 
@@ -79,7 +79,7 @@ let
             "view_max": 20
           }
         },
-        "listen_address": "/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/{{ env "NOMAD_PORT_rpc" }}",
+        "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
         "max_bootstrap_attempts": 3,
         "max_client_connections": 192,
         "max_connections": 256,
@@ -106,7 +106,7 @@ let
         ]
       },
       "rest": {
-        "listen": "{{ env "NOMAD_IP_rest" }}:{{ env "NOMAD_PORT_rest" }}"
+        "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
       },
       "skip_bootstrap": ${lib.boolToString skipBootstrap}
     }
@@ -130,39 +130,39 @@ let
       ${name} = {
         count = 1;
 
-        networks = [{ mode = "bridge"; }];
+        networks = [{
+          mode = "bridge";
+          dynamicPorts = [
+            { label = "prometheus"; }
+            { label = "rest"; }
+            { label = "rpc"; }
+          ];
+        }];
 
-        tasks."${name}-monitor" = systemdSandbox {
+        tasks."${name}-monitor" = {
+          driver = "docker";
           name = "${name}-monitor";
 
           resources = {
             cpu = 100; # mhz
             memoryMB = 256;
-            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
           services."${name}-monitor-prometheus" = { portLabel = "prometheus"; };
 
-          env = env // { SLEEP_TIME = "10"; };
+          env = env // {
+            SLEEP_TIME = "10";
+            PORT = "\${NOMAD_PORT_prometheus}";
+            JORMUNGANDR_API = "http://\${NOMAD_ADDR_${
+                lib.replaceStrings [ "-" ] [ "_" ] name
+              }_rest}/api";
+          };
 
-          command = writeShellScript "vit-monitor" ''
-            set -exuo pipefail
-
-            cd "$NOMAD_ALLOC_DIR"
-
-            env
-
-            export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
-            export PORT="$NOMAD_PORT_prometheus"
-            export JORMUNGANDR_API="http://$NOMAD_ADDR_${
-              lib.replaceStrings [ "-" ] [ "_" ] name
-            }_rest/api";
-
-            exec ${jormungandr-monitor}
-          '';
+          config = { image = dockerImages.env.id; };
         };
 
-        tasks."${name}-telegraf" = systemdSandbox {
+        tasks."${name}-telegraf" = {
+          driver = "docker";
           name = "${name}-telegraf";
 
           vault.policies = [ "nomad-cluster" ];
@@ -170,16 +170,12 @@ let
           resources = {
             cpu = 100; # mhz
             memoryMB = 128;
-            networks = [{ dynamicPorts = [{ label = "prometheus"; }]; }];
           };
 
-          command = writeShellScript "telegraf" ''
-            set -exuo pipefail
-
-            ${coreutils}/bin/env
-
-            exec ${telegraf}/bin/telegraf -config $NOMAD_TASK_DIR/telegraf.config
-          '';
+          config = {
+            image = dockerImages.telegraf.id;
+            args = [ "-config" "local/telegraf.config" ];
+          };
 
           templates = [{
             data = ''
@@ -204,15 +200,15 @@ let
 
               [outputs.influxdb]
               database = "telegraf"
-              urls = ["http://monitoring.node.consul:8428"]
+              urls = ["http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:8428"]
             '';
             destination = "local/telegraf.config";
           }];
         };
 
-        tasks.${prefix} = systemdSandbox {
-          inherit name env;
-          mountPaths = { "${jobPrefix}" = "/persistent"; };
+        tasks.${prefix} = {
+          driver = "docker";
+          inherit name;
 
           services.${prefix} = {
             portLabel = "rpc";
@@ -232,43 +228,16 @@ let
           resources = {
             cpu = 100; # mhz
             memoryMB = 1 * 1024;
-            networks =
-              [{ dynamicPorts = [ { label = "rpc"; } { label = "rest"; } ]; }];
           };
 
           vault.policies = [ "nomad-cluster" ];
 
-          command = writeShellScript "jormungandr" ''
-            set -exuo pipefail
+          env = {
+            REQUIRED_PEER_COUNT = toString requiredPeerCount;
+            PRIVATE = lib.optionalString (!public) "true";
+          };
 
-            cd "$NOMAD_TASK_DIR"
-
-            export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
-            storage="$NOMAD_TASK_DIR/persistent/${name}/storage"
-            mkdir -p "$storage"
-
-            set +x
-            echo "waiting for ${toString requiredPeerCount} peers"
-            until [ "$(jq -r '.p2p.trusted_peers | length' < node-config.json)" -ge ${
-              toString requiredPeerCount
-            } ]; do
-              sleep 0.1
-            done
-            set -x
-
-            remarshal --if json --of yaml node-config.json > running.yaml
-
-            chown --reference . --recursive . || true
-
-            exec jormungandr \
-              --storage "$storage" \
-              --config "$NOMAD_TASK_DIR/running.yaml" \
-              --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
-              ${
-                lib.optionalString (!public)
-                "--secret $NOMAD_TASK_DIR/bft-secret.yaml"
-              }
-          '';
+          config = { image = dockerImages.jormungandr.id; };
 
           artifacts = [{
             source =
@@ -291,7 +260,7 @@ let
                   toString index
                 }"}}{{.Data.data.value}}{{end}}
             '';
-            destination = "local/bft-secret.yaml";
+            destination = "secrets/bft-secret.yaml";
           });
         };
       };
@@ -305,24 +274,21 @@ in {
       "${jobPrefix}-servicing-station" = {
         count = 1;
 
-        tasks."${jobPrefix}-servicing-station" = systemdSandbox {
+        tasks."${jobPrefix}-servicing-station" = {
+          driver = "docker";
           name = "${jobPrefix}-servicing-station";
-          mountPaths = { "${jobPrefix}" = "/persistent"; };
-          command = writeShellScript "vit-servicing-station" ''
-            set -exuo pipefail
 
-            cd "$NOMAD_TASK_DIR"
-
-            db="$NOMAD_TASK_DIR/persistent/db/database.sqlite3"
-            mkdir -p "$(dirname "$db")"
-            cp "$NOMAD_TASK_DIR/database.sqlite3/database.sqlite3" "$db"
-            chmod u+wr "$db"
-
-            ${vit-servicing-station}/bin/vit-servicing-station-server \
-              --block0-path "$NOMAD_TASK_DIR/block0.bin/block0.bin" \
-              --db-url "$db" \
-              --address "$NOMAD_ADDR_web"
-          '';
+          config = {
+            image = dockerImages.vit-servicing-station.id;
+            args = [
+              "--block0-path"
+              "local/block0.bin/block0.bin"
+              "--db-url"
+              "local/database.sqlite3/database.sqlite3"
+              "--address"
+              "0.0.0.0:\${NOMAD_PORT_web}"
+            ];
+          };
 
           services."${jobPrefix}-servicing-station" = {
             portLabel = "web";
@@ -359,8 +325,6 @@ in {
               destination = "local/database.sqlite3";
             }
           ];
-
-          env = { PATH = lib.makeBinPath [ coreutils ]; };
         };
       };
     } // (mkVit {

@@ -183,11 +183,12 @@ in {
           ./secrets.nix
           "${extraConfig}"
           ./ingress.nix
+          ./docker-registry.nix
         ];
 
         securityGroupRules = {
           inherit (securityGroupRules)
-            internet internal ssh http https vit-public-rpc;
+            internet internal ssh http https vit-public-rpc docker-registry;
         };
       };
     };
