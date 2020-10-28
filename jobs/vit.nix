@@ -216,7 +216,7 @@ let
             ingressPort = toString publicPort;
             ingressBind = "*:${toString publicPort}";
             ingressMode = "tcp";
-            ingressServer = "_${name}._tcp.service.consul";
+            ingressServer = "_${jobPrefix}-${name}-jormungandr._tcp.service.consul";
             ingressBackendExtra = ''
               option tcplog
             '';
