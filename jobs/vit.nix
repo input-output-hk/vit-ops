@@ -4,7 +4,7 @@
 , remarshal, dockerImages }:
 let
   jormungandr-version = "0.10.0-alpha.1";
-  jobPrefix = "vit-testnet";
+  namespace = "vit-testnet";
 
   vit-servicing-station-server-config = {
     tls = {
@@ -27,10 +27,10 @@ let
 
   mkVitConfig = { public, explorer ? false, requiredPeerCount }:
     let
-      requiredPeers = lib.take requiredPeerCount [
-        "${jobPrefix}-leader-0-jormungandr"
-        "${jobPrefix}-leader-1-jormungandr"
-        "${jobPrefix}-leader-2-jormungandr"
+      requiredPeers = [
+        "${namespace}-leader-0-jormungandr"
+        "${namespace}-leader-1-jormungandr"
+        "${namespace}-leader-2-jormungandr"
       ];
 
       singlePeerAddress = peer: ''
@@ -153,6 +153,18 @@ let
           config = {
             image = dockerImages.monitor.id;
             ports = [ "prometheus" ];
+            labels = [{
+              inherit namespace name;
+              imageTag = dockerImages.monitor.image.imageTag;
+            }];
+
+            logging = {
+              type = "journald";
+              config = [{
+                tag = "${name}-monitor";
+                labels = "name,namespace,imageTag";
+              }];
+            };
           };
 
           templates = [{
@@ -179,6 +191,18 @@ let
           config = {
             image = dockerImages.telegraf.id;
             args = [ "-config" "local/telegraf.config" ];
+            labels = [{
+              inherit namespace name;
+              imageTag = dockerImages.telegraf.image.imageTag;
+            }];
+
+            logging = {
+              type = "journald";
+              config = [{
+                tag = "${name}-telegraf";
+                labels = "name,namespace,imageTag";
+              }];
+            };
           };
 
           templates = [{
@@ -216,7 +240,8 @@ let
             ingressPort = toString publicPort;
             ingressBind = "*:${toString publicPort}";
             ingressMode = "tcp";
-            ingressServer = "_${jobPrefix}-${name}-jormungandr._tcp.service.consul";
+            ingressServer =
+              "_${namespace}-${name}-jormungandr._tcp.service.consul";
             ingressBackendExtra = ''
               option tcplog
             '';
@@ -231,6 +256,18 @@ let
           config = {
             image = dockerImages.jormungandr.id;
             ports = [ "rpc" "rest" ];
+            labels = [{
+              inherit namespace name;
+              imageTag = dockerImages.jormungandr.image.imageTag;
+            }];
+
+            logging = {
+              type = "journald";
+              config = [{
+                tag = name;
+                labels = "name,namespace,imageTag";
+              }];
+            };
           };
 
           env = {
@@ -273,20 +310,20 @@ let
       };
     };
 in {
-  ${jobPrefix} = mkNomadJob jobPrefix {
+  ${namespace} = mkNomadJob namespace {
     datacenters = [ "eu-central-1" "us-east-2" ];
     type = "service";
-    namespace = jobPrefix;
+    inherit namespace;
 
     taskGroups = {
-      "${jobPrefix}-servicing-station" = {
+      servicing-station = {
         count = 1;
 
         networks = [{ ports = { web = { }; }; }];
 
-        services."${jobPrefix}-servicing-station" = {
+        services."${namespace}-servicing-station" = {
           portLabel = "web";
-          tags = [ "ingress" jobPrefix ];
+          tags = [ "ingress" namespace ];
           meta = {
             ingressHost = "servicing-station.vit.iohk.io";
             ingressCheck = ''
@@ -297,7 +334,7 @@ in {
             ingressBind = "*:443";
             # ingressIf = "{ path_beg /api }";
             ingressServer =
-              "_${jobPrefix}-servicing-station._tcp.service.consul";
+              "_${namespace}-servicing-station._tcp.service.consul";
           };
         };
 
@@ -315,6 +352,19 @@ in {
               "0.0.0.0:\${NOMAD_PORT_web}"
             ];
             ports = [ "web" ];
+            labels = [{
+              inherit namespace;
+              name = "${namespace}-servicing-station";
+              imageTag = dockerImages.vit-servicing-station.image.imageTag;
+            }];
+
+            logging = {
+              type = "journald";
+              config = [{
+                tag = "${namespace}-servicing-station";
+                labels = "name,namespace,imageTag";
+              }];
+            };
           };
 
           resources = {
