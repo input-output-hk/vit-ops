@@ -22,6 +22,9 @@ in {
     intentions = "write";
   };
 
+  services.nomad.policies.admin.namespace."vit-*".policy = "write";
+  services.nomad.policies.developer.namespace."vit-*".policy = "read";
+
   cluster = {
     name = "vit-testnet";
 

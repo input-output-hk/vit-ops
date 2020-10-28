@@ -15,6 +15,52 @@ in {
       (fileName: final.callPackage (jobsDir + "/${fileName}") extraJobArgs);
   in lib.foldl' lib.recursiveUpdate { } imported;
 
+  dockerImages = let
+    imageDir = ./docker;
+    contents = builtins.readDir imageDir;
+    toImport = name: type: type == "regular" && lib.hasSuffix ".nix" name;
+    fileNames = builtins.attrNames (lib.filterAttrs toImport contents);
+    imported = lib.forEach fileNames
+      (fileName: final.callPackages (imageDir + "/${fileName}") { });
+    merged = lib.foldl' lib.recursiveUpdate { } imported;
+  in lib.flip lib.mapAttrs merged (key: image: {
+    inherit image;
+
+    id = "${image.imageName}:${image.imageTag}";
+
+    push = final.writeShellScriptBin "push" ''
+      set -euo pipefail
+      echo "Pushing ${image} (${image.imageName}:${image.imageTag}) ..."
+      docker load -i ${image}
+      docker push ${image.imageName}:${image.imageTag}
+    '';
+
+    load = builtins.trace key (final.writeShellScriptBin "load" ''
+      set -euo pipefail
+      echo "Loading ${image} (${image.imageName}:${image.imageTag}) ..."
+      docker load -i ${image}
+    '');
+  });
+
+  push-docker-images = final.writeShellScriptBin "push-docker-images" ''
+    set -euo pipefail
+    ${lib.concatStringsSep "\n"
+    (lib.mapAttrsToList (key: value: "${value.push}/bin/push")
+      final.dockerImages)}
+  '';
+
+  load-docker-images = final.writeShellScriptBin "load-docker-images" ''
+    set -euo pipefail
+    ${lib.concatStringsSep "\n"
+    (lib.mapAttrsToList (key: value: "${value.load}/bin/load")
+      final.dockerImages)}
+  '';
+
+  inherit ((self.inputs.nixpkgs.legacyPackages.${system}).dockerTools)
+    buildLayeredImage;
+
+  mkEnv = lib.mapAttrsToList (key: value: "${key}=${value}");
+
   jormungandr = let
     version = "0.10.0-alpha.1";
     src = final.fetchurl {
@@ -32,124 +78,6 @@ in {
     (self.inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
     };
-
-  dockerImages = let
-    inherit ((self.inputs.nixpkgs.legacyPackages.${system}).dockerTools)
-      buildLayeredImage;
-    pkgs = self.legacyPackages.${system};
-    inherit (self.inputs.nixpkgs) lib;
-
-    mkPush = image:
-      pkgs.writeShellScriptBin "upload" ''
-        set -exuo pipefail
-        docker load -i ${image}
-        docker push ${image.imageName}:${image.imageTag}
-      '';
-  in {
-    jormungandr = let
-      name = "docker.vit.iohk.io/jormungandr";
-      push = mkPush image;
-      image = buildLayeredImage {
-        inherit name;
-        config = {
-          Entrypoint = [
-            (final.writeShellScript "jormungandr" ''
-              set -exuo pipefail
-
-              set +x
-              echo "waiting for $REQUIRED_PEER_COUNT peers"
-              until [ "$(jq -r '.p2p.trusted_peers | length' < "$NOMAD_TASK_DIR/node-config.json")" -ge $REQUIRED_PEER_COUNT ]; do
-                sleep 0.1
-              done
-              set -x
-
-              remarshal --if json --of yaml "$NOMAD_TASK_DIR/node-config.json" > "$NOMAD_TASK_DIR/running.yaml"
-
-              secret=""
-              if [ -n $PRIVATE ]; then
-                secret="--secret $NOMAD_SECRETS_DIR/bft-secret.yaml"
-              fi
-
-              exec ${final.jormungandr}/bin/jormungandr \
-                --storage "$NOMAD_TASK_DIR" \
-                --config "$NOMAD_TASK_DIR/running.yaml" \
-                --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
-                $secret
-            '')
-          ];
-
-          Env = lib.mapAttrsToList (key: value: "${key}=${value}") {
-            PATH = lib.makeBinPath [
-              final.jormungandr
-              pkgs.jq
-              pkgs.remarshal
-              pkgs.coreutils
-            ];
-          };
-        };
-      };
-    in {
-      inherit image push;
-      id = "${image.imageName}:${image.imageTag}";
-    };
-
-    monitor = let
-      name = "docker.vit.iohk.io/monitor";
-      push = mkPush image;
-      image = buildLayeredImage {
-        inherit name;
-        config = {
-          Entrypoint = [ final.jormungandr-monitor ];
-
-          Env = lib.mapAttrsToList (key: value: "${key}=${value}") {
-            SSL_CERT_FILE = "${final.cacert}/etc/ssl/certs/ca-bundle.crt";
-          };
-        };
-      };
-    in {
-      inherit image push;
-      id = "${image.imageName}:${image.imageTag}";
-    };
-
-    env = let
-      name = "docker.vit.iohk.io/env";
-      push = mkPush image;
-      image = buildLayeredImage {
-        inherit name;
-        config.Entrypoint = [ "${final.coreutils}/bin/env" ];
-      };
-    in {
-      inherit image push;
-      id = "${image.imageName}:${image.imageTag}";
-    };
-
-    telegraf = let
-      name = "docker.vit.iohk.io/telegraf";
-      push = mkPush image;
-      image = buildLayeredImage {
-        inherit name;
-        contents = [ final.telegraf ];
-        config.Entrypoint = [ "${final.telegraf}/bin/telegraf" ];
-      };
-    in {
-      inherit image push;
-      id = "${image.imageName}:${image.imageTag}";
-    };
-
-    vit-servicing-station = let
-      name = "docker.vit.iohk.io/vit-servicing-station";
-      push = mkPush image;
-      image = buildLayeredImage {
-        inherit name;
-        contents = [ final.vit-servicing-station ];
-        config.Entrypoint =
-          [ "${final.vit-servicing-station}/bin/vit-servicing-station-server" ];
-      };
-    in {
-      inherit image push;
-      id = "${image.imageName}:${image.imageTag}";
-    };
-  };
 
   devShell = let
     cluster = "vit-testnet";

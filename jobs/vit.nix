@@ -3,9 +3,8 @@
 , lsof, netcat, nettools, procps, jormungandr-monitor, jormungandr, telegraf
 , remarshal, dockerImages }:
 let
-  jobPrefix = "vit-testnet";
-
   jormungandr-version = "0.10.0-alpha.1";
+  jobPrefix = "vit-testnet";
 
   env = {
     # Adds some extra commands to the store and path for debugging inside
@@ -46,71 +45,88 @@ let
     };
   };
 
-  mkVitConfig = { public, explorer ? false, skipBootstrap ? false }: ''
-    {
-      "bootstrap_from_trusted_peers": true,
-      "explorer": {
-        "enabled": ${lib.boolToString explorer}
-      },
-      "leadership": {
-        "logs_capacity": 1024
-      },
-      "log": [
-        {
-          "format": "plain",
-          "level": "info",
-          "output": "stdout"
-        }
-      ],
-      "mempool": {
-        "log_max_entries": 100000,
-        "pool_max_entries": 100000
-      },
-      "p2p": {
-        "allow_private_addresses": true,
-        "layers": {
-          "preferred_list": {
-            "peers": [
-              {{ range $index, $service := service "${jobPrefix}-node-leader" }}
-                {{ if ne $index 0 }},{{ end }}
-                { "address": "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}" }
-              {{ end }}
-            ],
-            "view_max": 20
-          }
+  mkVitConfig = { public, explorer ? false, requiredPeerCount }:
+    let
+      requiredPeers = lib.take requiredPeerCount [
+        "${jobPrefix}-leader-0-jormungandr"
+        "${jobPrefix}-leader-1-jormungandr"
+        "${jobPrefix}-leader-2-jormungandr"
+      ];
+
+      singlePeerAddress = peer: ''
+        {{ with service "${peer}" -}}{{ with index . 0 }}
+        { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
+        {{- end }}{{ end }}
+      '';
+
+      singlePeer = peer: ''
+        {{ with service "${peer}" -}}{{ with index . 0 }}
+        "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
+        {{- end }}{{ end }}
+      '';
+
+      peerAddresses = lib.concatStringsSep ''
+        ,
+      '' (lib.forEach requiredPeers singlePeerAddress);
+      peers = lib.concatStringsSep ''
+        ,
+      '' (lib.forEach requiredPeers singlePeer);
+    in ''
+      {
+        "bootstrap_from_trusted_peers": true,
+        "explorer": {
+          "enabled": ${lib.boolToString explorer}
         },
-        "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
-        "max_bootstrap_attempts": 3,
-        "max_client_connections": 192,
-        "max_connections": 256,
-        "max_unreachable_nodes_to_connect_per_event": 20,
-        "policy": {
-          "quarantine_duration": "5s",
-          "quarantine_whitelist": [
-            {{ range $index, $service := service "${jobPrefix}-node-leader" }}
-              {{ if ne $index 0 }},{{ end }}
-              "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}"
-            {{ end }}
+        "leadership": {
+          "logs_capacity": 1024
+        },
+        "log": [
+          {
+            "format": "plain",
+            "level": "info",
+            "output": "stdout"
+          }
+        ],
+        "mempool": {
+          "log_max_entries": 100000,
+          "pool_max_entries": 100000
+        },
+        "p2p": {
+          "allow_private_addresses": true,
+          "layers": {
+            "preferred_list": {
+              "peers": [
+                ${peerAddresses}
+              ],
+              "view_max": 20
+            }
+          },
+          "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
+          "max_bootstrap_attempts": 3,
+          "max_client_connections": 192,
+          "max_connections": 256,
+          "max_unreachable_nodes_to_connect_per_event": 20,
+          "policy": {
+            "quarantine_duration": "5s",
+            "quarantine_whitelist": [
+              ${peers}
+            ]
+          },
+          "public_address": "/ip4/{{ env "NOMAD_HOST_IP_rpc" }}/tcp/{{ env "NOMAD_HOST_PORT_rpc" }}",
+          "topics_of_interest": {
+            "blocks": "high",
+            "messages": "high"
+          },
+          "trusted_peers": [
+            ${peerAddresses}
           ]
         },
-        "public_address": "/ip4/{{ env "NOMAD_IP_rpc" }}/tcp/{{ env "NOMAD_PORT_rpc" }}",
-        "topics_of_interest": {
-          "blocks": "high",
-          "messages": "high"
+        "rest": {
+          "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
         },
-        "trusted_peers": [
-          {{ range $index, $service := service "${jobPrefix}-node-leader" }}
-            {{ if ne $index 0 }},{{ end }}
-            { "address": "/ip4/{{ $service.Address }}/tcp/{{ $service.Port }}" }
-          {{ end }}
-        ]
-      },
-      "rest": {
-        "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
-      },
-      "skip_bootstrap": ${lib.boolToString skipBootstrap}
-    }
-  '';
+        "skip_bootstrap": ${lib.boolToString (requiredPeerCount == 0)}
+      }
+    '';
 
   mkVit = { index, requiredPeerCount, public ? false }:
     let
@@ -118,52 +134,58 @@ let
       localRestPort = (if public then 11000 else 9000) + index;
       publicPort = 7100 + index;
 
-      prefix = if public then
-        "${jobPrefix}-node-follower"
-      else
-        "${jobPrefix}-node-leader";
       name = if public then
-        "${prefix}-${toString index}"
+        "follower-${toString index}"
       else
-        "${prefix}-${toString index}";
+        "leader-${toString index}";
     in {
       ${name} = {
         count = 1;
 
+        volumes.${name} = {
+          type = "host";
+          source = "vit-testnet";
+        };
+
         networks = [{
-          mode = "bridge";
-          dynamicPorts = [
-            { label = "prometheus"; }
-            { label = "rest"; }
-            { label = "rpc"; }
-          ];
+          ports = {
+            prometheus.to = 7000;
+            rest.to = localRestPort;
+            rpc.to = localRpcPort;
+          };
         }];
 
-        tasks."${name}-monitor" = {
+        services."\${JOB}-${name}-monitor" = {
+          portLabel = "prometheus";
+          task = "monitor";
+        };
+
+        tasks.monitor = {
           driver = "docker";
-          name = "${name}-monitor";
 
           resources = {
             cpu = 100; # mhz
             memoryMB = 256;
           };
 
-          services."${name}-monitor-prometheus" = { portLabel = "prometheus"; };
-
-          env = env // {
-            SLEEP_TIME = "10";
-            PORT = "\${NOMAD_PORT_prometheus}";
-            JORMUNGANDR_API = "http://\${NOMAD_ADDR_${
-                lib.replaceStrings [ "-" ] [ "_" ] name
-              }_rest}/api";
+          config = {
+            image = dockerImages.monitor.id;
+            ports = [ "prometheus" ];
           };
 
-          config = { image = dockerImages.env.id; };
+          templates = [{
+            data = ''
+              SLEEP_TIME="10"
+              PORT="{{ env "NOMAD_PORT_prometheus" }}"
+              JORMUNGANDR_API="http://{{ env "NOMAD_ADDR_rest" }}/api"
+            '';
+            env = true;
+            destination = "local/env.txt";
+          }];
         };
 
-        tasks."${name}-telegraf" = {
+        tasks.telegraf = {
           driver = "docker";
-          name = "${name}-telegraf";
 
           vault.policies = [ "nomad-cluster" ];
 
@@ -178,7 +200,8 @@ let
           };
 
           templates = [{
-            data = ''
+            data = let upstreamName = lib.replaceStrings [ "-" ] [ "_" ] name;
+            in ''
               [agent]
               flush_interval = "10s"
               interval = "10s"
@@ -190,13 +213,7 @@ let
               [inputs.prometheus]
               metric_version = 1
 
-              # NOMAD_ADDR_${
-                lib.replaceStrings [ "-" ] [ "_" ] name
-              }_monitor_prometheus
-
-              urls = [ "http://{{ env "NOMAD_ADDR_${
-                lib.replaceStrings [ "-" ] [ "_" ] name
-              }_monitor_prometheus" }}" ]
+              urls = [ "http://{{ env "NOMAD_ADDR_prometheus" }}" ]
 
               [outputs.influxdb]
               database = "telegraf"
@@ -206,38 +223,49 @@ let
           }];
         };
 
-        tasks.${prefix} = {
+        services."\${JOB}-${name}-jormungandr" = {
+          addressMode = "host";
+          portLabel = "rpc";
+          task = "jormungandr";
+          tags = [ name (if public then "follower" else "leader") ]
+            ++ (lib.optional public "ingress");
+          meta = lib.optionalAttrs public {
+            ingressHost = "${name}.vit.iohk.io";
+            ingressPort = toString publicPort;
+            ingressBind = "*:${toString publicPort}";
+            ingressMode = "tcp";
+            ingressServer = "_${name}._tcp.service.consul";
+            ingressBackendExtra = ''
+              option tcplog
+            '';
+          };
+        };
+
+        tasks.jormungandr = {
           driver = "docker";
-          inherit name;
-
-          services.${prefix} = {
-            portLabel = "rpc";
-            tags = lib.optionals public [ "ingress" name ];
-            meta = lib.optionalAttrs public {
-              ingressHost = "${name}.vit.iohk.io";
-              ingressPort = toString publicPort;
-              ingressBind = "*:${toString publicPort}";
-              ingressMode = "tcp";
-              ingressServer = "_${name}._tcp.service.consul";
-              ingressBackendExtra = ''
-                option tcplog
-              '';
-            };
-          };
-
-          resources = {
-            cpu = 100; # mhz
-            memoryMB = 1 * 1024;
-          };
 
           vault.policies = [ "nomad-cluster" ];
+
+          config = {
+            image = dockerImages.jormungandr.id;
+            ports = [ "rpc" "rest" ];
+          };
 
           env = {
             REQUIRED_PEER_COUNT = toString requiredPeerCount;
             PRIVATE = lib.optionalString (!public) "true";
+            STORAGE_DIR = "/persist/${name}";
           };
 
-          config = { image = dockerImages.jormungandr.id; };
+          resources = {
+            cpu = 700; # mhz
+            memoryMB = 100;
+          };
+
+          volumeMounts.${name} = {
+            readOnly = false;
+            destination = "/persist";
+          };
 
           artifacts = [{
             source =
@@ -246,10 +274,7 @@ let
           }];
 
           templates = [{
-            data = mkVitConfig {
-              inherit public;
-              skipBootstrap = requiredPeerCount == 0;
-            };
+            data = mkVitConfig { inherit public requiredPeerCount; };
             changeMode = "noop";
             destination = "local/node-config.json";
           }] ++ (lib.optional (!public) {
@@ -269,14 +294,33 @@ in {
   ${jobPrefix} = mkNomadJob jobPrefix {
     datacenters = [ "eu-central-1" "us-east-2" ];
     type = "service";
+    namespace = jobPrefix;
 
     taskGroups = {
       "${jobPrefix}-servicing-station" = {
         count = 1;
 
-        tasks."${jobPrefix}-servicing-station" = {
+        networks = [{ ports = { web = { }; }; }];
+
+        services."${jobPrefix}-servicing-station" = {
+          portLabel = "web";
+          tags = [ "ingress" jobPrefix ];
+          meta = {
+            ingressHost = "servicing-station.vit.iohk.io";
+            ingressCheck = ''
+              http-check send meth GET uri /api/v0/graphql/playground
+              http-check expect status 200
+            '';
+            ingressMode = "http";
+            ingressBind = "*:443";
+            # ingressIf = "{ path_beg /api }";
+            ingressServer =
+              "_${jobPrefix}-servicing-station._tcp.service.consul";
+          };
+        };
+
+        tasks.servicing-station = {
           driver = "docker";
-          name = "${jobPrefix}-servicing-station";
 
           config = {
             image = dockerImages.vit-servicing-station.id;
@@ -288,29 +332,12 @@ in {
               "--address"
               "0.0.0.0:\${NOMAD_PORT_web}"
             ];
-          };
-
-          services."${jobPrefix}-servicing-station" = {
-            portLabel = "web";
-            tags = [ "ingress" jobPrefix ];
-            meta = {
-              ingressHost = "servicing-station.vit.iohk.io";
-              ingressCheck = ''
-                http-check send meth GET uri /api/v0/graphql/playground
-                http-check expect status 200
-              '';
-              ingressMode = "http";
-              ingressBind = "*:443";
-              # ingressIf = "{ path_beg /api }";
-              ingressServer =
-                "_${jobPrefix}-servicing-station._tcp.service.consul";
-            };
+            ports = [ "web" ];
           };
 
           resources = {
             cpu = 100; # mhz
             memoryMB = 1 * 512;
-            networks = [{ dynamicPorts = [{ label = "web"; }]; }];
           };
 
           artifacts = [
