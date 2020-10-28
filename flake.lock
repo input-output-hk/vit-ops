@@ -20,12 +20,12 @@
         "utils": "utils_3"
       },
       "locked": {
-        "narHash": "sha256-66Gu+3L+vpVRy7HrHfvyZf+keTOc1ioxTJqKorHEpMo=",
-        "path": "/home/manveru/github/input-output-hk/bitte",
+        "narHash": "sha256-s8nlJjAUdQLKEiBPRj74umcAbzOq/bJFWpB7NvQmySE=",
+        "path": "/home/craige/source/IOHK/bitte",
         "type": "path"
       },
       "original": {
-        "path": "/home/manveru/github/input-output-hk/bitte",
+        "path": "/home/craige/source/IOHK/bitte",
         "type": "path"
       }
     },

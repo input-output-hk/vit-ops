@@ -6,26 +6,6 @@ let
   jormungandr-version = "0.10.0-alpha.1";
   jobPrefix = "vit-testnet";
 
-  env = {
-    # Adds some extra commands to the store and path for debugging inside
-    # nomad jobs with `nomad alloc exec $ALLOC_ID /bin/sh`
-    PATH = lib.makeBinPath [
-      coreutils
-      curl
-      dnsutils
-      gawk
-      gnugrep
-      iproute
-      jq
-      lsof
-      netcat
-      nettools
-      procps
-      jormungandr
-      remarshal
-    ];
-  };
-
   vit-servicing-station-server-config = {
     tls = {
       cert_file = null;
@@ -68,6 +48,7 @@ let
       peerAddresses = lib.concatStringsSep ''
         ,
       '' (lib.forEach requiredPeers singlePeerAddress);
+
       peers = lib.concatStringsSep ''
         ,
       '' (lib.forEach requiredPeers singlePeer);
@@ -132,6 +113,7 @@ let
     let
       localRpcPort = (if public then 10000 else 7000) + index;
       localRestPort = (if public then 11000 else 9000) + index;
+      localPrometheusPort = 10000 + index;
       publicPort = 7100 + index;
 
       name = if public then
