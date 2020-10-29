@@ -6,7 +6,7 @@ let
 
     set +x
     echo "waiting for $REQUIRED_PEER_COUNT peers"
-    until [ "$(jq -r '.p2p.trusted_peers | length' < "$NOMAD_TASK_DIR/node-config.json")" -ge $REQUIRED_PEER_COUNT ]; do
+    until [ "$(jq -e -r '.p2p.trusted_peers | length' < "$NOMAD_TASK_DIR/node-config.json" || echo 0)" -ge $REQUIRED_PEER_COUNT ]; do
       sleep 0.1
     done
     set -x

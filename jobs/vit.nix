@@ -4,7 +4,7 @@
 , remarshal, dockerImages }:
 let
   jormungandr-version = "0.10.0-alpha.1";
-  namespace = "vit-testnet";
+  namespace = "vit-dev";
 
   vit-servicing-station-server-config = {
     tls = {
@@ -27,10 +27,11 @@ let
 
   mkVitConfig = { public, explorer ? false, requiredPeerCount }:
     let
-      requiredPeers = [
+      peerNames = [
         "${namespace}-leader-0-jormungandr"
         "${namespace}-leader-1-jormungandr"
         "${namespace}-leader-2-jormungandr"
+        "${namespace}-follower-0-jormungandr"
       ];
 
       singlePeerAddress = peer: ''
@@ -47,11 +48,11 @@ let
 
       peerAddresses = lib.concatStringsSep ''
         ,
-      '' (lib.forEach requiredPeers singlePeerAddress);
+      '' (lib.forEach peerNames singlePeerAddress);
 
       peers = lib.concatStringsSep ''
         ,
-      '' (lib.forEach requiredPeers singlePeer);
+      '' (lib.forEach peerNames singlePeer);
     in ''
       {
         "bootstrap_from_trusted_peers": true,
@@ -137,7 +138,7 @@ let
           };
         }];
 
-        services."\${JOB}-${name}-monitor" = {
+        services."${namespace}-${name}-monitor" = {
           portLabel = "prometheus";
           task = "monitor";
         };
@@ -229,7 +230,7 @@ let
           }];
         };
 
-        services."\${JOB}-${name}-jormungandr" = {
+        services."${namespace}-${name}-jormungandr" = {
           addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
@@ -310,7 +311,7 @@ let
       };
     };
 in {
-  ${namespace} = mkNomadJob namespace {
+  vit-dev = mkNomadJob "vit" {
     datacenters = [ "eu-central-1" "us-east-2" ];
     type = "service";
     inherit namespace;
