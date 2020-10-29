@@ -3,7 +3,92 @@
 , lsof, netcat, nettools, procps, jormungandr-monitor, jormungandr, telegraf
 , remarshal, dockerImages }:
 let
-  namespace = "vit-dev";
+  namespace = "vit-ceph";
+
+  mkVitConfig = { public, explorer ? false, requiredPeerCount }:
+    let
+      peerNames = [
+        "${namespace}-leader-0-jormungandr"
+        "${namespace}-leader-1-jormungandr"
+        "${namespace}-leader-2-jormungandr"
+        "${namespace}-follower-0-jormungandr"
+      ];
+
+      singlePeerAddress = peer: ''
+        {{ with service "${peer}" -}}{{ with index . 0 }}
+        { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
+        {{- end }}{{ end }}
+      '';
+
+      singlePeer = peer: ''
+        {{ with service "${peer}" -}}{{ with index . 0 }}
+        "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
+        {{- end }}{{ end }}
+      '';
+
+      peerAddresses = lib.concatStringsSep ''
+        ,
+      '' (lib.forEach peerNames singlePeerAddress);
+
+      peers = lib.concatStringsSep ''
+        ,
+      '' (lib.forEach peerNames singlePeer);
+    in ''
+      {
+        "bootstrap_from_trusted_peers": true,
+        "explorer": {
+          "enabled": ${lib.boolToString explorer}
+        },
+        "leadership": {
+          "logs_capacity": 1024
+        },
+        "log": [
+          {
+            "format": "plain",
+            "level": "info",
+            "output": "stdout"
+          }
+        ],
+        "mempool": {
+          "log_max_entries": 100000,
+          "pool_max_entries": 100000
+        },
+        "p2p": {
+          "allow_private_addresses": true,
+          "layers": {
+            "preferred_list": {
+              "peers": [
+                ${peerAddresses}
+              ],
+              "view_max": 20
+            }
+          },
+          "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
+          "max_bootstrap_attempts": 3,
+          "max_client_connections": 192,
+          "max_connections": 256,
+          "max_unreachable_nodes_to_connect_per_event": 20,
+          "policy": {
+            "quarantine_duration": "5s",
+            "quarantine_whitelist": [
+              ${peers}
+            ]
+          },
+          "public_address": "/ip4/{{ env "NOMAD_HOST_IP_rpc" }}/tcp/{{ env "NOMAD_HOST_PORT_rpc" }}",
+          "topics_of_interest": {
+            "blocks": "high",
+            "messages": "high"
+          },
+          "trusted_peers": [
+            ${peerAddresses}
+          ]
+        },
+        "rest": {
+          "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
+        },
+        "skip_bootstrap": ${lib.boolToString (requiredPeerCount == 0)}
+      }
+    '';
 
   mkVit = { index, requiredPeerCount, public ? false }:
     let
@@ -201,89 +286,7 @@ let
           }];
 
           templates = [{
-            data = let
-              peerNames = [
-                "${namespace}-leader-0-jormungandr"
-                "${namespace}-leader-1-jormungandr"
-                "${namespace}-leader-2-jormungandr"
-                "${namespace}-follower-0-jormungandr"
-              ];
-
-              singlePeerAddress = peer: ''
-                {{ with service "${peer}" -}}{{ with index . 0 }}
-                { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
-                {{- end }}{{ end }}
-              '';
-
-              singlePeer = peer: ''
-                {{ with service "${peer}" -}}{{ with index . 0 }}
-                "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
-                {{- end }}{{ end }}
-              '';
-
-              peerAddresses = lib.concatStringsSep ''
-                ,
-              '' (lib.forEach peerNames singlePeerAddress);
-
-              peers = lib.concatStringsSep ''
-                ,
-              '' (lib.forEach peerNames singlePeer);
-            in ''
-              {
-                "bootstrap_from_trusted_peers": true,
-                "explorer": {
-                  "enabled": false
-                },
-                "leadership": {
-                  "logs_capacity": 1024
-                },
-                "log": [
-                  {
-                    "format": "plain",
-                    "level": "info",
-                    "output": "stdout"
-                  }
-                ],
-                "mempool": {
-                  "log_max_entries": 100000,
-                  "pool_max_entries": 100000
-                },
-                "p2p": {
-                  "allow_private_addresses": true,
-                  "layers": {
-                    "preferred_list": {
-                      "peers": [
-                        ${peerAddresses}
-                      ],
-                      "view_max": 20
-                    }
-                  },
-                  "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
-                  "max_bootstrap_attempts": 3,
-                  "max_client_connections": 192,
-                  "max_connections": 256,
-                  "max_unreachable_nodes_to_connect_per_event": 20,
-                  "policy": {
-                    "quarantine_duration": "5s",
-                    "quarantine_whitelist": [
-                      ${peers}
-                    ]
-                  },
-                  "public_address": "/ip4/{{ env "NOMAD_HOST_IP_rpc" }}/tcp/{{ env "NOMAD_HOST_PORT_rpc" }}",
-                  "topics_of_interest": {
-                    "blocks": "high",
-                    "messages": "high"
-                  },
-                  "trusted_peers": [
-                    ${peerAddresses}
-                  ]
-                },
-                "rest": {
-                  "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
-                },
-                "skip_bootstrap": ${lib.boolToString (requiredPeerCount == 0)}
-              }
-            '';
+            data = mkVitConfig { inherit public requiredPeerCount; };
             changeMode = "noop";
             destination = "local/node-config.json";
           }] ++ (lib.optional (!public) {
