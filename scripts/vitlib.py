@@ -302,10 +302,9 @@ class VITBridge:
                 write_tally(tally_f, encrypted_tally)
                 write_shares(shares_f, shares)
 
-
             threshold = len(shares)
             max_votes = data["votes_cast"]
-            options = len(data["options"])
+            options = data["options"]["end"]
             table_size = max_votes // options
 
             result = VITBridge.jcli_decrypt_tally(
