@@ -25,6 +25,11 @@ in {
   services.nomad.policies.admin.namespace."vit-*".policy = "write";
   services.nomad.policies.developer.namespace."vit-*".policy = "write";
 
+  services.nomad.namespaces = {
+    vit-ceph = { description = "VIT Ceph development"; };
+    vit-dev = { description = "VIT development"; };
+  };
+
   cluster = {
     name = "vit-testnet";
 
