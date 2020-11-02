@@ -17,17 +17,16 @@ let
 in {
   imports = [ ./iam.nix ];
 
-  services.consul.policies.developer.servicePrefix."vit-" = {
+  services.consul.policies.developer.servicePrefix."catalyst-" = {
     policy = "write";
     intentions = "write";
   };
 
-  services.nomad.policies.admin.namespace."vit-*".policy = "write";
-  services.nomad.policies.developer.namespace."vit-*".policy = "write";
+  services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
+  services.nomad.policies.developer.namespace."catalyst-*".policy = "write";
 
   services.nomad.namespaces = {
-    vit-ceph = { description = "VIT Ceph development"; };
-    vit-dev = { description = "VIT development"; };
+    catalyst-dryrun = { description = "Catalyst (dryrun)"; };
   };
 
   cluster = {
