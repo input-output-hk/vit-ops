@@ -241,6 +241,8 @@ class VITBridge:
             except KeyError:
                 raise Exception(f"Tally data wasn't expected:\n{proposal}")
             f, tmp_tally_path = tempfile.mkstemp()
+            with open(tmp_tally_path, "w") as f:
+                f.write(encrypted_tally)
             # result is of format:
             # {
             #   state: base64,
@@ -248,7 +250,6 @@ class VITBridge:
             # }
             result = VITBridge.jcli_generate_share(tmp_tally_path, decryption_key_path)
             proposal["shares"] = result["share"]
-
 
         with open(output_file, "w") as f:
             json.dump(f, proposals, indent=4)
