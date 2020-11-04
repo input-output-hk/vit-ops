@@ -17,13 +17,17 @@ let
 in {
   imports = [ ./iam.nix ];
 
-  services.consul.policies.developer.servicePrefix."vit-" = {
+  services.consul.policies.developer.servicePrefix."catalyst-" = {
     policy = "write";
     intentions = "write";
   };
 
-  services.nomad.policies.admin.namespace."vit-*".policy = "write";
-  services.nomad.policies.developer.namespace."vit-*".policy = "write";
+  services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
+  services.nomad.policies.developer.namespace."catalyst-*".policy = "write";
+
+  services.nomad.namespaces = {
+    catalyst-dryrun = { description = "Catalyst (dryrun)"; };
+  };
 
   cluster = {
     name = "vit-testnet";
@@ -43,11 +47,11 @@ in {
     autoscalingGroups = listToAttrs (forEach [
       {
         region = "eu-central-1";
-        desiredCapacity = 1;
+        desiredCapacity = 2;
       }
       {
         region = "us-east-2";
-        desiredCapacity = 1;
+        desiredCapacity = 2;
       }
     ] (args:
       let
