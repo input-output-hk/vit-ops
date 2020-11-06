@@ -1,0 +1,26 @@
+{
+  "blockchain_configuration": {
+    "block0_date": 1605546000,
+    "discrimination": "production",
+    "block0_consensus": "bft",
+    "consensus_leader_ids": [
+      "ed25519_pk169pp82fcgn9mzaxumempmjnqpyqzhgr4xfzs4t85xkjm4z4hrjqsnpq4ke",
+      "ed25519_pk1m7xre5p7txtuecc94nnvgcl950kjahu4mzv9h0nn0g5d434t503s3a3ggn",
+      "ed25519_pk1xmxdn2gyw6xvqsfr99ex2da2zh7v9jqmgc2z0ngcxmv88t85w9vqppjqd4"
+    ],
+    "linear_fees": {
+      "constant": 0,
+      "coefficient": 0,
+      "certificate": 0
+    },
+    "slots_per_epoch": 4320,
+    "slot_duration": 20,
+    "block_content_max_size": 102400,
+    "epoch_stability_depth": 102400,
+    "committees": [
+      "6946993ab97170d839d0af301b8cce021fb416b087147c9f0713b848b43330eb",
+      "e13d8a849b40074ca46fd3142d17ee8062304ff657cd9f1930143ac58386f9d0",
+      "2e982517b3b75169b0911ebd75d77d5636719ec62ae24c04ecb5f54deb6408f4"
+    ]
+  }
+}

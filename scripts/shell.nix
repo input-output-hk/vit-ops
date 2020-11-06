@@ -1,11 +1,11 @@
 let
-  sources = import ./nix/sources.nix { };
-  pkgs = import sources.nixpkgs { };
+  sources = import ./nix/sources.nix {};
+  pkgs = import sources.nixpkgs {};
+  repl = import ../repl.nix;
 
   src = pkgs.fetchurl {
-    url =
-      "https://github.com/input-output-hk/jormungandr/releases/download/v0.9.3/jormungandr-0.9.3-x86_64-unknown-linux-musl-generic.tar.gz";
-    sha256 = "sha256:14giz9yz94mdjrdr96rz5xsj21aacdw8mqrfdz031czh4qgnmnzh";
+    url = "https://github.com/input-output-hk/jormungandr/releases/download/v0.10.0-alpha.2/jormungandr-0.10.0-alpha.2-x86_64-unknown-linux-musl-generic.tar.gz";
+    sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
   };
   jormungandr =
     pkgs.runCommand "jormungandr" { buildInputs = [ pkgs.gnutar ]; } ''
@@ -31,6 +31,9 @@ in pkgs.stdenv.mkDerivation {
     pkgs.python3Packages.cbor2
     pkgs.python3Packages.docopt
     pkgs.python3Packages.psycopg2
+    pkgs.python3Packages.cryptography
+    pkgs.python3Packages.opencv4
+
     cardanolib-py
     vit-kedqr
   ];

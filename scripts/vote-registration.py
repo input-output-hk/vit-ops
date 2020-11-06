@@ -31,7 +31,6 @@ txouts = [( arguments['--payment-address'], value )]
 
 
 stake_skey = bridge.read_cardano_key(arguments["--stake-signing-key"])
-stake_vkey = bridge.get_cardano_vkey(arguments["--stake-signing-key"])
 
 vote_pk = bridge.read_jcli_key(arguments["--vote-public-key"])
 vote_pk_bytes = bridge.convert_jcli_key_to_bytes(vote_pk)
@@ -39,10 +38,7 @@ vote_pk_bytes = bridge.convert_jcli_key_to_bytes(vote_pk)
 stake_sk = bridge.convert_key_to_jcli(stake_skey)
 stake_pk = bridge.jcli_key_public(stake_sk)
 
-sig = bridge.jcli_sign(stake_sk, vote_pk_bytes)
-hex_sig = bridge.bech32_to_hex(sig)
-
-meta = bridge.generate_meta_data(stake_vkey, vote_pk_bytes, hex_sig)
+meta = bridge.generate_meta_data(stake_skey, vote_pk_bytes)
 print("Validating signature in generated metadata")
 if bridge.validate_meta_data_presubmit(meta):
     print("Signature valid!")
