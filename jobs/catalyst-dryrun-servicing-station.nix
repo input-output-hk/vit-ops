@@ -12,6 +12,7 @@ in {
       networks = [{ ports = { web.to = 6000; }; }];
 
       services."${namespace}-servicing-station" = {
+        addressMode = "host";
         portLabel = "web";
         tags = [ "ingress" namespace ];
         meta = {
