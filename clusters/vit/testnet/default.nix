@@ -84,6 +84,7 @@ in {
             ./secrets.nix
             ./host_volumes.nix
             ./seaweedfs.nix
+            ./ceph.nix
           ];
 
           securityGroupRules = {
