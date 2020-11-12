@@ -23,8 +23,26 @@ in {
           '';
           ingressMode = "http";
           ingressBind = "*:443";
-          # ingressIf = "{ path_beg /api }";
+          # TODO: remove playground in production
+          ingressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground }";
           ingressServer = "_${namespace}-servicing-station._tcp.service.consul";
+        };
+      };
+      services."${namespace}-servicing-station-jormungandr" = {
+        addressMode = "host";
+        portLabel = "web";
+        tags = [ "ingress" namespace ];
+        meta = {
+          ingressHost = "servicing-station.vit.iohk.io";
+          ingressCheck = ''
+            http-check send meth GET uri /api/v0/node/stats
+            http-check expect status 200
+          '';
+          ingressMode = "http";
+          ingressBind = "*:443";
+          # TODO: remove playground in production
+          ingressIf = "{ path_beg /api/v0/account /api/v0/message /api/v0/settings /api/v0/vote }";
+          ingressServer = "_${namespace}-follower-0-jormungandr-rest._tcp.service.consul";
         };
       };
 
@@ -87,7 +105,7 @@ in {
           }
           {
             source =
-              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
+              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database1.sqlite3";
             destination = "local/database.sqlite3";
           }
         ];

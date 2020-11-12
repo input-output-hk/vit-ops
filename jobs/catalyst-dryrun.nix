@@ -154,6 +154,13 @@ let
           };
         };
 
+        services."${namespace}-${name}-jormungandr-rest" = {
+          addressMode = "host";
+          portLabel = "rest";
+          task = "jormungandr";
+          tags = [ name (if public then "follower" else "leader") ];
+        };
+
         tasks.jormungandr = {
           driver = "docker";
 
