@@ -269,7 +269,7 @@
         "narHash": "sha256-sA+4gdEejs9uUA9OtHnNbhlJwhzQScZzpoZSNxVFz9Q=",
         "owner": "input-output-hk",
         "repo": "rust-libs.nix",
-        "rev": "c285573fb5c8a68693c3dbbca1b90b170d24a764",
+        "rev": "7eeb88db541adb4f9ddd1a8ddc7ae4b6000bdacf",
         "type": "github"
       },
       "original": {
@@ -421,10 +421,10 @@
       "flake": false,
       "locked": {
         "lastModified": 1598860782,
-        "narHash": "sha256-ehBxODoWwEF6jKOKl8mF891j/MRZQYGeRIt8GMgqoaA=",
+        "narHash": "sha256-ehBxODoWwEF6jKOKl8mF891j/MRZfffeRIt8GMgqoaA=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "5e77728fa7d6f4d3e89608a2ecdab9f14e9ece7c",
+        "rev": "807166499989affb5d1f50d23b6b5e1d1046430a",
         "type": "github"
       },
       "original": {

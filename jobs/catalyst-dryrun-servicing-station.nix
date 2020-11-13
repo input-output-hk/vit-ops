@@ -88,8 +88,7 @@ in {
               "block0_path": "local/block0.bin/block0.bin",
               "enable_api_tokens": false,
               "log": {
-                "log_output_path": "vsss.log",
-                "log_level": "info"
+                "log_level": "debug"
               },
               "address": "0.0.0.0:{{ env "NOMAD_PORT_web" }}"
             }
@@ -105,7 +104,7 @@ in {
           }
           {
             source =
-              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database-3.sqlite3";
+              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
             destination = "local/database.sqlite3";
           }
         ];
