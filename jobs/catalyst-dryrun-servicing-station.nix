@@ -105,7 +105,7 @@ in {
           }
           {
             source =
-              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database1.sqlite3";
+              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
             destination = "local/database.sqlite3";
           }
         ];
