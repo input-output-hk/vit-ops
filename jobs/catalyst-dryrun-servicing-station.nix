@@ -24,7 +24,7 @@ in {
           ingressMode = "http";
           ingressBind = "*:443";
           # TODO: remove playground in production
-          ingressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground }";
+          ingressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql }";
           ingressServer = "_${namespace}-servicing-station._tcp.service.consul";
         };
       };
@@ -105,7 +105,7 @@ in {
           }
           {
             source =
-              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
+              "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database-3.sqlite3";
             destination = "local/database.sqlite3";
           }
         ];
