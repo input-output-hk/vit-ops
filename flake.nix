@@ -3,7 +3,8 @@
 
   inputs = {
     bitte-cli.follows = "bitte/bitte-cli";
-    bitte.url = "github:input-output-hk/bitte/dockerRegistry";
+    bitte.url = "github:input-output-hk/bitte";
+    # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";

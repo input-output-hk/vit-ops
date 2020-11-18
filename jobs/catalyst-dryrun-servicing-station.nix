@@ -25,6 +25,10 @@ in {
           ingressBind = "*:443";
           # TODO: remove playground in production
           ingressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql }";
+          ingressBackendExtra = ''
+            acl is_origin_null req.hdr(Origin) -i null
+            http-request del-header Origin if is_origin_null
+          '';
           ingressServer = "_${namespace}-servicing-station._tcp.service.consul";
         };
       };

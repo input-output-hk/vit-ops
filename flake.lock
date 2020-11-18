@@ -20,16 +20,15 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1604181074,
-        "narHash": "sha256-P/+61D6P9m2afbOlbfo8UiA33bwxvP++MidvzHe89g8=",
+        "lastModified": 1605730094,
+        "narHash": "sha256-OynukpmDh922762vvfbeR4Mi/kasR1gxcXZ5zUQiqLg=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "759ca6c0b664936c7f0258293a35422ede631268",
+        "rev": "1c06c218536ffb88e7a69c9ed0d379ea4aefce1b",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "dockerRegistry",
         "repo": "bitte",
         "type": "github"
       }
@@ -42,11 +41,11 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1603288708,
-        "narHash": "sha256-45XoRuy7ah7CjQ6oKq7fAd3c8DH/iiSgq0uNl1aPmQY=",
+        "lastModified": 1604321916,
+        "narHash": "sha256-TYzZF1+PkfR8f9TFBf13/7ZnfIye8/ca9wLGGipnemQ=",
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "rev": "acb813363bbf663ba1e09880331aa1578f8b400f",
+        "rev": "94ab94198605bac4a6ca28caa265e9201390ea60",
         "type": "github"
       },
       "original": {
@@ -79,15 +78,15 @@
         "stdlib": "stdlib"
       },
       "locked": {
-        "lastModified": 1591376980,
-        "narHash": "sha256-pjSyg7JX6fJ/QvVhNhlo794YFW2E4wGVQV+YfuZq5Dk=",
-        "owner": "manveru",
+        "lastModified": 1594133516,
+        "narHash": "sha256-4Z9XU8QRmTU7LldCxwRqkEH5pHJwgW8XmMvqu4t2DEg=",
+        "owner": "input-output-hk",
         "repo": "nix-inclusive",
-        "rev": "bb435b7dce2b8a27d174543f0d768646d0d48fa3",
+        "rev": "11d05e4f1ca04fd250a9734e27970ad73bbd872d",
         "type": "github"
       },
       "original": {
-        "owner": "manveru",
+        "owner": "input-output-hk",
         "repo": "nix-inclusive",
         "type": "github"
       }
@@ -97,15 +96,15 @@
         "stdlib": "stdlib_2"
       },
       "locked": {
-        "lastModified": 1592950149,
-        "narHash": "sha256-tZSz9/WkOrtNbW7U2re4WoFPQ2tQX0I0GpCeoF3fY1M=",
-        "owner": "manveru",
+        "lastModified": 1594133516,
+        "narHash": "sha256-4Z9XU8QRmTU7LldCxwRqkEH5pHJwgW8XmMvqu4t2DEg=",
+        "owner": "input-output-hk",
         "repo": "nix-inclusive",
-        "rev": "dd80ddcc6850d130b591fbc9b0aacacfbb3cf47c",
+        "rev": "11d05e4f1ca04fd250a9734e27970ad73bbd872d",
         "type": "github"
       },
       "original": {
-        "owner": "manveru",
+        "owner": "input-output-hk",
         "repo": "nix-inclusive",
         "type": "github"
       }
