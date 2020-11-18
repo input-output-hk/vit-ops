@@ -178,7 +178,7 @@ class VITBridge:
     @staticmethod
     def jcli_generate_share(encrypted_tally_path, decryption_key_path):
         cli_args = [
-            "jcli", "vote", "tally", "generate-decryption-share",
+            "jcli", "votes", "tally", "decryption-share",
             "--encrypted-tally", encrypted_tally_path,
             "--decryption-key", decryption_key_path
         ]
@@ -191,7 +191,7 @@ class VITBridge:
     @staticmethod
     def jcli_decrypt_tally(encrypted_tally_path, shares_path, threshold, max_votes, table_size, output_format="json"):
         cli_args = [
-            "jcli", "vote", "tally", "tally-decrypt-with-all-shares",
+            "jcli", "votes", "tally", "decrypt",
             "--encrypted-tally", encrypted_tally_path,
             "--shares", shares_path,
             "--threshold", threshold,
