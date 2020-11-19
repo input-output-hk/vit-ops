@@ -105,6 +105,7 @@ in {
             source =
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
             destination = "local/block0.bin";
+            options.checksum = "sha256:f4524af0444b5eed4d1780ef239799deb02b055ebea501917fca5409656c8f62";
           }
           {
             source =
