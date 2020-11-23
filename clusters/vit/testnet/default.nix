@@ -82,8 +82,8 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             "${extraConfig}"
             ./secrets.nix
-            ./host_volumes.nix
-            ./seaweedfs.nix
+            # ./host_volumes.nix
+            # ./seaweedfs.nix
           ];
 
           securityGroupRules = {
