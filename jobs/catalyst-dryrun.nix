@@ -213,7 +213,7 @@ let
             source =
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
             destination = "local/block0.bin";
-            options.checksum = "sha256:0253c77ab1be99682e5e8a0a158416e09711258b712ac0751a55d3ff0cf7aec4";
+            options.checksum = "sha256:2d93e3ecb07bda8642ca0a8deccc04f4ed2a9115b9250834c057fc123f7ac672";
           }];
 
           templates = [{
@@ -256,7 +256,7 @@ let
                 "log": [
                   {
                     "format": "plain",
-                    "level": "info",
+                    "level": "debug",
                     "output": "stdout"
                   }
                 ],
