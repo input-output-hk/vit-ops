@@ -20,11 +20,6 @@ let
       ${name} = {
         count = 1;
 
-        volumes.${name} = {
-          type = "host";
-          source = "vit-testnet";
-        };
-
         networks = [{
           ports = {
             prometheus.to = 7000;
@@ -32,6 +27,12 @@ let
             rpc.to = localRpcPort;
           };
         }];
+
+        ephemeralDisk = {
+          sizeMB = 20 * 1000;
+          migrate = true;
+          sticky = true;
+        };
 
         services."${namespace}-${name}-monitor" = {
           portLabel = "prometheus";
@@ -159,6 +160,18 @@ let
           portLabel = "rest";
           task = "jormungandr";
           tags = [ name (if public then "follower" else "leader") ];
+
+          checks = [{
+            type = "http";
+            path = "/api/v0/node/stats";
+            portLabel = "rest";
+
+            checkRestart = {
+              limit = 5;
+              grace = "300s";
+              ignoreWarnings = false;
+            };
+          }];
         };
 
         tasks.jormungandr = {
@@ -188,17 +201,12 @@ let
           env = {
             REQUIRED_PEER_COUNT = toString requiredPeerCount;
             PRIVATE = lib.optionalString (!public) "true";
-            STORAGE_DIR = "/persist/${name}";
+            STORAGE_DIR = "/local/storage";
           };
 
           resources = {
             cpu = 700; # mhz
             memoryMB = 100;
-          };
-
-          volumeMounts.${name} = {
-            readOnly = false;
-            destination = "/persist";
           };
 
           artifacts = [{
@@ -316,7 +324,7 @@ in {
     update = {
       maxParallel = 1;
       healthCheck = "checks";
-      minHealthyTime = "1m";
+      minHealthyTime = "30s";
       healthyDeadline = "5m";
       progressDeadline = "10m";
       # autoRevert = true;
