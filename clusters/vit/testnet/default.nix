@@ -117,6 +117,7 @@ in {
         instanceType = "t3a.medium";
         privateIP = "172.16.0.10";
         subnet = cluster.vpc.subnets.core-1;
+        volumeSize = 40;
 
         modules = [
           (bitte + /profiles/core.nix)
@@ -149,6 +150,7 @@ in {
         instanceType = "t3a.medium";
         privateIP = "172.16.1.10";
         subnet = cluster.vpc.subnets.core-2;
+        volumeSize = 40;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 
@@ -161,6 +163,7 @@ in {
         instanceType = "t3a.medium";
         privateIP = "172.16.2.10";
         subnet = cluster.vpc.subnets.core-3;
+        volumeSize = 40;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 

@@ -313,17 +313,17 @@ in {
     type = "service";
     inherit namespace;
 
-    # update = {
-    #   maxParallel = 1;
-    #   healthCheck = "checks";
-    #   minHealthyTime = "1m";
-    #   healthyDeadline = "5m";
-    #   progressDeadline = "10m";
-    #   autoRevert = true;
-    #   autoPromote = true;
-    #   canary = 1;
-    #   stagger = "1m";
-    # };
+    update = {
+      maxParallel = 1;
+      healthCheck = "checks";
+      minHealthyTime = "1m";
+      healthyDeadline = "5m";
+      progressDeadline = "10m";
+      # autoRevert = true;
+      # autoPromote = true;
+      # canary = 1;
+      stagger = "1m";
+    };
 
     taskGroups = (mkVit {
       index = 0;
