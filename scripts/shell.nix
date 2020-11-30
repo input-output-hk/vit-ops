@@ -20,7 +20,8 @@ let
     import (sources.cardano-node) { gitrev = sources.cardano-node.rev; };
   bech32 = cardano-node-nix.bech32;
   cardano-cli = cardano-node-nix.cardano-cli;
-  vit-kedqr = import sources.vit-kedqr { };
+  vit-kedqr = import sources.vit-kedqr {};
+  jorvit = import sources.jorvit {};
 in pkgs.stdenv.mkDerivation {
   name = "vit-meta-shell";
   buildInputs = [
@@ -36,6 +37,8 @@ in pkgs.stdenv.mkDerivation {
 
     cardanolib-py
     vit-kedqr
+    jorvit
+    repl.packages.x86_64-linux.vit-servicing-station
   ];
   shellHook = ''
     export CARDANO_NODE_SOCKET_PATH=/home/sam/work/iohk/cardano-node/master/state-node-testnet/node.socket

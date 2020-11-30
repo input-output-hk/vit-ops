@@ -35,6 +35,18 @@
         "url": "https://github.com/input-output-hk/iohk-nix/archive/f345d26508966e434d8db57d6c3b4ce4202c9fb5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "jorvit": {
+        "branch": "nix-build",
+        "description": "Jörmungandr VIT integration testing tools",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "jorvit",
+        "rev": "10bd81888f85f19fc616fe5d6521cecd9709ea9e",
+        "sha256": "1rmv96zspriq4czc00s9f4xkl6j2d4awkgz2c3rdx145pznikkrj",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/jorvit/archive/10bd81888f85f19fc616fe5d6521cecd9709ea9e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",
