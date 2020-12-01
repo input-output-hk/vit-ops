@@ -1,8 +1,16 @@
 { lib, buildLayeredImage, mkEnv, writeShellScript, jormungandr, jq, remarshal
-, coreutils }:
+, coreutils, restic }:
 let
   entrypoint = writeShellScript "jormungandr" ''
     set -exuo pipefail
+
+    echo "restoring backup..."
+    restic restore latest \
+      --tag $NAMESPACE \
+      --target / \
+    || echo "couldn't restore backup, continue startup procedure..."
+
+    ls -laR $STORAGE_DIR
 
     set +x
     echo "waiting for $REQUIRED_PEER_COUNT peers"
@@ -35,7 +43,7 @@ in {
       Entrypoint = [ entrypoint ];
 
       Env = mkEnv {
-        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils ];
+        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic ];
       };
     };
   };

@@ -27,7 +27,6 @@ in {
       utillinux
       vim
     ];
-    config.Entrypoint =
-      [ "${launcher}" ];
+    config.Entrypoint = [ "${launcher}" ];
   };
 }

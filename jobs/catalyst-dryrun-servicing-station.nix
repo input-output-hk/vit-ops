@@ -24,7 +24,8 @@ in {
           ingressMode = "http";
           ingressBind = "*:443";
           # TODO: remove playground in production
-          ingressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql }";
+          ingressIf =
+            "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql }";
           ingressBackendExtra = ''
             acl is_origin_null req.hdr(Origin) -i null
             http-request del-header Origin if is_origin_null
@@ -45,8 +46,10 @@ in {
           ingressMode = "http";
           ingressBind = "*:443";
           # TODO: remove playground in production
-          ingressIf = "{ path_beg /api/v0/account /api/v0/message /api/v0/settings /api/v0/vote }";
-          ingressServer = "_${namespace}-follower-0-jormungandr-rest._tcp.service.consul";
+          ingressIf =
+            "{ path_beg /api/v0/account /api/v0/message /api/v0/settings /api/v0/vote }";
+          ingressServer =
+            "_${namespace}-follower-0-jormungandr-rest._tcp.service.consul";
         };
       };
 
@@ -105,13 +108,15 @@ in {
             source =
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
             destination = "local/block0.bin";
-            options.checksum = "sha256:2d93e3ecb07bda8642ca0a8deccc04f4ed2a9115b9250834c057fc123f7ac672";
+            options.checksum =
+              "sha256:2d93e3ecb07bda8642ca0a8deccc04f4ed2a9115b9250834c057fc123f7ac672";
           }
           {
             source =
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
             destination = "local/database.sqlite3";
-            options.checksum = "sha256:60d3f15dab9a408d9b7a9da5a8eb31023d7e5c42cdd141728df85c5f190f2ac1";
+            options.checksum =
+              "sha256:60d3f15dab9a408d9b7a9da5a8eb31023d7e5c42cdd141728df85c5f190f2ac1";
           }
         ];
       };

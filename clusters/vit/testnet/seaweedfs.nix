@@ -21,8 +21,6 @@ in {
 
   services.seaweedfs.mount = {
     enable = true;
-    mounts = {
-      nomad = "nomad";
-    };
+    mounts = { nomad = "nomad"; };
   };
 }

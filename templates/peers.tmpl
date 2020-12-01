@@ -1,0 +1,3 @@
+{{ range $index, $service := service "catalyst-dryrun-jormungandr" }}
+{{if ne $index 0}},{{end}}{{.Node}}
+{{ end }}

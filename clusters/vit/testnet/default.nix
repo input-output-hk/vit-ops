@@ -194,6 +194,7 @@ in {
           "${extraConfig}"
           ./ingress.nix
           ./docker-registry.nix
+          ./minio.nix
         ];
 
         securityGroupRules = {
