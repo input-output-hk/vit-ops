@@ -150,7 +150,7 @@ in {
     inherit namespace;
 
     periodic = {
-      cron = "*/15 * * * * *";
+      cron = "15 */1 * * * *";
       prohibitOverlap = true;
       timeZone = "UTC";
     };
