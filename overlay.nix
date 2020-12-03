@@ -36,11 +36,21 @@ in {
 
     id = "${image.imageName}:${image.imageTag}";
 
-    push = final.writeShellScriptBin "push" ''
+    push = let
+      parts = builtins.split "/" image.imageName;
+      registry = builtins.elemAt parts 0;
+      repo = builtins.elemAt parts 2;
+    in final.writeShellScriptBin "push" ''
       set -euo pipefail
-      echo "Pushing ${image} (${image.imageName}:${image.imageTag}) ..."
-      docker load -i ${image}
-      docker push ${image.imageName}:${image.imageTag}
+
+      echo -n "Pushing ${image.imageName}:${image.imageTag} ... "
+
+      if curl -s "https://${registry}/v2/${repo}/tags/list" | grep "${image.imageTag}" &> /dev/null; then
+        echo "Image already exists in registry"
+      else
+        docker load -i ${image}
+        docker push ${image.imageName}:${image.imageTag}
+      fi
     '';
 
     load = builtins.trace key (final.writeShellScriptBin "load" ''
