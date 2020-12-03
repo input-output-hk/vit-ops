@@ -1,4 +1,4 @@
-"""Usage: fetch.py [--network-magic=INT] [--state-dir=DIR] [--threshold=INT] [--db-user=STRING] [--db=STRING] [--db-host=STRING] [--extra-funds=FILE]
+"""Usage: fetch.py [--network-magic=INT] [--state-dir=DIR] [--threshold=INT] [--db-user=STRING] [--db=STRING] [--db-host=STRING] [--extra-funds=FILE] [--slot=INT]
 
 Options:
     --network-magic <magic>  network magic (specify 0 for mainnet) [default: 1097911063]
@@ -8,6 +8,7 @@ Options:
     --db <string>  database [default: cexplorer]
     --db-host <string>  socket file for database connection [default: /run/postgresql]
     --extra-funds <file>  extra-funds json file [ default: None ]
+    --slot <int>  slot to snapshot from [ default: None ]
 """
 
 
@@ -17,7 +18,6 @@ import json
 import subprocess
 from docopt import docopt
 from vitlib import VITBridge
-from cardanolib import CardanoCLIWrapper
 from datetime import datetime
 import itertools
 
@@ -27,7 +27,7 @@ extra_funds = arguments["--extra-funds"]
 timestamp = int(datetime.timestamp(datetime.now().replace(microsecond=0, second=0, minute=0, tzinfo=None)))
 
 bridge = VITBridge(arguments['--network-magic'], arguments['--state-dir'], arguments['--db'], arguments['--db-user'], arguments['--db-host'] )
-cardano = CardanoCLIWrapper(arguments['--network-magic'], arguments['--state-dir'])
+slot = arguments["--slot"]
 
 with open("genesis-template.json") as f:
     genesis = json.load(f)
@@ -40,9 +40,9 @@ all_funds = {}
 vote_stake = {}
 initial_funds = []
 
-keys = bridge.fetch_voting_keys()
+keys = bridge.fetch_voting_keys(slot)
 for key,value in keys.items():
-    stake = bridge.get_stake(key)
+    stake = bridge.get_stake(key, slot)
     if value in vote_stake:
         vote_stake[value] += stake
     else:
