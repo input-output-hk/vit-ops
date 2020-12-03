@@ -34,12 +34,6 @@ let
           };
         }];
 
-        ephemeralDisk = {
-          sizeMB = 20 * 1000;
-          migrate = true;
-          sticky = true;
-        };
-
         services."${namespace}-${name}-monitor" = {
           portLabel = "prometheus";
           task = "monitor";

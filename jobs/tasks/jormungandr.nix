@@ -2,9 +2,19 @@
 }: {
   driver = "docker";
 
-  vault.policies = [ "nomad-cluster" ];
+  vault = {
+    policies = [ "nomad-cluster" ];
+    changeMode = "noop";
+  };
 
   killSignal = "SIGINT";
+
+  restartPolicy = {
+    interval = "15m";
+    attempts = 5;
+    delay = "1m";
+    mode = "delay";
+  };
 
   config = {
     image = dockerImages.jormungandr.id;
@@ -28,11 +38,12 @@
     PRIVATE = lib.optionalString (!public) "true";
     STORAGE_DIR = "/local/storage";
     NAMESPACE = namespace;
+    RUST_BACKTRACE = "full";
   };
 
   resources = {
     cpu = 700; # mhz
-    memoryMB = 100;
+    memoryMB = 512;
   };
 
   artifacts = [ block0 ];

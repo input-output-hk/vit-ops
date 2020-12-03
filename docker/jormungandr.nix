@@ -5,6 +5,9 @@ let
     set -exuo pipefail
 
     echo "restoring backup..."
+
+    rm -rf "$STORAGE_DIR"
+
     restic restore latest \
       --tag $NAMESPACE \
       --target / \

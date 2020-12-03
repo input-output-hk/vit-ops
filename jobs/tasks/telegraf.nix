@@ -1,7 +1,10 @@
 { dockerImages, namespace, name }: {
   driver = "docker";
 
-  vault.policies = [ "nomad-cluster" ];
+  vault = {
+    policies = [ "nomad-cluster" ];
+    changeMode = "noop";
+  };
 
   resources = {
     cpu = 100; # mhz

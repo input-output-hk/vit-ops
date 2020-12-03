@@ -1,6 +1,10 @@
 { dockerImages, namespace, name, block0 }: {
   driver = "docker";
-  vault.policies = [ "nomad-cluster" ];
+
+  vault = {
+    policies = [ "nomad-cluster" ];
+    changeMode = "restart";
+  };
 
   resources = {
     cpu = 100;
