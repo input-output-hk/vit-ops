@@ -4,16 +4,16 @@ let
   entrypoint = writeShellScript "jormungandr" ''
     set -exuo pipefail
 
-    echo "restoring backup..."
+    if [ -d "$STORAGE_DIR" ]; then
+      echo "$STORAGE_DIR found, not restoring from backup..."
+    else
+      echo "$STORAGE_DIR not found, restoring backup..."
 
-    rm -rf "$STORAGE_DIR"
-
-    restic restore latest \
-      --tag $NAMESPACE \
-      --target / \
-    || echo "couldn't restore backup, continue startup procedure..."
-
-    ls -laR $STORAGE_DIR || true
+      restic restore latest \
+        --tag $NAMESPACE \
+        --target / \
+      || echo "couldn't restore backup, continue startup procedure..."
+    fi
 
     set +x
     echo "waiting for $REQUIRED_PEER_COUNT peers"
