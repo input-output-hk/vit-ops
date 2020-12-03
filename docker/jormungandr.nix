@@ -13,7 +13,7 @@ let
       --target / \
     || echo "couldn't restore backup, continue startup procedure..."
 
-    ls -laR $STORAGE_DIR
+    ls -laR $STORAGE_DIR || true
 
     set +x
     echo "waiting for $REQUIRED_PEER_COUNT peers"
