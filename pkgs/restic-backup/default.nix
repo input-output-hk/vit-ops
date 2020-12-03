@@ -1,4 +1,5 @@
-{ stdenv, removeReferencesTo, crystal, makeWrapper, openssl, restic, remarshal, jormungandr }:
+{ stdenv, removeReferencesTo, crystal, makeWrapper, openssl, restic, remarshal
+, jormungandr }:
 let
   inner = crystal.buildCrystalPackage {
     pname = "restic-backup";

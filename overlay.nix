@@ -97,7 +97,7 @@ in {
       jormungandr-cli = final.jormungandr;
     };
 
-  restic-backup = final.callPackage ./pkgs/restic-backup {};
+  restic-backup = final.callPackage ./pkgs/restic-backup { };
 
   debugUtils = with final; [
     bashInteractive

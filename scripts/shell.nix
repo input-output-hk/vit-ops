@@ -1,10 +1,11 @@
 let
-  sources = import ./nix/sources.nix {};
-  pkgs = import sources.nixpkgs {};
+  sources = import ./nix/sources.nix { };
+  pkgs = import sources.nixpkgs { };
   repl = import ../repl.nix;
 
   src = pkgs.fetchurl {
-    url = "https://github.com/input-output-hk/jormungandr/releases/download/v0.10.0-alpha.2/jormungandr-0.10.0-alpha.2-x86_64-unknown-linux-musl-generic.tar.gz";
+    url =
+      "https://github.com/input-output-hk/jormungandr/releases/download/v0.10.0-alpha.2/jormungandr-0.10.0-alpha.2-x86_64-unknown-linux-musl-generic.tar.gz";
     sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
   };
   jormungandr =
@@ -20,8 +21,8 @@ let
     import (sources.cardano-node) { gitrev = sources.cardano-node.rev; };
   bech32 = cardano-node-nix.bech32;
   cardano-cli = cardano-node-nix.cardano-cli;
-  vit-kedqr = import sources.vit-kedqr {};
-  jorvit = import sources.jorvit {};
+  vit-kedqr = import sources.vit-kedqr { };
+  jorvit = import sources.jorvit { };
 in pkgs.stdenv.mkDerivation {
   name = "vit-meta-shell";
   buildInputs = [
