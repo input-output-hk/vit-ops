@@ -27,8 +27,9 @@ let
         count = 1;
 
         networks = [{
+          mode = "bridge";
           ports = {
-            prometheus.to = 7000;
+            prometheus.to = 6000;
             rest.to = localRestPort;
             rpc.to = localRpcPort;
           };
@@ -76,6 +77,12 @@ let
 
         services."${namespace}-jormungandr" = {
           addressMode = "host";
+          portLabel = "rpc";
+          task = "jormungandr";
+          tags = [ name "peer" role ];
+        };
+
+        services."${namespace}-jormungandr-internal" = {
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];

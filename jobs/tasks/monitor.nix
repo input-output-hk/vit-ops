@@ -27,7 +27,7 @@
     data = ''
       SLEEP_TIME="10"
       PORT="{{ env "NOMAD_PORT_prometheus" }}"
-      JORMUNGANDR_API="http://{{ env "NOMAD_ADDR_rest" }}/api"
+      JORMUNGANDR_API="http://127.0.0.1:{{ env "NOMAD_ALLOC_PORT_rest" }}/api"
     '';
     env = true;
     destination = "local/env.txt";

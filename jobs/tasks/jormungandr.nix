@@ -52,13 +52,13 @@
     {
       data = let
         peers = ''
-          {{ range $index, $service := service "${namespace}-jormungandr" }}
+          {{ range $index, $service := service "${namespace}-jormungandr-internal" }}
             {{if ne $index 0}},{{end}} "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
           {{ end }}
         '';
 
         peerAddresses = ''
-          {{ range $index, $service := service "${namespace}-jormungandr" }}
+          {{ range $index, $service := service "${namespace}-jormungandr-internal" }}
             {{if ne $index 0}},{{end}} { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
           {{ end }}
         '';

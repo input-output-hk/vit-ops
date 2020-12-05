@@ -42,7 +42,7 @@
       [inputs.prometheus]
       metric_version = 1
 
-      urls = [ "http://{{ env "NOMAD_ADDR_prometheus" }}" ]
+      urls = [ "http://127.0.0.1:{{ env "NOMAD_PORT_prometheus" }}" ]
 
       [outputs.influxdb]
       database = "telegraf"
