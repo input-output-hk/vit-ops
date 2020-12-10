@@ -82,6 +82,7 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             "${extraConfig}"
             ./secrets.nix
+            ./docker-auth.nix
           ];
 
           securityGroupRules = {
