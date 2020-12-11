@@ -16,7 +16,7 @@ in {
         portLabel = "web";
         tags = [ "ingress" namespace ];
         meta = {
-          ingressHost = "servicing-station.vit.iohk.io";
+          ingressHost = "dryrun-servicing-station.vit.iohk.io";
           ingressCheck = ''
             http-check send meth GET uri /api/v0/graphql/playground
             http-check expect status 200
