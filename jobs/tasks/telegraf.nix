@@ -12,7 +12,7 @@
   };
 
   config = {
-    image = dockerImages.telegraf.id;
+    image = dockerImages.telegraf;
     args = [ "-config" "local/telegraf.config" ];
     labels = [{
       inherit namespace name;

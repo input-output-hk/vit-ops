@@ -17,7 +17,7 @@
   };
 
   config = {
-    image = dockerImages.jormungandr.id;
+    image = dockerImages.jormungandr;
     ports = [ "rpc" "rest" ];
     labels = [{
       inherit namespace name;
@@ -128,6 +128,7 @@
         AWS_SECRET_ACCESS_KEY="{{with secret "kv/data/nomad-cluster/restic"}}{{.Data.data.aws_secret_access_key}}{{end}}"
         RESTIC_PASSWORD="{{with secret "kv/data/nomad-cluster/restic"}}{{.Data.data.password}}{{end}}"
         RESTIC_REPOSITORY="s3:http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:9000/restic"
+        RESET="{{with secret "kv/data/nomad-cluster/${namespace}/reset"}}{{.Data.data.value}}{{end}}"
       '';
       env = true;
       destination = "secrets/env.txt";

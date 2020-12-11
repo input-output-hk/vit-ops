@@ -7,7 +7,7 @@
   };
 
   config = {
-    image = dockerImages.monitor.id;
+    image = dockerImages.monitor;
     ports = [ "prometheus" ];
     labels = [{
       inherit namespace name;

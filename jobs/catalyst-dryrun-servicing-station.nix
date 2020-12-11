@@ -57,7 +57,7 @@ in {
         driver = "docker";
 
         config = {
-          image = dockerImages.vit-servicing-station.id;
+          image = dockerImages.vit-servicing-station;
           args = [ "--in-settings-file" "local/station-config.yaml" ];
           ports = [ "web" ];
           labels = [{

@@ -9,7 +9,7 @@ let
       "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
     destination = "local/block0.bin";
     options.checksum =
-      "sha256:a5da5bbaab219074cafa7cdb0d63666498eb194807015d0772fc376bb76a07c6";
+      "sha256:25e91e120054e60d173fff61f90ffe0266e0a355dfa3033fb607e42fc7ce86f9";
   };
 
   mkVit = { index, requiredPeerCount, backup ? false, public ? false }:
@@ -25,6 +25,12 @@ let
     in {
       ${name} = {
         count = 1;
+
+        ephemeralDisk = {
+          sizeMB = 1024;
+          migrate = true;
+          sticky = true;
+        };
 
         networks = [{
           mode = "bridge";

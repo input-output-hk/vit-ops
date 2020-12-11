@@ -31,35 +31,49 @@ in {
     imported = lib.forEach fileNames
       (fileName: final.callPackages (imageDir + "/${fileName}") { });
     merged = lib.foldl' lib.recursiveUpdate { } imported;
-  in lib.flip lib.mapAttrs merged (key: image: {
-    inherit image;
+  in lib.flip lib.mapAttrs merged (key: image:
+    let id = "${image.imageName}:${image.imageTag}";
+    in {
+      inherit id image;
 
-    id = "${image.imageName}:${image.imageTag}";
+      # Turning this attribute set into a string will return the outPath instead.
+      outPath = id;
 
-    push = let
-      parts = builtins.split "/" image.imageName;
-      registry = builtins.elemAt parts 0;
-      repo = builtins.elemAt parts 2;
-    in final.writeShellScriptBin "push" ''
-      set -euo pipefail
+      push = let
+        parts = builtins.split "/" image.imageName;
+        registry = builtins.elemAt parts 0;
+        repo = builtins.elemAt parts 2;
+      in final.writeShellScriptBin "push" ''
+        set -euo pipefail
 
-      echo -n "Pushing ${image.imageName}:${image.imageTag} ... "
+        export dockerLoginDone="''${dockerLoginDone:-}"
+        export dockerPassword="''${dockerPassword:-}"
 
-      if curl -s "https://${registry}/v2/${repo}/tags/list" | grep "${image.imageTag}" &> /dev/null; then
-        echo "Image already exists in registry"
-      else
+        if [ -z "$dockerPassword" ]; then
+          dockerPassword="$(vault kv get -field value kv/nomad-cluster/docker-developer-password)"
+        fi
+
+        if [ -z "$dockerLoginDone" ]; then
+          echo "$dockerPassword" | docker login docker.mantis.ws -u developer --password-stdin
+          dockerLoginDone=1
+        fi
+
+        echo -n "Pushing ${image.imageName}:${image.imageTag} ... "
+
+        if curl -s "https://developer:$dockerPassword@${registry}/v2/${repo}/tags/list" | grep "${image.imageTag}" &> /dev/null; then
+          echo "Image already exists in registry"
+        else
+          docker load -i ${image}
+          docker push ${image.imageName}:${image.imageTag}
+        fi
+      '';
+
+      load = builtins.trace key (final.writeShellScriptBin "load" ''
+        set -euo pipefail
+        echo "Loading ${image} (${image.imageName}:${image.imageTag}) ..."
         docker load -i ${image}
-        docker push ${image.imageName}:${image.imageTag}
-      fi
-    '';
-
-    load = builtins.trace key (final.writeShellScriptBin "load" ''
-      set -euo pipefail
-      echo "Loading ${image} (${image.imageName}:${image.imageTag}) ..."
-      docker load -i ${image}
-    '');
-  });
-
+      '');
+    });
   push-docker-images = final.writeShellScriptBin "push-docker-images" ''
     set -euo pipefail
     ${lib.concatStringsSep "\n"

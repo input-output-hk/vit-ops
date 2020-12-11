@@ -132,7 +132,7 @@ let
           };
 
           config = {
-            image = dockerImages.monitor.id;
+            image = dockerImages.monitor;
             ports = [ "prometheus" ];
             labels = [{
               inherit namespace name;
@@ -161,7 +161,7 @@ let
 
         tasks.env = {
           driver = "docker";
-          config.image = dockerImages.env.id;
+          config.image = dockerImages.env;
           resources = {
             cpu = 10; # mhz
             memoryMB = 10;
@@ -179,7 +179,7 @@ let
           };
 
           config = {
-            image = dockerImages.telegraf.id;
+            image = dockerImages.telegraf;
             args = [ "-config" "local/telegraf.config" ];
             labels = [{
               inherit namespace name;
@@ -247,7 +247,7 @@ let
           killSignal = "SIGINT";
 
           config = {
-            image = dockerImages.jormungandr.id;
+            image = dockerImages.jormungandr;
             ports = [ "rpc" "rest" ];
             labels = [{
               inherit namespace name;
@@ -347,7 +347,7 @@ in {
           driver = "docker";
 
           config = {
-            image = dockerImages.vit-servicing-station.id;
+            image = dockerImages.vit-servicing-station;
             args = [
               "--in-settings-file"
               "local/station-config.yaml"
