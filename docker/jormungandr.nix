@@ -1,5 +1,5 @@
 { lib, buildLayeredImage, mkEnv, writeShellScript, jormungandr, jq, remarshal
-, coreutils, restic }:
+, coreutils, restic, diffutils, procps }:
 let
   entrypoint = writeShellScript "jormungandr" ''
     set -exuo pipefail
@@ -7,6 +7,7 @@ let
     nodeConfig="$NOMAD_TASK_DIR/node-config.json"
     runConfig="$NOMAD_TASK_DIR/running.json"
     runYaml="$NOMAD_TASK_DIR/running.yaml"
+    name="jormungandr"
 
     function convert () {
       cp "$nodeConfig" "$runConfig"
@@ -81,7 +82,7 @@ in {
       Entrypoint = [ entrypoint ];
 
       Env = mkEnv {
-        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic ];
+        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic procps diffutils ];
       };
     };
   };
