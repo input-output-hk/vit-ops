@@ -5,10 +5,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "5af4d86aa36241cba8914c9827c72f8b7caf152a",
-        "sha256": "17xh743dip3igym07my0zyy1a5xn2wf09jh6drzhqmb4aagfi96x",
+        "rev": "cbd7dcc58be81a5174f6aca9431f93ed370b3993",
+        "sha256": "1fx0sy5hgfqaim1lv1ajx2ih87nb7m4z996cfs7bbmyjchg9nqyy",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/5af4d86aa36241cba8914c9827c72f8b7caf152a.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/cbd7dcc58be81a5174f6aca9431f93ed370b3993.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
@@ -60,15 +60,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "nixos-20.03",
+        "branch": "nixos-20.09",
         "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "c9f5211b769a2edc46037cafcdf4e15b694820d6",
-        "sha256": "1qra1lrj3chmyrxmybaqgidp562wcss69461svwx8mzhli50xq5c",
+        "repo": "nixpkgs",
+        "rev": "b94726217f7cdc02ddf277b65553762d520da196",
+        "sha256": "1v3v7f2apmsdwv1w6hvsxr8whggjbiaxy00k47pxdzyigxv3s400",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/c9f5211b769a2edc46037cafcdf4e15b694820d6.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/b94726217f7cdc02ddf277b65553762d520da196.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vit-kedqr": {

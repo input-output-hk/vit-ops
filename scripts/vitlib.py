@@ -93,7 +93,6 @@ class VITBridge:
         p = subprocess.run(
             cli_args, capture_output=True, text=True, input=key, encoding="ascii"
         )
-
         if p.returncode != 0:
             print(p.stderr)
             raise Exception("Unknown error converting from hex to bech32")
@@ -137,7 +136,6 @@ class VITBridge:
         p = subprocess.run(
             cli_args, capture_output=True, text=True, input=key, encoding="ascii"
         )
-
         if p.returncode != 0:
             print(p.stderr)
             raise Exception("Unknown error converting bech32 string to hex")
@@ -231,7 +229,7 @@ class VITBridge:
         # cursor.execute('''SELECT txid, txhash, json[1] AS meta, json[2] AS sig FROM ( SELECT tx.hash AS txhash, tx_metadata.tx_id AS txid, array_agg(json) json FROM tx_metadata INNER JOIN tx ON tx_metadata.tx_id = tx.id WHERE key IN (61284, 61285) GROUP BY tx.hash, tx_metadata.tx_id ORDER BY tx_metadata.tx_id ) z;''')
         if slot:
             cursor.execute(
-                """WITH meta_table AS (select tx_id, json AS metadata from tx_metadata where key = '61284')
+                f"""WITH meta_table AS (select tx_id, json AS metadata from tx_metadata where key = '61284')
    , sig_table AS (select tx_id, json AS signature from tx_metadata where key = '61285')
 SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = meta_table.tx_id INNER JOIN block ON block.id = tx.block_id INNER JOIN sig_table USING(tx_id) WHERE block.slot_no < {slot};"""
             )
