@@ -12,8 +12,8 @@ class VITBridge:
     """VIT tools to bridge Cardano mainnet and jormungandr"""
 
     def __init__(self, network_magic, state_dir, db=None, dbuser="", dbhost=""):
-        self.network_magic = network_magic
-        if network_magic == 0:
+        self.network_magic = int(network_magic)
+        if self.network_magic == 0:
             self.magic_args = [ "--mainnet" ]
         else:
             self.magic_args = [ "--testnet-magic", str(network_magic) ]
@@ -187,14 +187,19 @@ class VITBridge:
         else:
             return None
 
-    def fetch_voting_keys(self):
+    def fetch_voting_keys(self, slot=None):
         cursor = self.db.cursor()
         # TODO: maybe add psycopg2.extra for parsing the json
         #cursor.execute('''SELECT json ->> 'purpose' AS purpose, json ->> 'stake_pub' AS stake_pub, json ->> 'voting_key' AS voting_key, json ->> 'signature' AS signature FROM tx INNER JOIN tx_metadata ON tx.id = tx_metadata.tx_id WHERE json ->> 'purpose' = 'voting_registration';''')
         #cursor.execute('''SELECT txid, txhash, json[1] AS meta, json[2] AS sig FROM ( SELECT tx.hash AS txhash, tx_metadata.tx_id AS txid, array_agg(json) json FROM tx_metadata INNER JOIN tx ON tx_metadata.tx_id = tx.id WHERE key IN (61284, 61285) GROUP BY tx.hash, tx_metadata.tx_id ORDER BY tx_metadata.tx_id ) z;''')
-        cursor.execute('''WITH meta_table AS (select tx_id, json AS metadata from tx_metadata where key = '61284')
+        if slot:
+            cursor.execute(f'''WITH meta_table AS (select tx_id, json AS metadata from tx_metadata where key = '61284')
    , sig_table AS (select tx_id, json AS signature from tx_metadata where key = '61285')
-SELECT hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = meta_table.tx_id INNER JOIN sig_table USING(tx_id);''')
+SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = meta_table.tx_id INNER JOIN block ON block.id = tx.block_id INNER JOIN sig_table USING(tx_id) WHERE block.slot_no < {slot};''')
+        else:
+            cursor.execute(f'''WITH meta_table AS (select tx_id, json AS metadata from tx_metadata where key = '61284')
+   , sig_table AS (select tx_id, json AS signature from tx_metadata where key = '61285')
+SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = meta_table.tx_id INNER JOIN sig_table USING(tx_id);''')
         rows = cursor.fetchall()
         keys = {}
         for row in rows:
@@ -252,10 +257,13 @@ signature: {sig_hex}
 debug files written in current directory
                 ''')
 
-    def get_stake(self, stake_hash):
+    def get_stake(self, stake_hash, slot=None):
         cursor = self.db.cursor()
         # TODO: pass stake_hash in tuple with %s
-        query = f'''SELECT SUM(value) FROM utxo_view WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}';'''
+        if slot:
+            query = f'''SELECT SUM(utxo_view.value) FROM utxo_view INNER JOIN tx ON tx.id = utxo_view.tx_id INNER JOIN block ON block.id = tx.block_id WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}' AND block.slot_no < {slot};'''
+        else:
+            query = f'''SELECT SUM(utxo_view.value) FROM utxo_view WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}';'''
         cursor.execute(query)
         row = cursor.fetchone()
         if row[0]:
