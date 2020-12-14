@@ -29,6 +29,7 @@ in pkgs.stdenv.mkDerivation {
     jormungandr
     cardano-cli
     bech32
+    pkgs.python3Packages.black
     pkgs.python3Packages.ipython
     pkgs.python3Packages.cbor2
     pkgs.python3Packages.docopt
