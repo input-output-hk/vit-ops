@@ -10,11 +10,6 @@ Options:
     --stake-signing-key <file>    stake authorizing vote key
 """
 
-import binascii                        # noqa: F401
-import cbor2                           # noqa: F401
-import json                            # noqa: F401
-import subprocess                      # noqa: F401
-
 from docopt import docopt
 
 from vitlib import VITBridge
