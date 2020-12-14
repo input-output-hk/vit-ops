@@ -24,6 +24,7 @@ import itertools
 
 arguments = docopt(__doc__)
 extra_funds = arguments["--extra-funds"]
+slot = arguments["--slot"]
 
 timestamp = int(
     datetime.timestamp(
@@ -38,13 +39,12 @@ bridge = VITBridge(
     arguments["--db-user"],
     arguments["--db-host"],
 )
-slot = arguments["--slot"]
 
 with open("genesis-template.json") as f:
     genesis = json.load(f)
 
 if extra_funds:
-    with open("extra_funds.json") as f:
+    with open(extra_funds) as f:
         extra_funds = json.load(f)
 
 all_funds = {}
@@ -58,7 +58,6 @@ for key, value in keys.items():
         vote_stake[value] += stake
     else:
         vote_stake[value] = stake
-
 
 for key, value in vote_stake.items():
     if value > int(arguments["--threshold"]):
