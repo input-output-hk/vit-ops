@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 """Usage: vote-registration.py [--network-magic=INT] [--state-dir=DIR] [--payment-signing-key=FILE] [--payment-address=STRING] [--vote-public-key=FILE] [--stake-signing-key=FILE]
 
 Options:
