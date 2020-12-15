@@ -1,6 +1,5 @@
 { system, self }:
-let extraJobArgs = { };
-in final: prev:
+final: prev:
 let lib = final.lib;
 in {
   vit-servicing-station = final.runCommand "vit-servicing-station-static" {
@@ -14,13 +13,42 @@ in {
     tar -xvf $src -C $out/bin/
   '';
 
+  consul-templates = let
+    sources = lib.pipe final.nomadJobs [
+      (lib.filterAttrs (n: v: v ? evaluated))
+      (lib.mapAttrsToList (n: v: {
+        path = [ n v.evaluated.Job.Namespace ];
+        taskGroups = v.evaluated.Job.TaskGroups;
+      }))
+      (map (e:
+        map (tg:
+          map (t:
+            if t.Templates != null then
+              map (tpl: {
+                name = lib.concatStringsSep "/"
+                  (e.path ++ [ tg.Name t.Name tpl.DestPath ]);
+                tmpl = tpl.EmbeddedTmpl;
+              }) t.Templates
+            else
+              null) tg.Tasks) e.taskGroups))
+      builtins.concatLists
+      builtins.concatLists
+      (lib.filter (e: e != null))
+      builtins.concatLists
+      (map (t: {
+        name = t.name;
+        path = final.writeText t.name t.tmpl;
+      }))
+    ];
+  in final.linkFarm "consul-templates" sources;
+
   nomadJobs = let
     jobsDir = ./jobs;
     contents = builtins.readDir jobsDir;
     toImport = name: type: type == "regular" && lib.hasSuffix ".nix" name;
     fileNames = builtins.attrNames (lib.filterAttrs toImport contents);
     imported = lib.forEach fileNames
-      (fileName: final.callPackage (jobsDir + "/${fileName}") extraJobArgs);
+      (fileName: final.callPackage (jobsDir + "/${fileName}") { });
   in lib.foldl' lib.recursiveUpdate { } imported;
 
   dockerImages = let
