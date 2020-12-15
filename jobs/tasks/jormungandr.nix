@@ -51,16 +51,26 @@
   templates = [
     {
       data = let
-        peers = ''
-          {{ range $index, $service := service "${namespace}-jormungandr-internal" }}
-            {{if ne $index 0}},{{end}} "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
+        eachService = line: ''
+          {{ range service "${namespace}-jormungandr-internal" }}
+            {{ if (not (.ID | regexMatch (env "NOMAD_ALLOC_ID"))) }}
+              {{ scratch.MapSet "vars" .ID . }}
+            {{ end }}
           {{ end }}
+          [
+          {{ range $index, $service := (scratch.MapValues "vars" ) }}
+            {{- if ne $index 0}},{{else}} {{end -}}
+            ${line}
+          {{ end -}}
+          ]
         '';
 
-        peerAddresses = ''
-          {{ range $index, $service := service "${namespace}-jormungandr-internal" }}
-            {{if ne $index 0}},{{end}} { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
-          {{ end }}
+        peers = eachService ''
+          "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}"
+        '';
+
+        peerAddresses = eachService ''
+          { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
         '';
       in ''
         {
