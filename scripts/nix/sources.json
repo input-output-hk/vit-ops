@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "jorvit",
-        "rev": "10bd81888f85f19fc616fe5d6521cecd9709ea9e",
-        "sha256": "1rmv96zspriq4czc00s9f4xkl6j2d4awkgz2c3rdx145pznikkrj",
+        "rev": "3a1c167cc338e9c42f8dec14c56da174a50af215",
+        "sha256": "1pxw09hlh4xxfz1iq551lj5xy2aim551si4vfj4p3i4h3qlv9fbd",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/jorvit/archive/10bd81888f85f19fc616fe5d6521cecd9709ea9e.tar.gz",
+        "url": "https://github.com/input-output-hk/jorvit/archive/3a1c167cc338e9c42f8dec14c56da174a50af215.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
