@@ -120,6 +120,19 @@ in {
     type = "service";
     inherit namespace;
 
+    spreads = [ {
+      attribute = "\${node.unique.name}";
+      # attribute = "\${node.datacenter}";
+      weight = 100;
+    } ];
+
+    migrate = {
+      maxParallel     = 1;
+      # health_check     = "checks"
+      minHealthyTime = "30s";
+      healthyDeadline = "5m";
+    };
+
     update = {
       maxParallel = 1;
       healthCheck = "checks";
