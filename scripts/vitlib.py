@@ -3,10 +3,10 @@ import cbor2
 import json
 import subprocess
 import tempfile
+import time
 import os
 import psycopg2
-
-from cardanolib import CardanoCLIWrapper         # noqa: F401
+import sys
 
 
 class VITBridge:
@@ -173,7 +173,7 @@ class VITBridge:
     def meta_convert_raw(self, meta):
         if 1 in meta and 2 in meta:
             return {
-                61284: {1: bytes.fromhex(meta[1][2:]), 2: bytes.fromhex(meta[2][2:]), }
+                61284: {1: bytes.fromhex(meta[1][2:]), 2: bytes.fromhex(meta[2][2:]),}
             }
         return meta
 
@@ -241,7 +241,9 @@ SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id =
             )
         rows = cursor.fetchall()
         keys = {}
-        for row in rows:
+        timer = time.time()
+        print(f"    Raw DB query rows returned: {len(rows)}", file=sys.stderr)
+        for i, row in enumerate(rows, start=1):
             if (
                 (type(row[2]) is dict)
                 and (type(row[3]) is dict)
@@ -261,6 +263,8 @@ SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id =
                 ):
                     stake_hash = self.bech32_to_hex(self.get_stake_hash(stake_pub))[2:]
                     keys[stake_hash] = voting_key
+            print(f"\r    Processing key {i} of {len(rows)}", end="", file=sys.stderr)
+        print(f" [{time_delta_to_str(time.time() - timer)}]", file=sys.stderr)
         return keys
 
     def debug_single_tx(self, txhash):
@@ -332,3 +336,17 @@ debug files written in current directory
         if row[0]:
             return int(row[0].to_integral_value())
         return 0
+
+
+def time_delta_to_str(time_delta, ms=True):
+    """ Returns a user friendly hh:mm:ss[.SSS] string given a time().time delta """
+
+    hours, rem = divmod(time_delta, 3600)
+    minutes, seconds = divmod(rem, 60)
+
+    if ms:
+        time_string = f"{int(hours):02.0f}:{int(minutes):02.0f}:{seconds:06.3f}"
+    else:
+        time_string = f"{int(hours):02.0f}:{int(minutes):02.0f}:{int(seconds):02.0f}"
+
+    return time_string
