@@ -116,7 +116,7 @@ in {
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
             destination = "local/database.sqlite3";
             options.checksum =
-              "sha256:1591133b12ccae39a920ee2c109100e023058b27c034c53a8ad3082283907aba";
+              "sha256:a0b6acd53ef6548c8aad64ee5d3b8699e1f10dfa5d8264637cfe87a10ac4efab";
           }
         ];
       };
