@@ -332,9 +332,14 @@ debug files written in current directory
 
     def get_stake(self, stake_hash, slot=None):
         cursor = self.db.cursor()
+        query_tx_id = f"""SELECT tx.id FROM tx LEFT OUTER JOIN block ON block.id = tx.block_id WHERE block.slot_no > {slot} LIMIT 1"""
+        cursor.execute(query_tx_id)
+        row = cursor.fetchone()
+        if row[0]:
+            txid = int(row[0])
         # TODO: pass stake_hash in tuple with %s
         if slot:
-            query = f"""SELECT SUM(utxo_view.value) FROM utxo_view INNER JOIN tx ON tx.id = utxo_view.tx_id INNER JOIN block ON block.id = tx.block_id WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}' AND block.slot_no < {slot};"""
+            query = f"""SELECT SUM(tx_out.value) FROM tx_out INNER JOIN tx ON tx.id = tx_out.tx_id LEFT OUTER JOIN tx_in ON tx_out.tx_id = tx_in.tx_out_id AND tx_out.index = tx_in.tx_out_index AND tx_in_id < {txid} INNER JOIN block ON block.id = tx.block_id AND block.slot_no < {slot} WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}' AND tx_in.tx_in_id is null;"""
         else:
             query = f"""SELECT SUM(utxo_view.value) FROM utxo_view WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}';"""
         cursor.execute(query)
