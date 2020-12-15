@@ -57,7 +57,7 @@ let
 
       if [ -n "$PRIVATE" ]; then
         echo "Running with node with secrets..."
-        exec jormungandr \
+        jormungandr \
           --storage "$STORAGE_DIR" \
           --config "$NOMAD_TASK_DIR/running.yaml" \
           --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
@@ -65,7 +65,7 @@ let
           "$@" || true
       else
         echo "Running with follower node..."
-        exec jormungandr \
+        jormungandr \
           --storage "$STORAGE_DIR" \
           --config "$NOMAD_TASK_DIR/running.yaml" \
           --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
