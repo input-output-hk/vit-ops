@@ -40,7 +40,7 @@ class VITBridge:
             )
 
     def get_cardano_vkey(self, skey_file):
-        (tf, vkey_file) = tempfile.mkstemp()
+        (tf1, vkey_file) = tempfile.mkstemp()
         cli_args = [
             "cardano-cli",
             "shelley",
@@ -56,6 +56,7 @@ class VITBridge:
             print(p.stderr)
             raise Exception("Unknown error deriving cardano vkey from skey")
         vkey = self.read_cardano_key(vkey_file)
+        os.close(tf1)
         os.unlink(vkey_file)
         return vkey
 
@@ -73,8 +74,8 @@ class VITBridge:
         return p.stdout.rstrip()
 
     def jcli_sign(self, key, contents, text=False):
-        (tf, key_file) = tempfile.mkstemp()
-        (tf, contents_file) = tempfile.mkstemp(suffix=b"", text=text)
+        (tf1, key_file) = tempfile.mkstemp()
+        (tf2, contents_file) = tempfile.mkstemp(suffix=b"", text=text)
         self.write_text(key_file, key)
         if text:
             self.write_text(contents_file, contents)
@@ -82,6 +83,8 @@ class VITBridge:
             self.write_bytes(contents_file, contents)
         cli_args = ["jcli", "key", "sign", "--secret-key", key_file, contents_file]
         p = subprocess.run(cli_args, capture_output=True, text=True)
+        os.close(tf1)
+        os.close(tf2)
         os.unlink(key_file)
         os.unlink(contents_file)
         if p.returncode != 0:
@@ -142,9 +145,9 @@ class VITBridge:
         return p.stdout.rstrip()
 
     def validate_sig(self, pub_key, sig, data, text=False):
-        (tf, pub_key_file) = tempfile.mkstemp()
-        (tf, data_file) = tempfile.mkstemp(suffix=b"", text=text)
-        (tf, sig_file) = tempfile.mkstemp()
+        (tf1, pub_key_file) = tempfile.mkstemp()
+        (tf2, data_file) = tempfile.mkstemp(suffix=b"", text=text)
+        (tf3, sig_file) = tempfile.mkstemp()
         self.write_text(pub_key_file, pub_key)
         self.write_text(sig_file, sig)
         if text:
@@ -162,6 +165,9 @@ class VITBridge:
             data_file,
         ]
         p = subprocess.run(cli_args, capture_output=True, text=True)
+        os.close(tf1)
+        os.close(tf2)
+        os.close(tf3)
         os.unlink(pub_key_file)
         os.unlink(data_file)
         os.unlink(sig_file)
