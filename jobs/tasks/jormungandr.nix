@@ -57,12 +57,10 @@
               {{ scratch.MapSet "vars" .ID . }}
             {{ end }}
           {{ end }}
-          [
           {{ range $index, $service := (scratch.MapValues "vars" ) }}
             {{- if ne $index 0}},{{else}} {{end -}}
             ${line}
           {{ end -}}
-          ]
         '';
 
         peers = eachService ''
