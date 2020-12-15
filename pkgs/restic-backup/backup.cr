@@ -51,11 +51,11 @@ class Backup
 
       pp! stats
 
-      if lrbs = stats.last_received_block_time
-        if lrbs == stats.last_block_time
-          sleep 30
-          return
-        end
+      next unless lrbs = stats.last_received_block_time
+      next unless lbt = stats.last_block_time
+      if lrbs == lbt
+        sleep 30
+        return
       end
     end
   end
@@ -76,57 +76,9 @@ end
 class NodeStats
   include JSON::Serializable
 
-  property version : String
-
-  property state : String
-
-  @[JSON::Field(key: "blockRecvCnt")]
-  property block_recv_cnt : Int32
-
-  @[JSON::Field(key: "lastBlockContentSize")]
-  property last_block_content_size : Int32
-
-  @[JSON::Field(key: "lastBlockDate")]
-  property last_block_date : String
-
-  @[JSON::Field(key: "lastBlockFees")]
-  property last_block_fees : Int32
-
-  @[JSON::Field(key: "lastBlockHash")]
-  property last_block_hash : String
-
-  @[JSON::Field(key: "lastBlockHeight")]
-  property last_block_height : String
-
-  @[JSON::Field(key: "lastBlockSum")]
-  property last_block_sum : Int32
-
   @[JSON::Field(key: "lastBlockTime")]
-  property last_block_time : String
-
-  @[JSON::Field(key: "lastBlockTx")]
-  property last_block_tx : Int32
+  property last_block_time : String?
 
   @[JSON::Field(key: "lastReceivedBlockTime")]
   property last_received_block_time : String?
-
-  @[JSON::Field(key: "peerAvailableCnt")]
-  property peer_available_cnt : Int32
-
-  @[JSON::Field(key: "peerConnectedCnt")]
-  property peer_connected_cnt : Int32
-
-  @[JSON::Field(key: "peerQuarantinedCnt")]
-  property peer_quarantined_cnt : Int32
-
-  @[JSON::Field(key: "peerTotalCnt")]
-  property peer_total_cnt : Int32
-
-  @[JSON::Field(key: "peerUnreachableCnt")]
-  property peer_unreachable_cnt : Int32
-
-  @[JSON::Field(key: "txRecvCnt")]
-  property tx_recv_cnt : Int32
-
-  property uptime : Int32
 end
