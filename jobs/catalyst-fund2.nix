@@ -9,7 +9,7 @@ let
       "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
     destination = "local/block0.bin";
     options.checksum =
-      "sha256:c7c6430b51d0cc53e2212d00ed5fe876081f07e6c4fccf4188f31019e1156581";
+      "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
   };
 
   mkVit = { index, requiredPeerCount, backup ? false, public ? false }:

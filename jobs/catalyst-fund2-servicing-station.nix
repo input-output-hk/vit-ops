@@ -109,14 +109,14 @@ in {
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
             destination = "local/block0.bin";
             options.checksum =
-              "sha256:4322205788954815a3a78c0d69e5bf0e695caa07b05196e09f1c0522379faac3";
+              "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
           }
           {
             source =
               "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/database.sqlite3";
             destination = "local/database.sqlite3";
             options.checksum =
-              "sha256:28205ca65610ce70a0e61531996f4f65ff58cf7a0ffca521471c9aa4899bf6f4";
+              "sha256:1591133b12ccae39a920ee2c109100e023058b27c034c53a8ad3082283907aba";
           }
         ];
       };
