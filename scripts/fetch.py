@@ -74,7 +74,7 @@ for (i, (key, value)) in enumerate(vote_stake.items(), start=1):
     if value > int(arguments["--threshold"]):
         all_funds[bridge.jcli_address(key)] = value
     print(
-        f"\r    Processing threshold value {i} of {len(keys.items())}",
+        f"\r    Processing threshold value {i} of {len(vote_stake.items())}",
         end="",
         file=sys.stderr,
     )
