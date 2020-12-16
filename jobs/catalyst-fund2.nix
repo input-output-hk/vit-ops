@@ -88,7 +88,7 @@ let
           tags = [ name "peer" role ];
         };
 
-        services."${namespace}-jormungandr-internal" = {
+        services."${namespace}-jormungandr-internal" = lib.mkIf (role != "backup") {
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];
