@@ -70,15 +70,19 @@ for (i, (key, value)) in enumerate(keys.items(), start=1):
 print(f" [{time_delta_to_str(time.time() - timer)}]", file=sys.stderr)
 
 timer = time.time()
+threshold_hit = 0
+voting_value = 0
 for (i, (key, value)) in enumerate(vote_stake.items(), start=1):
     if value > int(arguments["--threshold"]):
         all_funds[bridge.jcli_address(key)] = value
+        threshold_hit = threshold_hit + 1
+        voting_value = voting_value + value
     print(
         f"\r    Processing threshold value {i} of {len(vote_stake.items())}",
         end="",
         file=sys.stderr,
     )
-print(f" [{time_delta_to_str(time.time() - timer)}]", file=sys.stderr)
+print(f" ({threshold_hit} met threshold, total voting power: {voting_value / 1E6} ADA) [{time_delta_to_str(time.time() - timer)}]", file=sys.stderr)
 
 if extra_funds:
     all_funds.update(extra_funds)
