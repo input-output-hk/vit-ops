@@ -8,7 +8,7 @@
 
   resources = {
     cpu = 100;
-    memoryMB = 128;
+    memoryMB = 512;
   };
 
   config = {
