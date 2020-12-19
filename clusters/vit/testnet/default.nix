@@ -190,6 +190,7 @@ in {
           '';
         in [
           (bitte + /profiles/monitoring.nix)
+          ./monitoring-server.nix
           ./secrets.nix
           "${extraConfig}"
           ./ingress.nix
