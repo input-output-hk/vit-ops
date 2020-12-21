@@ -1,5 +1,5 @@
-{ lib, buildLayeredImage, mkEnv, writeShellScript, jormungandr, jq, remarshal
-, coreutils, restic, diffutils, procps }:
+{ lib, buildLayeredImage, mkEnv, writeShellScript, jormungandr, remarshal
+, restic, diffutils, debugUtils }:
 let
   entrypoint = writeShellScript "jormungandr" ''
     set -exuo pipefail
@@ -82,7 +82,8 @@ in {
       Entrypoint = [ entrypoint ];
 
       Env = mkEnv {
-        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic procps diffutils ];
+        PATH = lib.makeBinPath
+          ([ jormungandr remarshal restic diffutils ] ++ debugUtils);
       };
     };
   };

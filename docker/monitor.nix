@@ -1,8 +1,8 @@
-{ buildLayeredImage, mkEnv, jormungandr-monitor, cacert, coreutils
-, bashInteractive, busybox, curl, lsof }: {
+{ buildLayeredImage, mkEnv, jormungandr-monitor, cacert, busybox, debugUtils
+}: {
   monitor = buildLayeredImage {
     name = "docker.vit.iohk.io/monitor";
-    contents = [ coreutils bashInteractive busybox curl lsof ];
+    contents = [ busybox ] ++ debugUtils;
     config = {
       Entrypoint = [ jormungandr-monitor ];
 
