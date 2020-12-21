@@ -1,4 +1,4 @@
-{ lib, dockerImages, namespace, name, requiredPeerCount, public, index, block0
+{ lib, dockerImages, namespace, name, requiredPeerCount, public, index, block0, memoryMB ? 512
 }: {
   driver = "docker";
 
@@ -42,8 +42,8 @@
   };
 
   resources = {
+    inherit memoryMB;
     cpu = 700; # mhz
-    memoryMB = 512;
   };
 
   artifacts = [ block0 ];

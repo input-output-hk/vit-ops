@@ -12,7 +12,7 @@ let
       "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
   };
 
-  mkVit = { index, requiredPeerCount, backup ? false, public ? false }:
+  mkVit = { index, requiredPeerCount, backup ? false, public ? false, memoryMB ? 512 }:
     let
       localRpcPort = (if public then 10000 else 7000) + index;
       localRestPort = (if public then 11000 else 9000) + index;
@@ -55,7 +55,7 @@ let
           };
           jormungandr = import ./tasks/jormungandr.nix {
             inherit lib dockerImages namespace name requiredPeerCount public
-              block0 index;
+              block0 index memoryMB;
           };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
@@ -136,18 +136,22 @@ in {
       index = 0;
       public = false;
       requiredPeerCount = 0;
+      memoryMB = 2048;
     }) // (mkVit {
       index = 1;
       public = false;
       requiredPeerCount = 1;
+      memoryMB = 2048;
     }) // (mkVit {
       index = 2;
       public = false;
       requiredPeerCount = 2;
+      memoryMB = 2048;
     }) // (mkVit {
       index = 0;
       public = true;
       requiredPeerCount = 3;
+      memoryMB = 2048;
     });
   };
 
@@ -167,6 +171,7 @@ in {
       public = false;
       backup = true;
       requiredPeerCount = 3;
+      memoryMB = 2048;
     });
   };
 }

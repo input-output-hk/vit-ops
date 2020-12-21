@@ -1,4 +1,4 @@
-{ dockerImages, namespace, name, block0 }: {
+{ dockerImages, namespace, name, block0, memoryMB ? 512 }: {
   driver = "docker";
 
   vault = {
@@ -7,8 +7,8 @@
   };
 
   resources = {
+    inherit memoryMB;
     cpu = 100;
-    memoryMB = 512;
   };
 
   config = {
