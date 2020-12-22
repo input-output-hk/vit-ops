@@ -59,7 +59,7 @@ let
           };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
-            inherit dockerImages namespace name block0;
+            inherit dockerImages namespace name block0 memoryMB;
           };
         });
 
