@@ -6,18 +6,18 @@ let
 
   block0 = {
     source =
-      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
+      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/${namespace}/block0.bin";
     destination = "local/block0.bin";
     options.checksum =
-      "sha256:25e91e120054e60d173fff61f90ffe0266e0a355dfa3033fb607e42fc7ce86f9";
+      "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
   };
 
-  mkVit = { index, requiredPeerCount, backup ? false, public ? false }:
+  mkVit = { index, requiredPeerCount, backup ? false, public ? false, memoryMB ? 512 }:
     let
       localRpcPort = (if public then 10000 else 7000) + index;
       localRestPort = (if public then 11000 else 9000) + index;
       localPrometheusPort = 10000 + index;
-      publicPort = 7100 + index;
+      publicPort = 7200 + index;
 
       role =
         if public then "follower" else if backup then "backup" else "leader";
@@ -55,11 +55,11 @@ let
           };
           jormungandr = import ./tasks/jormungandr.nix {
             inherit lib dockerImages namespace name requiredPeerCount public
-              block0 index;
+              block0 index memoryMB;
           };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
-            inherit dockerImages namespace name block0;
+            inherit dockerImages namespace name block0 memoryMB;
           };
         });
 
@@ -88,7 +88,7 @@ let
           tags = [ name "peer" role ];
         };
 
-        services."${namespace}-jormungandr-internal" = {
+        services."${namespace}-jormungandr-internal" = lib.mkIf (role != "backup") {
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];
