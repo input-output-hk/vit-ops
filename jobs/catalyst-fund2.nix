@@ -6,7 +6,7 @@ let
 
   block0 = {
     source =
-      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
+      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/${namespace}/block0.bin";
     destination = "local/block0.bin";
     options.checksum =
       "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
