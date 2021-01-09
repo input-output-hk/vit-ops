@@ -41,11 +41,9 @@ class Backup
   # Wait until we are synchronized...
   # The way we measure this is unfortunately not ideal, but should be a
   # good approximation if this runs continuously and without a huge delta.
-  #
-  # TODO: establish a source of truth (querying the passive node for its tip?)
   def wait_for_tip
-    loop do
-      sleep 5
+    30.times do
+      sleep 1.minute
 
       stats = NodeStats.from_json(HTTP::Client.get("http://127.0.0.1:9000/api/v0/node/stats").body)
 
@@ -58,6 +56,8 @@ class Backup
         return
       end
     end
+
+    raise "Node was unable to synchronize within 30 minutes"
   end
 
   def backup
