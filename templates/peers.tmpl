@@ -1,3 +1,9 @@
-{{ range $index, $service := service "catalyst-dryrun-jormungandr" }}
-{{if ne $index 0}},{{end}}{{.Node}}
+{{ range service "catalyst-fund2-jormungandr-internal" }}
+  {{ if (not (.ID | regexMatch (env "NOMAD_ALLOC_ID"))) }}
+    {{ scratch.MapSet "vars" .ID . }}
+  {{ end }}
 {{ end }}
+{{ range $index, $service := (scratch.MapValues "vars" ) }}
+  {{- if ne $index 0}},{{else}} {{end -}}
+  { "address": "/ip4/{{ .NodeAddress }}/tcp/{{ .Port }}" }
+{{ end -}}

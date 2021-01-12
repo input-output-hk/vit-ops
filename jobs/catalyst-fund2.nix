@@ -64,7 +64,6 @@ let
         });
 
         services."${namespace}-${name}-jormungandr" = {
-          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name role ] ++ (lib.optional public "ingress");
@@ -82,7 +81,6 @@ let
         };
 
         services."${namespace}-jormungandr" = {
-          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];
@@ -95,7 +93,6 @@ let
         };
 
         services."${namespace}-${name}-jormungandr-rest" = {
-          addressMode = "host";
           portLabel = "rest";
           task = "jormungandr";
           tags = [ name role ];
@@ -153,6 +150,30 @@ in {
       requiredPeerCount = 3;
       memoryMB = 2048;
     });
+  };
+
+  "${namespace}-passive" = mkNomadJob "passive" {
+    datacenters = [ "eu-central-1" "us-east-2" ];
+    type = "service";
+    inherit namespace;
+
+    update = {
+      maxParallel = 1;
+      healthCheck = "checks";
+      minHealthyTime = "30s";
+      healthyDeadline = "5m";
+      progressDeadline = "10m";
+      # autoRevert = true;
+      # autoPromote = true;
+      # canary = 1;
+      stagger = "1m";
+    };
+
+    taskGroups = mkVit {
+      index = 1;
+      public = true;
+      requiredPeerCount = 1;
+    };
   };
 
   "${namespace}-backup" = mkNomadJob "backup" {

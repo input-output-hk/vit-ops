@@ -1,4 +1,4 @@
-{ dockerImages, namespace, name, block0, memoryMB ? 512 }: {
+{ dockerImages, namespace, name, block0, memoryMB ? 2048 }: {
   driver = "docker";
 
   vault = {

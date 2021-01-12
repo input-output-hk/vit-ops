@@ -2,16 +2,6 @@ inputs:
 final: prev:
 let lib = final.lib;
 in {
-  vit-servicing-station = final.runCommand "vit-servicing-station-static" {
-    src = final.fetchurl {
-      url =
-        "https://github.com/mzabaluev/vit-servicing-station/releases/download/v0.1.0-ci-test.1/vit-servicing-station-0.1.0-ci-test.1-x86_64-unknown-linux-musl.tar.gz";
-      sha256 = "sha256-esVtO4GzQob7Xev1RzaBq7SU1u4noCml2lAfghRJuHg=";
-    };
-  } ''
-    mkdir -pv $out/bin
-    tar -xvf $src -C $out/bin/
-  '';
 
   consul-templates = let
     sources = lib.pipe final.nomadJobs [
@@ -64,23 +54,29 @@ in {
       jormungandr-cli = final.jormungandr;
     };
 
+  vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {};
+
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
   debugUtils = with final; [
     bashInteractive
     coreutils
     curl
-    dnsutils
     fd
-    gawk
+    findutils
     gnugrep
-    iproute
-    jq
+    gnused
+    htop
     lsof
     netcat
-    nettools
     procps
+    ripgrep
+    sqlite-interactive
+    tcpdump
+    tmux
     tree
+    utillinux
+    vim
   ];
 
   devShell = let
