@@ -53,7 +53,7 @@ in {
         };
       };
 
-      tasks.servicing-station = import ./tasks/servicing-station.nix {};
+      tasks.servicing-station = import ./tasks/servicing-station.nix { inherit mkNomadJob namespace; };
     };
   };
 }

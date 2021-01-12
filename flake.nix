@@ -45,7 +45,7 @@
       inherit self;
       inherit (hashiStack) nomadJobs dockerImages clusters nixosConfigurations;
       inherit (pkgs) sources;
-      legacyPackages = pkgs;
+      legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;
     };
 }

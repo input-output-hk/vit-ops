@@ -1,4 +1,4 @@
-{ mkNomadJob, namespace, vit-servicing-station, ... }: {
+{ mkNomadJob, namespace, ... }: {
   driver = "exec";
 
   config = {
@@ -10,14 +10,13 @@
     labels = [{
       inherit namespace;
       name = "${namespace}-servicing-station";
-      imageTag = dockerImages.vit-servicing-station.image.imageTag;
     }];
 
     logging = {
       type = "journald";
       config = [{
         tag = "${namespace}-servicing-station";
-        labels = "name,namespace,imageTag";
+        labels = "name,namespace";
       }];
     };
   };
