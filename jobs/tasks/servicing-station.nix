@@ -2,23 +2,9 @@
   driver = "exec";
 
   config = {
-    flake = "github:input-output-hk/vit-ops#vit-servicing-station";
+    flake = "github:input-output-hk/vit-ops?rev=93ac4437e3a6babe22b2b54f7111bdb726ca2fde#vit-servicing-station";
     command = "/bin/vit-servicing-station-server";
     args = [ "--in-settings-file" "local/station-config.yaml" ];
-    ports = [ "web" ];
-
-    labels = [{
-      inherit namespace;
-      name = "${namespace}-servicing-station";
-    }];
-
-    logging = {
-      type = "journald";
-      config = [{
-        tag = "${namespace}-servicing-station";
-        labels = "name,namespace";
-      }];
-    };
   };
 
   resources = {
