@@ -2,7 +2,6 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte-cli.follows = "bitte/bitte-cli";
     bitte.url = "github:input-output-hk/bitte";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
@@ -22,61 +21,31 @@
     };
   };
 
-  outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }:
-    (utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {
-      overlay = import ./overlay.nix { inherit system self; };
+  outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }@inputs:
+    let
+      vitOpsOverlay = import ./overlay.nix inputs;
+      bitteOverlay = bitte.overlay.x86_64-linux;
 
-      legacyPackages = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true; # for ssm-session-manager-plugin
-        overlays = [ overlay ];
+      hashiStack = bitte.mkHashiStack {
+        flake = self;
+        rootDir = ./.;
+        inherit pkgs;
+        domain = "vit.iohk.io";
       };
 
-      inherit (legacyPackages) devShell;
-
-      packages = {
-        inherit (legacyPackages) bitte nixFlakes sops vit-servicing-station;
-        inherit (self.inputs.bitte.packages.${system})
-          terraform-with-plugins cfssl consul;
-      };
-
-      apps.bitte = utils.lib.mkApp { drv = legacyPackages.bitte; };
-    })) // (let
       pkgs = import nixpkgs {
-        overlays = [ self.overlay.x86_64-linux ];
         system = "x86_64-linux";
+        overlays = [
+          (final: prev: { inherit (hashiStack) clusters dockerImages; })
+          bitteOverlay
+          vitOpsOverlay
+        ];
       };
     in {
-      inherit (pkgs) clusters nomadJobs dockerImages;
-      nixosConfigurations = pkgs.nixosConfigurations // {
-        # attrs of interest:
-        # * config.system.build.zfsImage
-        # * config.system.build.uploadAmi
-        zfs-ami = import "${nixpkgs}/nixos" {
-          configuration = { pkgs, lib, ... }: {
-            imports = [
-              ops-lib.nixosModules.make-zfs-image
-              ops-lib.nixosModules.zfs-runtime
-              "${nixpkgs}/nixos/modules/profiles/headless.nix"
-              "${nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-            ];
-            nix.package = self.packages.x86_64-linux.nixFlakes;
-            nix.extraOptions = ''
-              experimental-features = nix-command flakes
-            '';
-            systemd.services.amazon-shell-init.path = [ pkgs.sops ];
-            nixpkgs.config.allowUnfreePredicate = x:
-              builtins.elem (lib.getName x) [ "ec2-ami-tools" "ec2-api-tools" ];
-            zfs.regions = [
-              "eu-west-1"
-              "ap-northeast-1"
-              "ap-northeast-2"
-              "eu-central-1"
-              "us-east-2"
-            ];
-          };
-          system = "x86_64-linux";
-        };
-      };
-    });
+      inherit self;
+      inherit (hashiStack) nomadJobs dockerImages clusters nixosConfigurations;
+      inherit (pkgs) sources;
+      legacyPackages = pkgs;
+      devShell.x86_64-linux = pkgs.devShell;
+    };
 }
