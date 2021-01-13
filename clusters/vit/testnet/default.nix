@@ -176,7 +176,7 @@ in {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
-        volumeSize = 100;
+        volumeSize = 300;
         route53.domains = [ "*.${cluster.domain}" ];
 
         modules = let
