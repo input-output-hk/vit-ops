@@ -1,8 +1,9 @@
 { runCommand, symlinkJoin, debugUtils, fetchurl, ... }: let
+  version = "0.1.0";
   vit-servicing-station = runCommand "vit-servicing-station-static" {
     src = fetchurl {
       url =
-        "https://github.com/mzabaluev/vit-servicing-station/releases/download/v0.1.0-ci-test.1/vit-servicing-station-0.1.0-ci-test.1-x86_64-unknown-linux-musl.tar.gz";
+        "https://github.com/mzabaluev/vit-servicing-station/releases/download/v${version}/vit-servicing-station-${version}-x86_64-unknown-linux-musl.tar.gz";
       sha256 = "sha256-esVtO4GzQob7Xev1RzaBq7SU1u4noCml2lAfghRJuHg=";
     };
   } ''
