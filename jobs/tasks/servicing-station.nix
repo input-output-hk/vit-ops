@@ -2,7 +2,7 @@
   driver = "exec";
 
   config = {
-    flake = "github:input-output-hk/vit-ops?rev=93ac4437e3a6babe22b2b54f7111bdb726ca2fde#vit-servicing-station";
+    flake = "github:input-output-hk/vit-ops?rev=418f5a3eae40f8ce6580b98c2981929f490f938a#vit-servicing-station";
     command = "/bin/vit-servicing-station-server";
     args = [ "--in-settings-file" "local/station-config.yaml" ];
   };
