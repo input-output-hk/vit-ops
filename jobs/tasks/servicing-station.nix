@@ -1,4 +1,4 @@
-{ mkNomadJob, namespace, ... }: {
+{ namespace, ... }: {
   driver = "exec";
 
   config = {
