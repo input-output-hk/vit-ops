@@ -28,3 +28,19 @@ python fetch.py
 nix-shell
 vit-kedqr -pin 1234 -input vote.sk
 ```
+
+# Calculate community advisor rewards
+
+To calculate the rewards for community advisors you need 3 csv files:
+ * All proposals and reviews (file1.csv)
+ * Advisors ada payment address (file2.csv)
+ * Non eligible advisors (file3.csv)
+Csv files can be easily exported/imported from/to spreadsheets, but you usually have to export every sheet in case there's more than one.
+You also need to provide a random seed for the selection process and the total incentive (in $) available to advisors
+
+The script will output a csv containing the funding (in $) to be sent to each advisor.
+
+```
+nix-shell
+python calculate-advisors-rewards.py --seed=STRING --proposals=file1.csv --advisors=file2.csv --total-incentive=INT --non-eligible-advisors=file3.csv
+```
