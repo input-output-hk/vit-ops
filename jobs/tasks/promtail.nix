@@ -2,7 +2,7 @@
   driver = "exec";
 
   config = {
-    flake = "github:input-output-hk/vit-ops?rev=95a2ec1d6a71d07b2ad15fe66e9753b25782e63a#grafana-loki";
+    flake = "github:input-output-hk/vit-ops?rev=fb1f96394d67307cfc07b4abd0325521c3a52d89#grafana-loki";
     command = "/bin/promtail";
     args = [ "-config.file" "local/config.yaml" ];
   };
