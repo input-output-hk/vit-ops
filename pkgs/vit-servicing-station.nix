@@ -5,7 +5,7 @@ let
     src = fetchurl {
       url =
         "https://github.com/input-output-hk/vit-servicing-station/releases/download/v${version}/vit-servicing-station-${version}-x86_64-unknown-linux-musl.tar.gz";
-      sha256 = "sha256-esVtO4GzQob7Xev1RzaBq7SU1u4noCml2lAfghRJuHg=";
+      sha256 = "sha256-+O8bxMUjg0/OtK4XXClV2k/UJFnKFlpnDeyyDxIw6PA=";
     };
   } ''
     mkdir -pv $out/bin

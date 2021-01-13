@@ -5,7 +5,7 @@
     flake = "github:input-output-hk/vit-ops?rev=95a2ec1d6a71d07b2ad15fe66e9753b25782e63a#grafana-loki";
     command = "/bin/promtail";
     args = [ "-config.file" "local/config.yaml" ];
-  }
+  };
 
   templates = [
     {
