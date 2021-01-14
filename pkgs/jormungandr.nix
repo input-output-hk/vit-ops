@@ -1,4 +1,5 @@
-{ runCommand, writeShellScriptBin, symlinkJoin, debugUtils, fetchurl, gnutar, ... }:
+{ runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
+, gnutar, ... }:
 let
   jormungandr = let
     version = "0.10.0-alpha.2";
@@ -13,10 +14,20 @@ let
     tar -zxvf ${src}
   '';
 
+  PATH = lib.makeBinPath [
+    jormungandr
+    jq
+    remarshal
+    coreutils
+    restic
+    procps
+    diffutils
+  ];
+
   entrypoint = writeShellScriptBin "entrypoint" ''
     set -exuo pipefail
 
-    export PATH="/bin"
+    export PATH="${PATH}"
 
     nodeConfig="$NOMAD_TASK_DIR/node-config.json"
     runConfig="$NOMAD_TASK_DIR/running.json"
