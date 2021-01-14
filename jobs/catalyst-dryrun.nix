@@ -1,6 +1,6 @@
 { mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, cacert, curl
 , dnsutils, gawk, gnugrep, iproute, jq, lsof, netcat, nettools, procps
-, jormungandr-monitor, jormungandr, telegraf, remarshal, dockerImages, rev }:
+, jormungandr-monitor, jormungandr, telegraf, remarshal, rev }:
 let
   namespace = "catalyst-dryrun";
 
@@ -48,19 +48,18 @@ let
         };
 
         tasks = (lib.optionalAttrs (!backup) {
-          monitor =
-            import ./tasks/monitor.nix { inherit dockerImages namespace name; };
+          monitor = import ./tasks/monitor.nix { inherit namespace name rev; };
           env = import ./tasks/print-env.nix { inherit rev; };
-          telegraf = import ./tasks/telegraf.nix {
-            inherit dockerImages namespace name;
-          };
+          telegraf =
+            import ./tasks/telegraf.nix { inherit namespace name rev; };
           jormungandr = import ./tasks/jormungandr.nix {
             inherit lib rev namespace name requiredPeerCount public block0 index
               memoryMB;
           };
+          promtail = import ./tasks/promtail.nix { inherit rev; };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
-            inherit dockerImages namespace name block0 memoryMB;
+            inherit namespace name block0 memoryMB rev;
           };
         });
 
@@ -115,8 +114,6 @@ let
           }];
         };
       };
-
-      promtail = import ./tasks/promtail.nix { inherit rev; };
     };
 in {
   ${namespace} = mkNomadJob "vit" {

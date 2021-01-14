@@ -1,5 +1,5 @@
 { namespace, name, rev }: {
-  driver = "docker";
+  driver = "exec";
 
   vault = {
     policies = [ "nomad-cluster" ];

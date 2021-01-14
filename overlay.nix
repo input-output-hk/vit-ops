@@ -48,6 +48,8 @@ in {
   };
   jormungandr = final.callPackage ./pkgs/jormungandr.nix { };
   print-env = final.callPackage ./pkgs/print-env.nix { };
+  jormungandr-monitor-entrypoint =
+    final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 

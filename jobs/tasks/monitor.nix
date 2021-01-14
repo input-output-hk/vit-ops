@@ -1,5 +1,5 @@
-{ dockerImages, namespace, name }: {
-  driver = "docker";
+{ namespace, name, rev }: {
+  driver = "exec";
 
   resources = {
     cpu = 100; # mhz
@@ -7,20 +7,10 @@
   };
 
   config = {
-    image = dockerImages.monitor;
-    ports = [ "prometheus" ];
-    labels = [{
-      inherit namespace name;
-      imageTag = dockerImages.monitor.image.imageTag;
-    }];
-
-    logging = {
-      type = "journald";
-      config = [{
-        tag = "${name}-monitor";
-        labels = "name,namespace,imageTag";
-      }];
-    };
+    flake =
+      "github:input-output-hk/vit-ops?rev=${rev}#jormungandr-monitor-entrypoint";
+    command = "/bin/entrypoint";
+    args = [ "-config" "local/telegraf.config" ];
   };
 
   templates = [{

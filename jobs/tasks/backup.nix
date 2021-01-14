@@ -1,5 +1,5 @@
-{ dockerImages, namespace, name, block0, memoryMB ? 2048 }: {
-  driver = "docker";
+{ namespace, name, block0, memoryMB ? 2048 }: {
+  driver = "exec";
 
   vault = {
     policies = [ "nomad-cluster" ];
@@ -12,23 +12,12 @@
   };
 
   config = {
-    image = dockerImages.backup;
+    flake = "github:input-output-hk/vit-ops?rev=${rev}#restic-backup";
+    command = "/bin/restic-backup";
     args = [ "--tag" namespace ];
-    ports = [ "rpc" "rest" ];
-
-    labels = [{
-      inherit namespace name;
-      imageTag = dockerImages.backup.image.imageTag;
-    }];
-
-    logging = {
-      type = "journald";
-      config = [{
-        tag = name;
-        labels = "name,namespace,imageTag";
-      }];
-    };
   };
+
+  env = { AWS_DEFAULT_REGION = "eu-central-1"; };
 
   artifacts = [ block0 ];
 
