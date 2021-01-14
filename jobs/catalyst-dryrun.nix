@@ -50,7 +50,7 @@ let
         tasks = (lib.optionalAttrs (!backup) {
           monitor =
             import ./tasks/monitor.nix { inherit dockerImages namespace name; };
-          env = import ./tasks/env.nix { inherit rev; };
+          env = import ./tasks/print-env.nix { inherit rev; };
           telegraf = import ./tasks/telegraf.nix {
             inherit dockerImages namespace name;
           };
@@ -116,7 +116,7 @@ let
         };
       };
 
-      promtail = import ./tasks/promtail.nix { };
+      promtail = import ./tasks/promtail.nix { inherit rev; };
     };
 in {
   ${namespace} = mkNomadJob "vit" {
