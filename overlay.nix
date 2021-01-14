@@ -68,6 +68,7 @@ in {
     procps
     ripgrep
     sqlite-interactive
+    strace
     tcpdump
     tmux
     tree
