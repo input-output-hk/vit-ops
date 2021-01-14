@@ -1,4 +1,4 @@
-{ dockerImages, namespace, name }: {
+{ namespace, name, rev }: {
   driver = "docker";
 
   vault = {
@@ -12,20 +12,9 @@
   };
 
   config = {
-    image = dockerImages.telegraf;
+    flake = "github:input-output-hk/vit-ops?rev=${rev}#telegraf";
+    command = "/bin/telegraf";
     args = [ "-config" "local/telegraf.config" ];
-    labels = [{
-      inherit namespace name;
-      imageTag = dockerImages.telegraf.image.imageTag;
-    }];
-
-    logging = {
-      type = "journald";
-      config = [{
-        tag = "${name}-telegraf";
-        labels = "name,namespace,imageTag";
-      }];
-    };
   };
 
   templates = [{
@@ -36,8 +25,8 @@
       omit_hostname = false
 
       [global_tags]
-      client_id = "${name}"
-      namespace = "${namespace}"
+      client_id = "{{ env "NOMAD_GROUP_NAME" }}"
+      namespace = "{{ env "NOMAD_NAMESPACE" }}"
 
       [inputs.prometheus]
       metric_version = 1
