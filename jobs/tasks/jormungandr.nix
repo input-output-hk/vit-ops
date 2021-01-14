@@ -1,6 +1,6 @@
 { lib, dockerImages, namespace, name, requiredPeerCount, public, index, block0, memoryMB ? 512
 }: {
-  driver = "docker";
+  driver = "exec";
 
   vault = {
     policies = [ "nomad-cluster" ];
@@ -17,20 +17,8 @@
   };
 
   config = {
-    image = dockerImages.jormungandr;
-    ports = [ "rpc" "rest" ];
-    labels = [{
-      inherit namespace name;
-      imageTag = dockerImages.jormungandr.image.imageTag;
-    }];
-
-    logging = {
-      type = "journald";
-      config = [{
-        tag = name;
-        labels = "name,namespace,imageTag";
-      }];
-    };
+    flake = "github:input-output-hk/vit-ops?rev=fb1f96394d67307cfc07b4abd0325521c3a52d89#jormungandr";
+    command = "/bin/entrypoint";
   };
 
   env = {

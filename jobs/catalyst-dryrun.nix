@@ -113,6 +113,8 @@ let
           }];
         };
       };
+
+      promtail = import ./tasks/promtail.nix { };
     };
 in {
   ${namespace} = mkNomadJob "vit" {

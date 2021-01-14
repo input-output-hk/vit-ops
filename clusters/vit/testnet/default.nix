@@ -84,6 +84,7 @@ in {
             "${extraConfig}"
             ./secrets.nix
             ./docker-auth.nix
+            ./nix-builder.nix
           ];
 
           securityGroupRules = {
@@ -196,6 +197,7 @@ in {
           ./ingress.nix
           ./docker-registry.nix
           ./minio.nix
+          ./nix-builder.nix
         ];
 
         securityGroupRules = {

@@ -36,25 +36,13 @@ in {
 
   mkEnv = lib.mapAttrsToList (key: value: "${key}=${value}");
 
-  jormungandr = let
-    version = "0.10.0-alpha.2";
-    src = final.fetchurl {
-      url =
-        "https://github.com/input-output-hk/jormungandr/releases/download/v${version}/jormungandr-${version}-x86_64-unknown-linux-musl-generic.tar.gz";
-      sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
-    };
-  in final.runCommand "jormungandr" { buildInputs = [ final.gnutar ]; } ''
-    mkdir -p $out/bin
-    cd $out/bin
-    tar -zxvf ${src}
-  '';
-
   jormungandr-monitor = final.callPackage
     (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
     };
 
   vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {};
+  jormungandr = final.callPackage ./pkgs/jormungandr.nix {};
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
