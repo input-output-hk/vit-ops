@@ -42,8 +42,10 @@ in {
       jormungandr-cli = final.jormungandr;
     };
 
-  vit-servicing-station =
-    final.callPackage ./pkgs/vit-servicing-station.nix { };
+  vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {
+    vit-servicing-station =
+      inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
+  };
   jormungandr = final.callPackage ./pkgs/jormungandr.nix { };
   print-env = final.callPackage ./pkgs/print-env.nix { };
 
