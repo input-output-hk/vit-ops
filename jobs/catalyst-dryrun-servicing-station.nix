@@ -1,4 +1,4 @@
-{ dockerImages, mkNomadJob, ... }:
+{ rev, mkNomadJob, ... }:
 let namespace = "catalyst-dryrun";
 in {
   "${namespace}-servicing-station" = mkNomadJob "servicing-station" {
@@ -54,8 +54,8 @@ in {
       };
 
       tasks = {
-        servicing-station = import ./tasks/servicing-station.nix { inherit namespace; };
-        promtail = import ./tasks/promtail.nix { };
+        servicing-station = import ./tasks/servicing-station.nix { inherit namespace rev; };
+        promtail = import ./tasks/promtail.nix { inherit rev; };
       };
     };
   };

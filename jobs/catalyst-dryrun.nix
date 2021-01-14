@@ -1,6 +1,6 @@
 { mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, cacert, curl
 , dnsutils, gawk, gnugrep, iproute, jq, lsof, netcat, nettools, procps
-, jormungandr-monitor, jormungandr, telegraf, remarshal, dockerImages }:
+, jormungandr-monitor, jormungandr, telegraf, remarshal, dockerImages, rev }:
 let
   namespace = "catalyst-dryrun";
 
@@ -49,12 +49,12 @@ let
         tasks = (lib.optionalAttrs (!backup) {
           monitor =
             import ./tasks/monitor.nix { inherit dockerImages namespace name; };
-          env = import ./tasks/env.nix { inherit dockerImages; };
+          env = import ./tasks/env.nix { inherit rev; };
           telegraf = import ./tasks/telegraf.nix {
             inherit dockerImages namespace name;
           };
           jormungandr = import ./tasks/jormungandr.nix {
-            inherit lib dockerImages namespace name requiredPeerCount public
+            inherit lib rev namespace name requiredPeerCount public
               block0 index memoryMB;
           };
         }) // (lib.optionalAttrs backup {

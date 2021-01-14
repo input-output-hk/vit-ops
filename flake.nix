@@ -23,7 +23,7 @@
 
   outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }@inputs:
     let
-      vitOpsOverlay = import ./overlay.nix inputs;
+      vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
       bitteOverlay = bitte.overlay.x86_64-linux;
 
       hashiStack = bitte.mkHashiStack {
