@@ -54,7 +54,8 @@ in {
       };
 
       tasks = {
-        servicing-station = import ./tasks/servicing-station.nix { inherit namespace rev; };
+        servicing-station =
+          import ./tasks/servicing-station.nix { inherit namespace rev; };
         promtail = import ./tasks/promtail.nix { inherit rev; };
       };
     };

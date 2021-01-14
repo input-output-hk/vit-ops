@@ -1,5 +1,5 @@
-{ lib, rev, namespace, name, requiredPeerCount, public, index, block0, memoryMB ? 512
-}: {
+{ lib, rev, namespace, name, requiredPeerCount, public, index, block0
+, memoryMB ? 512 }: {
   driver = "exec";
 
   vault = {
@@ -27,6 +27,7 @@
     STORAGE_DIR = "/local/storage";
     NAMESPACE = namespace;
     RUST_BACKTRACE = "full";
+    PATH = "/bin";
   };
 
   resources = {

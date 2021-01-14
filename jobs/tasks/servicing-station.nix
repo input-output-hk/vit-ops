@@ -7,9 +7,7 @@
     args = [ "--in-settings-file" "local/station-config.yaml" ];
   };
 
-  env = {
-    PATH = "/bin";
-  };
+  env = { PATH = "/bin"; };
 
   resources = {
     cpu = 100; # mhz
