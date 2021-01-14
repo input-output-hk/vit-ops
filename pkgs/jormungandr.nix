@@ -40,6 +40,7 @@ let
 
       restic restore latest \
         --verbose=5 \
+        --no-lock \
         --tag "$NAMESPACE" \
         --target / \
       || echo "couldn't restore backup, continue startup procedure..."
