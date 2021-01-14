@@ -35,7 +35,7 @@ let
     name="jormungandr"
 
     function convert () {
-      rm -f "$runConfig"
+      rm -f "$runConfig" "$runYaml"
       cp "$nodeConfig" "$runConfig"
       remarshal --if json --of yaml "$runConfig" > "$runYaml"
     }
