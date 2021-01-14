@@ -34,8 +34,10 @@ let
     runYaml="$NOMAD_TASK_DIR/running.yaml"
     name="jormungandr"
 
+    chmod u+rwx -R "$STORAGE_DIR"
+
     function convert () {
-      rm -f "$runConfig" "$runYaml"
+      chmod u+rwx -R "$STORAGE_DIR"
       cp "$nodeConfig" "$runConfig"
       remarshal --if json --of yaml "$runConfig" > "$runYaml"
     }
@@ -49,6 +51,7 @@ let
       echo "$STORAGE_DIR not found, restoring backup..."
 
       restic restore latest \
+        --verbose=5 \
         --tag "$NAMESPACE" \
         --target / \
       || echo "couldn't restore backup, continue startup procedure..."
