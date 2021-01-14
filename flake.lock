@@ -11,16 +11,17 @@
         "inclusive": "inclusive",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-terraform": "nixpkgs-terraform",
+        "nomad-source": "nomad-source",
         "ops-lib": "ops-lib",
         "terranix": "terranix",
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1610443155,
-        "narHash": "sha256-3efFpWCSicDhRmBTAj5UZtjPvhZLy4CLqUp1iZ8IYDM=",
+        "lastModified": 1610630644,
+        "narHash": "sha256-US8q+HPLLh6tpVV1HVb2U/QTXFB65oiNbE2boRF+7as=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "23b4c9d30dfd234950dd348c53964b0a70c42988",
+        "rev": "0363133694d2fa68b8cfe72fa1c10cf838c5608a",
         "type": "github"
       },
       "original": {
@@ -222,6 +223,23 @@
       "original": {
         "id": "nixpkgs",
         "type": "indirect"
+      }
+    },
+    "nomad-source": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1610630386,
+        "narHash": "sha256-uMaAz62nZvkLhzgrzOCQwv8Kjd3AY7wtOuU47SfGCiQ=",
+        "owner": "manveru",
+        "repo": "nomad",
+        "rev": "841e2abe5a6c13a2c6978c7c786c855aeb9ce4e3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "manveru",
+        "ref": "release-1.0.1",
+        "repo": "nomad",
+        "type": "github"
       }
     },
     "ops-lib": {
