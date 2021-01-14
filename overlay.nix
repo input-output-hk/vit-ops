@@ -1,6 +1,7 @@
 inputs: final: prev:
 let lib = final.lib;
 in {
+  rev = self.rev or (builtins.throw "please commit and push before invoking jobs");
 
   consul-templates = let
     sources = lib.pipe final.nomadJobs [
@@ -42,6 +43,7 @@ in {
 
   vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {};
   jormungandr = final.callPackage ./pkgs/jormungandr.nix {};
+  print-env = final.callPackage ./pkgs/print-env.nix {};
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
