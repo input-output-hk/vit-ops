@@ -10,11 +10,15 @@
   templates = [
     {
       data = ''
+        server:
+          http_listen_port: 9080
+          grpc_listen_port: 0
+
         positions:
           filename: /local/positions.yaml # This location needs to be writeable by promtail.
 
         client:
-          url: http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:8428/loki/api/v1/push
+          url: http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:3100/loki/api/v1/push
 
         scrape_configs:
          - job_name: {{ env "NOMAD_GROUP_NAME" }}

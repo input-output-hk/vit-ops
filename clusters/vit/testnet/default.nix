@@ -82,6 +82,17 @@ in {
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
+          modules = [
+            "${extraConfig}"
+            "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
+            "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
+            (bitte + /profiles/client.nix)
+            ./docker-auth.nix
+            ./nix-builder.nix
+            ./secrets.nix
+            self.inputs.ops-lib.nixosModules.zfs-runtime
+          ];
+
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
@@ -175,6 +186,7 @@ in {
           ./ingress.nix
           ./docker-registry.nix
           ./minio.nix
+          ./nix-builder.nix
         ];
 
         securityGroupRules = {
