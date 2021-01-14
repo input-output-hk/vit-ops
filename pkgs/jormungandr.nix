@@ -34,10 +34,10 @@ let
     runYaml="$NOMAD_TASK_DIR/running.yaml"
     name="jormungandr"
 
-    chmod u+rwx -R "$STORAGE_DIR"
+    chmod u+rwx -R "$NOMAD_TASK_DIR"
 
     function convert () {
-      chmod u+rwx -R "$STORAGE_DIR"
+      chmod u+rwx -R "$NOMAD_TASK_DIR"
       cp "$nodeConfig" "$runConfig"
       remarshal --if json --of yaml "$runConfig" > "$runYaml"
     }
