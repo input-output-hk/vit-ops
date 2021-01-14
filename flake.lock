@@ -210,6 +210,20 @@
         "type": "indirect"
       }
     },
+    "nixpkgs_5": {
+      "locked": {
+        "lastModified": 1610565421,
+        "narHash": "sha256-8gUzX5p/MAbRBroaWOv2v9sup2qBnQVkdyy6Id/1lec=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "e41f385b1c196a4b2a6daee2a9a3295593ed6455",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
     "ops-lib": {
       "flake": false,
       "locked": {
@@ -407,14 +421,32 @@
         "type": "github"
       }
     },
-    "vit-servicing-station": {
-      "flake": false,
+    "utils_6": {
       "locked": {
-        "lastModified": 1598860782,
-        "narHash": "sha256-ehBxODoWwEF6jKOKl8mF891j/MRZfffeRIt8GMgqoaA=",
+        "lastModified": 1610051610,
+        "narHash": "sha256-U9rPz/usA1/Aohhk7Cmc2gBrEEKRzcW4nwPWMPwja4Y=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "3982c9903e93927c2164caa727cd3f6a0e6d14cc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "vit-servicing-station": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_5",
+        "utils": "utils_6"
+      },
+      "locked": {
+        "lastModified": 1610610287,
+        "narHash": "sha256-25Aa5pOd4mkzp5Gwd0b1gRXJTijdQxtrXbotqGzSgEo=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "807166499989affb5d1f50d23b6b5e1d1046430a",
+        "rev": "48ad850badef116585447af3afa6a71451e31c9b",
         "type": "github"
       },
       "original": {
