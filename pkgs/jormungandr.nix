@@ -1,5 +1,5 @@
 { runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
-, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, strace, ... }:
+, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, ... }:
 let
   jormungandr = let
     version = "0.10.0-alpha.2";
