@@ -82,7 +82,15 @@ in {
       Entrypoint = [ entrypoint ];
 
       Env = mkEnv {
-        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic procps diffutils ];
+        PATH = lib.makeBinPath [
+          jormungandr
+          jq
+          remarshal
+          coreutils
+          restic
+          procps
+          diffutils
+        ];
       };
     };
   };

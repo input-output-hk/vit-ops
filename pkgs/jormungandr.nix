@@ -1,5 +1,5 @@
 { runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
-, gnutar, ... }:
+, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, ... }:
 let
   jormungandr = let
     version = "0.10.0-alpha.2";
@@ -15,13 +15,13 @@ let
   '';
 
   PATH = lib.makeBinPath [
+    coreutils
+    diffutils
     jormungandr
     jq
-    remarshal
-    coreutils
-    restic
     procps
-    diffutils
+    remarshal
+    restic
   ];
 
   entrypoint = writeShellScriptBin "entrypoint" ''

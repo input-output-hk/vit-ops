@@ -12,7 +12,8 @@ let
       "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
   };
 
-  mkVit = { index, requiredPeerCount, backup ? false, public ? false, memoryMB ? 512 }:
+  mkVit = { index, requiredPeerCount, backup ? false, public ? false
+    , memoryMB ? 512 }:
     let
       localRpcPort = (if public then 10000 else 7000) + index;
       localRestPort = (if public then 11000 else 9000) + index;
@@ -54,8 +55,8 @@ let
             inherit dockerImages namespace name;
           };
           jormungandr = import ./tasks/jormungandr.nix {
-            inherit lib rev namespace name requiredPeerCount public
-              block0 index memoryMB;
+            inherit lib rev namespace name requiredPeerCount public block0 index
+              memoryMB;
           };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
@@ -88,11 +89,12 @@ let
           tags = [ name "peer" role ];
         };
 
-        services."${namespace}-jormungandr-internal" = lib.mkIf (role != "backup") {
-          portLabel = "rpc";
-          task = "jormungandr";
-          tags = [ name "peer" role ];
-        };
+        services."${namespace}-jormungandr-internal" =
+          lib.mkIf (role != "backup") {
+            portLabel = "rpc";
+            task = "jormungandr";
+            tags = [ name "peer" role ];
+          };
 
         services."${namespace}-${name}-jormungandr-rest" = {
           addressMode = "host";
@@ -122,14 +124,14 @@ in {
     type = "service";
     inherit namespace;
 
-    spreads = [ {
+    spreads = [{
       attribute = "\${node.unique.name}";
       # attribute = "\${node.datacenter}";
       weight = 100;
-    } ];
+    }];
 
     migrate = {
-      maxParallel     = 1;
+      maxParallel = 1;
       # health_check     = "checks"
       minHealthyTime = "30s";
       healthyDeadline = "5m";
