@@ -1,5 +1,5 @@
 { runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
-, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, ... }:
+, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, strace, ... }:
 let
   jormungandr = let
     version = "0.10.0-alpha.2";
@@ -14,30 +14,18 @@ let
     tar -zxvf ${src}
   '';
 
-  PATH = lib.makeBinPath [
-    coreutils
-    diffutils
-    jormungandr
-    jq
-    procps
-    remarshal
-    restic
-  ];
-
   entrypoint = writeShellScriptBin "entrypoint" ''
     set -exuo pipefail
-
-    export PATH="${PATH}"
 
     nodeConfig="$NOMAD_TASK_DIR/node-config.json"
     runConfig="$NOMAD_TASK_DIR/running.json"
     runYaml="$NOMAD_TASK_DIR/running.yaml"
     name="jormungandr"
 
-    chmod u+rwx -R "$NOMAD_TASK_DIR"
+    chmod u+rwx -R "$NOMAD_TASK_DIR" || true
 
     function convert () {
-      chmod u+rwx -R "$NOMAD_TASK_DIR"
+      chmod u+rwx -R "$NOMAD_TASK_DIR" || true
       cp "$nodeConfig" "$runConfig"
       remarshal --if json --of yaml "$runConfig" > "$runYaml"
     }
@@ -106,5 +94,14 @@ let
   '';
 in symlinkJoin {
   name = "entrypoint";
-  paths = debugUtils ++ [ entrypoint ];
+  paths = debugUtils ++ [
+    coreutils
+    diffutils
+    entrypoint
+    jormungandr
+    jq
+    procps
+    remarshal
+    restic
+  ];
 }
