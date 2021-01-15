@@ -85,6 +85,7 @@ in {
             ./secrets.nix
             ./docker-auth.nix
             ./nix-builder.nix
+            ./reaper.nix
           ];
 
           securityGroupRules = {
