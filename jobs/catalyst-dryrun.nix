@@ -35,7 +35,7 @@ let
         };
 
         networks = [{
-          mode = "bridge";
+          # mode = "bridge";
           ports = {
             prometheus.to = 6000;
             rest.to = localRestPort;
