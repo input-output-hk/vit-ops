@@ -89,6 +89,7 @@ in {
             (bitte + /profiles/client.nix)
             ./docker-auth.nix
             ./nix-builder.nix
+            ./reaper.nix
             ./secrets.nix
             self.inputs.ops-lib.nixosModules.zfs-runtime
           ];

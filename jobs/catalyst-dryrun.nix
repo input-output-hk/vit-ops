@@ -65,7 +65,6 @@ let
         });
 
         services."${namespace}-${name}-jormungandr" = {
-          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name role ] ++ (lib.optional public "ingress");
@@ -83,7 +82,6 @@ let
         };
 
         services."${namespace}-jormungandr" = {
-          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];
@@ -97,7 +95,6 @@ let
           };
 
         services."${namespace}-${name}-jormungandr-rest" = {
-          addressMode = "host";
           portLabel = "rest";
           task = "jormungandr";
           tags = [ name role ];
