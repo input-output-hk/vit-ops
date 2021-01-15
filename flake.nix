@@ -6,6 +6,7 @@
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     nixpkgs.follows = "bitte/nixpkgs";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
     utils.url = "github:numtide/flake-utils";
     rust-libs.url =

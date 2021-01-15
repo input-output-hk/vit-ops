@@ -52,6 +52,7 @@ in {
     final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
+  restic = inputs.nixpkgs-unstable.legacyPackages.${final.system}.restic;
 
   debugUtils = with final; [
     bashInteractive
