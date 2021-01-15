@@ -3,6 +3,7 @@
 , jormungandr-monitor, jormungandr, telegraf, remarshal, rev }:
 let
   namespace = "catalyst-dryrun";
+  datacenters = [ "eu-central-1" ]; # "us-east-2" ];
 
   block0 = {
     source =
@@ -117,9 +118,8 @@ let
     };
 in {
   ${namespace} = mkNomadJob "vit" {
-    datacenters = [ "eu-central-1" "us-east-2" ];
+    inherit datacenters namespace;
     type = "service";
-    inherit namespace;
 
     spreads = [{
       attribute = "\${node.unique.name}";
@@ -166,9 +166,8 @@ in {
   };
 
   "${namespace}-backup" = mkNomadJob "backup" {
-    datacenters = [ "eu-central-1" "us-east-2" ];
+    inherit namespace datacenters;
     type = "batch";
-    inherit namespace;
 
     periodic = {
       cron = "25 */1 * * * *";
