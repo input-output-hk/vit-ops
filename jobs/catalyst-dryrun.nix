@@ -37,10 +37,10 @@ let
         networks = [{
           mode = "host";
           ports = {
-            prometheus.to = 6000;
-            rest.to = 7000;
-            rpc.to = 8000;
-            promtail.to = 9000;
+            prometheus = { };
+            rest = { };
+            rpc = { };
+            promtail = { };
           };
         }];
 
