@@ -16,8 +16,8 @@
   templates = [{
     data = ''
       SLEEP_TIME="10"
-      PORT="{{ env "NOMAD_PORT_prometheus" }}"
-      JORMUNGANDR_API="http://{{ env "NOMAD_ADDR_rest" }}/api"
+      PORT="{{ env "NOMAD_HOST_PORT_prometheus" }}"
+      JORMUNGANDR_API="http://{{ env "NOMAD_HOST_ADDR_rest" }}/api"
     '';
     env = true;
     destination = "local/env.txt";

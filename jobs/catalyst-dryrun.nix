@@ -35,11 +35,12 @@ let
         };
 
         networks = [{
-          # mode = "bridge";
+          mode = "host";
           ports = {
             prometheus.to = 6000;
-            rest.to = localRestPort;
-            rpc.to = localRpcPort;
+            rest.to = 7000;
+            rpc.to = 8000;
+            promtail.to = 9000;
           };
         }];
 
@@ -65,6 +66,7 @@ let
         });
 
         services."${namespace}-${name}-jormungandr" = {
+          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name role ] ++ (lib.optional public "ingress");
@@ -82,6 +84,7 @@ let
         };
 
         services."${namespace}-jormungandr" = {
+          addressMode = "host";
           portLabel = "rpc";
           task = "jormungandr";
           tags = [ name "peer" role ];
@@ -89,12 +92,14 @@ let
 
         services."${namespace}-jormungandr-internal" =
           lib.mkIf (role != "backup") {
+            addressMode = "host";
             portLabel = "rpc";
             task = "jormungandr";
             tags = [ name "peer" role ];
           };
 
         services."${namespace}-${name}-jormungandr-rest" = {
+          addressMode = "host";
           portLabel = "rest";
           task = "jormungandr";
           tags = [ name role ];

@@ -10,7 +10,7 @@
   templates = [{
     data = ''
       server:
-        http_listen_port: 9080
+        http_listen_port: {{ env "NOMAD_PORT_promtail" }}
         grpc_listen_port: 0
 
       positions:
