@@ -44,3 +44,11 @@ The script will output a csv containing the funding (in $) to be sent to each ad
 nix-shell
 python calculate-advisors-rewards.py --seed=STRING --proposals=file1.csv --advisors=file2.csv --total-incentive=INT --non-eligible-advisors=file3.csv
 ```
+
+### Selection process
+The script seeds the random number generator using the provided value and then does the following for each proposal:
+* read reviewers
+* remove non eligible advisors from this list
+* select 3 random advisors from this list using Python `random.sample`. If there are less than 3 advisors for a proposal, select all of them.
+
+If you want to reproduce the results, make sure you have the same files and use the same seed.
