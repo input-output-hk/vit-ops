@@ -15,10 +15,7 @@
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
     };
-    vit-servicing-station = {
-      url = "github:input-output-hk/vit-servicing-station";
-      flake = false;
-    };
+    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station";
   };
 
   outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }@inputs:

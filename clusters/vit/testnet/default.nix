@@ -45,29 +45,35 @@ in {
     s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
     flakePath = ../../..;
 
-    autoscalingGroups = listToAttrs (forEach [
+    autoscalingGroups = let
+      defaultModules = [
+        (bitte + /profiles/client.nix)
+        self.inputs.ops-lib.nixosModules.zfs-runtime
+        "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
+        "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
+        ./secrets.nix
+        ./docker-auth.nix
+      ];
+
+      withNamespace = name:
+        pkgs.writeText "nomad-tag.nix" ''
+          { services.nomad.client.meta.namespace = "${name}"; }
+        '';
+
+      mkModules = name: defaultModules ++ [ "${withNamespace name}" ];
+    in listToAttrs (forEach [
       {
         region = "eu-central-1";
         desiredCapacity = 3;
+        modules = mkModules "catalyst-dryrun";
       }
       {
         region = "us-east-2";
         desiredCapacity = 3;
+        modules = mkModules "catalyst-fund2";
       }
     ] (args:
       let
-        extraConfig = pkgs.writeText "extra-config.nix" ''
-          { lib, ... }:
-
-          {
-            disabledModules = [ "virtualisation/amazon-image.nix" ];
-            networking = {
-              hostId = "9474d585";
-            };
-            boot.initrd.postDeviceCommands = "echo FINDME; lsblk";
-            boot.loader.grub.device = lib.mkForce "/dev/nvme0n1";
-          }
-        '';
         attrs = ({
           desiredCapacity = 1;
           instanceType = "t3a.large";
@@ -76,36 +82,9 @@ in {
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
-          modules = [
-            (bitte + /profiles/client.nix)
-            self.inputs.ops-lib.nixosModules.zfs-runtime
-            "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
-            "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-            "${extraConfig}"
-            ./secrets.nix
-            ./docker-auth.nix
-          ];
-
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
-          ami = amis.${args.region};
-          userData = ''
-            # amazon-shell-init
-            set -exuo pipefail
-
-            ${pkgs.zfs}/bin/zpool online -e tank nvme0n1p3
-
-            export CACHES="https://hydra.iohk.io https://cache.nixos.org ${cluster.s3Cache}"
-            export CACHE_KEYS="hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ${cluster.s3CachePubKey}"
-            pushd /run/keys
-            aws s3 cp "s3://${cluster.s3Bucket}/infra/secrets/${cluster.name}/${cluster.kms}/source/source.tar.xz" source.tar.xz
-            mkdir -p source
-            tar xvf source.tar.xz -C source
-            nix build ./source#nixosConfigurations.${cluster.name}-${asgName}.config.system.build.toplevel --option substituters "$CACHES" --option trusted-public-keys "$CACHE_KEYS"
-            /run/current-system/sw/bin/nixos-rebuild --flake ./source#${cluster.name}-${asgName} boot --option substituters "$CACHES" --option trusted-public-keys "$CACHE_KEYS"
-            /run/current-system/sw/bin/shutdown -r now
-          '';
         } // args);
         asgName = "client-${attrs.region}-${
             replaceStrings [ "." ] [ "-" ] attrs.instanceType
@@ -173,7 +152,7 @@ in {
       };
 
       monitoring = {
-        instanceType = "t3a.large";
+        instanceType = "t3a.xlarge";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 300;

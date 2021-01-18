@@ -1,5 +1,4 @@
-inputs:
-final: prev:
+inputs: final: prev:
 let lib = final.lib;
 in {
 
@@ -49,12 +48,13 @@ in {
     tar -zxvf ${src}
   '';
 
-  jormungandr-monitor = final.callPackage
-    (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
+  jormungandr-monitor =
+    final.callPackage (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
     };
 
-  vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {};
+  vit-servicing-station =
+    inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
