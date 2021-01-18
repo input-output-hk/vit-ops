@@ -17,6 +17,8 @@ let
   entrypoint = writeShellScriptBin "entrypoint" ''
     set -exuo pipefail
 
+    ulimit -n 1024
+
     nodeConfig="$NOMAD_TASK_DIR/node-config.json"
     runConfig="$NOMAD_TASK_DIR/running.json"
     runYaml="$NOMAD_TASK_DIR/running.yaml"

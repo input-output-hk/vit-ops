@@ -6,6 +6,9 @@ let
   entrypoint = writeShellScriptBin "entrypoint" ''
     export SSL_CERT_FILE="${cacert}/etc/ssl/certs/ca-bundle.crt"
     export PATH="${PATH}"
+
+    ulimit -n 1024
+
     exec ${jormungandr-monitor} "$@"
   '';
 in symlinkJoin {
