@@ -17,7 +17,7 @@
   };
 
   config = {
-    flake = "github:input-output-hk/vit-ops?rev=${rev}#jormungandr";
+    flake = "github:input-output-hk/vit-ops?rev=${rev}#jormungandr-entrypoint";
     command = "/bin/entrypoint";
   };
 

@@ -1,19 +1,7 @@
 { runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
-, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, ... }:
+, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, jormungandr, ...
+}:
 let
-  jormungandr = let
-    version = "0.10.0-alpha.2";
-    src = fetchurl {
-      url =
-        "https://github.com/input-output-hk/jormungandr/releases/download/v${version}/jormungandr-${version}-x86_64-unknown-linux-musl-generic.tar.gz";
-      sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
-    };
-  in runCommand "jormungandr" { buildInputs = [ gnutar ]; } ''
-    mkdir -p $out/bin
-    cd $out/bin
-    tar -zxvf ${src}
-  '';
-
   entrypoint = writeShellScriptBin "entrypoint" ''
     set -exuo pipefail
 

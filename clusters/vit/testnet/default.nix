@@ -1,19 +1,9 @@
 { self, lib, pkgs, config, ... }:
 let
-  inherit (pkgs.terralib) sops2kms sops2region cidrsOf;
-  inherit (builtins) readFile replaceStrings;
-  inherit (lib) mapAttrs' nameValuePair flip attrValues listToAttrs forEach;
+  inherit (self.inputs) bitte;
   inherit (config) cluster;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
-
-  bitte = self.inputs.bitte;
-
-  amis = {
-    us-east-2 = "ami-0492aa69cf46f79c3";
-    eu-central-1 = "ami-0839f2c610f876d2d";
-  };
-
 in {
   imports = [ ./iam.nix ];
 
@@ -28,6 +18,7 @@ in {
   services.nomad.namespaces = {
     catalyst-dryrun = { description = "Catalyst (dryrun)"; };
     catalyst-fund2 = { description = "Catalyst (fund2) "; };
+    catalyst-fund3 = { description = "Catalyst (fund3) "; };
   };
 
   cluster = {
@@ -53,6 +44,10 @@ in {
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./secrets.nix
         ./docker-auth.nix
+        ./nix-builder.nix
+        ./reaper.nix
+        ./host-volumes.nix
+        ./nspawn.nix
       ];
 
       withNamespace = name:
@@ -61,7 +56,7 @@ in {
         '';
 
       mkModules = name: defaultModules ++ [ "${withNamespace name}" ];
-    in listToAttrs (forEach [
+    in lib.listToAttrs (lib.forEach [
       {
         region = "eu-central-1";
         desiredCapacity = 3;
@@ -82,26 +77,14 @@ in {
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
-          modules = [
-            "${extraConfig}"
-            "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
-            "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-            (bitte + /profiles/client.nix)
-            ./docker-auth.nix
-            ./nix-builder.nix
-            ./reaper.nix
-            ./secrets.nix
-            self.inputs.ops-lib.nixosModules.zfs-runtime
-          ];
-
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
         } // args);
         asgName = "client-${attrs.region}-${
-            replaceStrings [ "." ] [ "-" ] attrs.instanceType
+            builtins.replaceStrings [ "." ] [ "-" ] attrs.instanceType
           }";
-      in nameValuePair asgName attrs));
+      in lib.nameValuePair asgName attrs));
 
     instances = {
       core-1 = {
@@ -171,22 +154,10 @@ in {
         route53.domains = [ "*.${cluster.domain}" ];
 
         modules = let
-          extraConfig = pkgs.writeText "extra-config.nix" ''
-            { ... }: {
-              services.vault-agent-core.vaultAddress =
-                "https://${cluster.instances.core-1.privateIP}:8200";
-              services.ingress.enable = true;
-              services.ingress-config.enable = true;
-            }
-          '';
         in [
           (bitte + /profiles/monitoring.nix)
           ./monitoring-server.nix
           ./secrets.nix
-          "${extraConfig}"
-          ./ingress.nix
-          ./docker-registry.nix
-          ./minio.nix
           ./nix-builder.nix
         ];
 
