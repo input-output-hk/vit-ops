@@ -17,11 +17,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1610734213,
-        "narHash": "sha256-0DyaEyAK21fZixkNI/LtN/b01dd2TR0MWCFBH3cXr4o=",
+        "lastModified": 1611059930,
+        "narHash": "sha256-PhhL7n009WRbnkq9m6of7LkE2lBLgVuZYCdlYpYj4+I=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "9526e01aac932fe8eb2c63398793383a4bcfa6c8",
+        "rev": "bfd430a3c0a8936005ab64aa8d7f4bce1900dbc3",
         "type": "github"
       },
       "original": {
@@ -48,23 +48,6 @@
       "original": {
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "type": "github"
-      }
-    },
-    "cardano-node": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1607976076,
-        "narHash": "sha256-3mObHmTS17WOdsyk9Ek9yx4Eo+hShU1DjQq7B4vXoLs=",
-        "owner": "input-output-hk",
-        "repo": "cardano-node",
-        "rev": "cbd7dcc58be81a5174f6aca9431f93ed370b3993",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "ref": "cardano-lib-metadata",
-        "repo": "cardano-node",
         "type": "github"
       }
     },
@@ -283,7 +266,6 @@
     "root": {
       "inputs": {
         "bitte": "bitte",
-        "cardano-node": "cardano-node",
         "jormungandr": "jormungandr",
         "jormungandr-nix": "jormungandr-nix",
         "nixpkgs": [

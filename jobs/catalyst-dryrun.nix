@@ -1,17 +1,7 @@
-{ mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, cacert, curl
-, dnsutils, gawk, gnugrep, iproute, jq, lsof, netcat, nettools, procps
-, jormungandr-monitor, jormungandr, telegraf, remarshal, rev }:
+{ mkNomadJob, lib, artifacts, rev }:
 let
   namespace = "catalyst-dryrun";
   datacenters = [ "eu-central-1" ]; # "us-east-2" ];
-
-  block0 = {
-    source =
-      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/${namespace}/block0.bin";
-    destination = "local/block0.bin";
-    options.checksum =
-      "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
-  };
 
   mkVit = { index, requiredPeerCount, backup ? false, public ? false
     , memoryMB ? 512 }:
@@ -55,13 +45,13 @@ let
           telegraf =
             import ./tasks/telegraf.nix { inherit namespace name rev; };
           jormungandr = import ./tasks/jormungandr.nix {
-            inherit lib rev namespace name requiredPeerCount public block0 index
+            inherit lib rev namespace name requiredPeerCount public artifacts index
               memoryMB;
           };
           promtail = import ./tasks/promtail.nix { inherit rev; };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
-            inherit namespace name block0 memoryMB rev;
+            inherit namespace name artifacts memoryMB rev;
           };
         });
 

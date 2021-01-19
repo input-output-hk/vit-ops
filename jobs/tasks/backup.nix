@@ -1,4 +1,4 @@
-{ namespace, name, block0, memoryMB ? 2048 }: {
+{ namespace, name, memoryMB ? 2048, rev, artifacts }: {
   driver = "exec";
 
   vault = {
@@ -19,7 +19,11 @@
 
   env = { AWS_DEFAULT_REGION = "eu-central-1"; };
 
-  artifacts = [ block0 ];
+  artifacts = [{
+    source = artifacts.${namespace}.block0.url;
+    destination = "local/block0.bin";
+    options.checksum = artifacts.${namespace}.block0.checksum;
+  }];
 
   templates = [
     {

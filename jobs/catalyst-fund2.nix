@@ -1,16 +1,7 @@
-{ mkNomadJob, systemdSandbox, writeShellScript, coreutils, lib, cacert, curl
-, dnsutils, gawk, gnugrep, iproute, jq, lsof, netcat, nettools, procps
-, jormungandr-monitor, jormungandr, telegraf, remarshal, dockerImages }:
+{ mkNomadJob, lib, rev, artifacts }:
 let
   namespace = "catalyst-fund2";
-
-  block0 = {
-    source =
-      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/block0.bin";
-    destination = "local/block0.bin";
-    options.checksum =
-      "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
-  };
+  datacenters = [ "eu-central-1" "us-east-2" ];
 
   mkVit = { index, requiredPeerCount, backup ? false, public ? false
     , memoryMB ? 512 }:
@@ -48,19 +39,17 @@ let
         };
 
         tasks = (lib.optionalAttrs (!backup) {
-          monitor =
-            import ./tasks/monitor.nix { inherit dockerImages namespace name; };
-          env = import ./tasks/env.nix { inherit dockerImages; };
-          telegraf = import ./tasks/telegraf.nix {
-            inherit dockerImages namespace name;
-          };
+          monitor = import ./tasks/monitor.nix { inherit namespace name rev; };
+          env = import ./tasks/print-env.nix { inherit rev; };
+          telegraf =
+            import ./tasks/telegraf.nix { inherit namespace name rev; };
           jormungandr = import ./tasks/jormungandr.nix {
-            inherit lib dockerImages namespace name requiredPeerCount public
-              block0 index memoryMB;
+            inherit lib namespace name requiredPeerCount public artifacts index
+              memoryMB rev;
           };
         }) // (lib.optionalAttrs backup {
           backup = import ./tasks/backup.nix {
-            inherit dockerImages namespace name block0 memoryMB;
+            inherit namespace name artifacts memoryMB rev;
           };
         });
 
@@ -115,7 +104,6 @@ let
     };
 in {
   ${namespace} = mkNomadJob "vit" {
-    datacenters = [ "eu-central-1" "us-east-2" ];
     type = "service";
     inherit namespace;
 
@@ -155,9 +143,8 @@ in {
   };
 
   "${namespace}-passive" = mkNomadJob "passive" {
-    datacenters = [ "eu-central-1" "us-east-2" ];
     type = "service";
-    inherit namespace;
+    inherit namespace datacenters;
 
     update = {
       maxParallel = 1;
@@ -179,9 +166,8 @@ in {
   };
 
   "${namespace}-backup" = mkNomadJob "backup" {
-    datacenters = [ "eu-central-1" "us-east-2" ];
     type = "batch";
-    inherit namespace;
+    inherit namespace datacenters;
 
     periodic = {
       cron = "15 */1 * * * *";
