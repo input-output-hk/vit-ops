@@ -1,22 +1,10 @@
 { self, lib, pkgs, config, ... }:
 let
-  inherit (pkgs.terralib) sops2kms sops2region cidrsOf;
-  inherit (builtins) readFile replaceStrings;
-  inherit (lib) mapAttrs' nameValuePair flip attrValues listToAttrs forEach;
+  inherit (self.inputs) bitte;
   inherit (config) cluster;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
-
-  bitte = self.inputs.bitte;
-
-  amis = {
-    us-east-2 = "ami-0492aa69cf46f79c3";
-    eu-central-1 = "ami-0839f2c610f876d2d";
-  };
-
 in {
-  imports = [ ./iam.nix ];
-
   services.consul.policies.developer.servicePrefix."catalyst-" = {
     policy = "write";
     intentions = "write";
@@ -63,7 +51,7 @@ in {
         '';
 
       mkModules = name: defaultModules ++ [ "${withNamespace name}" ];
-    in listToAttrs (forEach [
+    in lib.listToAttrs (lib.forEach [
       {
         region = "eu-central-1";
         desiredCapacity = 3;
@@ -89,9 +77,9 @@ in {
           };
         } // args);
         asgName = "client-${attrs.region}-${
-            replaceStrings [ "." ] [ "-" ] attrs.instanceType
+            builtins.replaceStrings [ "." ] [ "-" ] attrs.instanceType
           }";
-      in nameValuePair asgName attrs));
+      in lib.nameValuePair asgName attrs));
 
     instances = {
       core-1 = {
