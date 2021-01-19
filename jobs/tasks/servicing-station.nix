@@ -45,7 +45,7 @@
     }
     {
       source = artifacts.${namespace}.database.url;
-      destination = "local/block0.bin";
+      destination = "local/database.sqlite3";
       options.checksum = artifacts.${namespace}.database.checksum;
     }
   ];
