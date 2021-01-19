@@ -38,7 +38,7 @@ rng.seed(seed, version=2)
 winners = []
 for proposal_name, reviews in proposals.groupby(proposals.columns[0]):
     # Advisor email in column F
-    assessors = set(pandas.unique(reviews.iloc[:, 5])) - non_eligible_advisors
+    assessors = set(pandas.unique(reviews.iloc[:, 5].dropna())) - non_eligible_advisors
     proposal_winners = (
         # Sort to ensure consistent set iteration
         rng.sample(list(sorted(assessors)), NUM_WINNERS_PER_PROPOSAL)
