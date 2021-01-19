@@ -5,8 +5,6 @@ let
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 in {
-  imports = [ ./iam.nix ];
-
   services.consul.policies.developer.servicePrefix."catalyst-" = {
     policy = "write";
     intentions = "write";
