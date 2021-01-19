@@ -6,7 +6,7 @@
     },
     "database": {
       "url": "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3",
-      "checksum": "sha256:fa09116a2ea350eec1a2fee13b6b0ba8c1cc2efa5948ab5f8b506fd509aa5ce3"
+      "checksum": "sha256:f04ef6749f57e63906c395beb586d0ab0ca6428b15b26adfda2f9444349e8c44"
     }
   }
 }
