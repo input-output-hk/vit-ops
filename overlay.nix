@@ -38,6 +38,8 @@ in {
 
   mkEnv = lib.mapAttrsToList (key: value: "${key}=${value}");
 
+  jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
+
   jormungandr-monitor =
     final.callPackage (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
@@ -47,13 +49,27 @@ in {
     vit-servicing-station =
       inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
   };
-  jormungandr = final.callPackage ./pkgs/jormungandr.nix { };
+
+  jormungandr-entrypoint = final.callPackage ./pkgs/jormungandr.nix { };
+
   print-env = final.callPackage ./pkgs/print-env.nix { };
+
   jormungandr-monitor-entrypoint =
     final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
-  restic = inputs.nixpkgs-unstable.legacyPackages.${final.system}.restic;
+
+  cardanolib-py = (import (inputs.cardano-node + "/nix") {
+    gitrev = inputs.cardano-node.rev;
+    inherit (final) system;
+  }).cardanolib-py;
+
+  cardano-node-nix = import inputs.cardano-node {
+    gitrev = inputs.cardano-node.rev;
+    inherit (final) system;
+  };
+
+  inherit (final.cardano-node-nix) bech32 cardano-cli;
 
   debugUtils = with final; [
     bashInteractive
