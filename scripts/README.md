@@ -32,9 +32,9 @@ vit-kedqr -pin 1234 -input vote.sk
 # Calculate community advisor rewards
 
 To calculate the rewards for community advisors you need 3 csv files:
- * All proposals and reviews (file1.csv)
- * Advisors ada payment address (file2.csv)
- * Non eligible advisors (file3.csv)
+ * All proposals and reviews (file1.csv)(ideas in column A, community advisors email in column F)
+ * Advisors ada payment address (file2.csv)(emails in column B, addresses in column C)
+ * Non eligible advisors (file3.csv)(emails in column A)
 Csv files can be easily exported/imported from/to spreadsheets, but you usually have to export every sheet in case there's more than one.
 You also need to provide a random seed for the selection process and the total incentive (in $) available to advisors
 
@@ -49,6 +49,7 @@ python calculate-advisors-rewards.py --seed=STRING --proposals=file1.csv --advis
 The script seeds the random number generator using the provided value and then does the following for each proposal:
 * read reviewers
 * remove non eligible advisors from this list
+* sort the list in alphabetic order
 * select 3 random advisors from this list using Python `random.sample`. If there are less than 3 advisors for a proposal, select all of them.
 
 If you want to reproduce the results, make sure you have the same files and use the same seed.
