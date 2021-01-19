@@ -14,10 +14,6 @@
     };
     jormungandr.url = "github:input-output-hk/jormungandr/add-flake";
     vit-servicing-station.url = "github:input-output-hk/vit-servicing-station";
-    cardano-node = {
-      url = "github:input-output-hk/cardano-node/cardano-lib-metadata";
-      flake = false;
-    };
   };
 
   outputs = { self, nixpkgs, utils, bitte, ... }@inputs:
@@ -42,7 +38,7 @@
       };
     in {
       inherit self;
-      inherit (hashiStack) nomadJobs dockerImages clusters nixosConfigurations;
+      inherit (hashiStack) nomadJobs dockerImages clusters nixosConfigurations consulTemplates;
       inherit (pkgs) sources;
       legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;

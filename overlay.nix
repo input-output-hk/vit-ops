@@ -4,38 +4,7 @@ in {
   rev =
     self.rev or (builtins.throw "please commit and push before invoking jobs");
 
-  consul-templates = let
-    sources = lib.pipe final.nomadJobs [
-      (lib.filterAttrs (n: v: v ? evaluated))
-      (lib.mapAttrsToList (n: v: {
-        path = [ n v.evaluated.Job.Namespace ];
-        taskGroups = v.evaluated.Job.TaskGroups;
-      }))
-      (map (e:
-        map (tg:
-          map (t:
-            if t.Templates != null then
-              map (tpl: {
-                name = lib.concatStringsSep "/"
-                  (e.path ++ [ tg.Name t.Name tpl.DestPath ]);
-                tmpl = tpl.EmbeddedTmpl;
-              }) t.Templates
-            else
-              null) tg.Tasks) e.taskGroups))
-      builtins.concatLists
-      builtins.concatLists
-      (lib.filter (e: e != null))
-      builtins.concatLists
-      (map (t: {
-        name = t.name;
-        path = final.writeText t.name t.tmpl;
-      }))
-    ];
-  in final.linkFarm "consul-templates" sources;
-
-  inherit (final.dockerTools) buildLayeredImage;
-
-  mkEnv = lib.mapAttrsToList (key: value: "${key}=${value}");
+  artifacts = builtins.fromJSON (builtins.readFile ./artifacts.json);
 
   jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
 
@@ -57,18 +26,6 @@ in {
     final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
-
-  cardanolib-py = (import (inputs.cardano-node + "/nix") {
-    gitrev = inputs.cardano-node.rev;
-    inherit (final) system;
-  }).cardanolib-py;
-
-  cardano-node-nix = import inputs.cardano-node {
-    gitrev = inputs.cardano-node.rev;
-    inherit (final) system;
-  };
-
-  inherit (final.cardano-node-nix) bech32 cardano-cli;
 
   debugUtils = with final; [
     bashInteractive

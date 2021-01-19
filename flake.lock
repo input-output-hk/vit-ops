@@ -52,23 +52,6 @@
         "type": "github"
       }
     },
-    "cardano-node": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1607976076,
-        "narHash": "sha256-3mObHmTS17WOdsyk9Ek9yx4Eo+hShU1DjQq7B4vXoLs=",
-        "owner": "input-output-hk",
-        "repo": "cardano-node",
-        "rev": "cbd7dcc58be81a5174f6aca9431f93ed370b3993",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "ref": "cardano-lib-metadata",
-        "repo": "cardano-node",
-        "type": "github"
-      }
-    },
     "crystal": {
       "inputs": {
         "nixpkgs": "nixpkgs",
@@ -299,7 +282,6 @@
     "root": {
       "inputs": {
         "bitte": "bitte",
-        "cardano-node": "cardano-node",
         "jormungandr": "jormungandr",
         "jormungandr-nix": "jormungandr-nix",
         "nixpkgs": [

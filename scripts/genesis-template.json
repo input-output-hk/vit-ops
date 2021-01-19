@@ -1,6 +1,6 @@
 {
   "blockchain_configuration": {
-    "block0_date": 1605546000,
+    "block0_date": 1611064800,
     "discrimination": "production",
     "block0_consensus": "bft",
     "consensus_leader_ids": [

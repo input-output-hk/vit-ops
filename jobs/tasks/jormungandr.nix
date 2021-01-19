@@ -1,4 +1,4 @@
-{ lib, rev, namespace, name, requiredPeerCount, public, index, block0
+{ lib, rev, namespace, name, requiredPeerCount, public, index, artifacts
 , memoryMB ? 512 }: {
   driver = "exec";
 
@@ -35,7 +35,11 @@
     cpu = 700; # mhz
   };
 
-  artifacts = [ block0 ];
+  artifacts = [{
+    source = artifacts.${namespace}.block0.url;
+    destination = "local/block0.bin";
+    options.checksum = artifacts.${namespace}.block0.checksum;
+  }];
 
   templates = [
     {

@@ -1,4 +1,4 @@
-{ namespace, rev, ... }: {
+{ namespace, rev, artifacts, ... }: {
   driver = "exec";
 
   config = {
@@ -39,18 +39,14 @@
 
   artifacts = [
     {
-      source =
-        "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/${namespace}/block0.bin";
+      source = artifacts.${namespace}.block0.url;
       destination = "local/block0.bin";
-      options.checksum =
-        "sha256:9cb70f7927201fd11f004de42c621e35e49b0edaf7f85fc1512ac142bcb9db0f";
+      options.checksum = artifacts.${namespace}.block0.checksum;
     }
     {
-      source =
-        "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/${namespace}/database.sqlite3";
-      destination = "local/database.sqlite3";
-      options.checksum =
-        "sha256:a0b6acd53ef6548c8aad64ee5d3b8699e1f10dfa5d8264637cfe87a10ac4efab";
+      source = artifacts.${namespace}.database.url;
+      destination = "local/block0.bin";
+      options.checksum = artifacts.${namespace}.database.checksum;
     }
   ];
 }
