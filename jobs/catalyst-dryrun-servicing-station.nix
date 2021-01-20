@@ -18,7 +18,7 @@ in {
     taskGroups.servicing-station = {
       count = 1;
 
-      networks = [{ ports = { web.to = 6000; }; }];
+      networks = [{ ports = { web = {}; }; }];
 
       services."${namespace}-servicing-station" = {
         addressMode = "host";
