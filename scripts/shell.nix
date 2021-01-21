@@ -28,6 +28,7 @@ in pkgs.stdenv.mkDerivation {
     cardanolib-py
     vit-kedqr
     jorvit
+    repl.legacyPackages.x86_64-linux.textql
     repl.legacyPackages.x86_64-linux.vit-servicing-station
   ];
   shellHook = ''
