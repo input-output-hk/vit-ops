@@ -94,11 +94,11 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1610723922,
-        "narHash": "sha256-1g69VGwhnVaqrExBeSKz5UlY2m1yD1lnce3Vc6c8CYM=",
+        "lastModified": 1611311607,
+        "narHash": "sha256-F3TSi+aSrqgunuJY7JxwVNZytEugnCEzC6ZfamvK/J4=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "e87374a94a3047b4d0f8692bcb2be6e4d7ad7efe",
+        "rev": "60cc4729707f4e18aee225e652bf602de980e445",
         "type": "github"
       },
       "original": {
@@ -263,6 +263,24 @@
         "type": "github"
       }
     },
+    "ops-lib_2": {
+      "locked": {
+        "dir": "zfs",
+        "lastModified": 1608256030,
+        "narHash": "sha256-LgYuK7OsgTtMxuQF4xeFGQbjnAXhkNPXvA8Zr79FvWs=",
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "07a9d53b7552a97cb088342930ecebaddfcb1330",
+        "type": "github"
+      },
+      "original": {
+        "dir": "zfs",
+        "owner": "input-output-hk",
+        "ref": "zfs-image",
+        "repo": "ops-lib",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bitte": "bitte",
@@ -272,6 +290,7 @@
           "bitte",
           "nixpkgs"
         ],
+        "ops-lib": "ops-lib_2",
         "terranix": [
           "bitte",
           "terranix"

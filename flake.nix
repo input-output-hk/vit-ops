@@ -5,6 +5,7 @@
     bitte.url = "github:input-output-hk/bitte";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
+    ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";
     utils.follows = "bitte/utils";
