@@ -279,6 +279,24 @@
         "type": "github"
       }
     },
+    "ops-lib_2": {
+      "locked": {
+        "dir": "zfs",
+        "lastModified": 1608256030,
+        "narHash": "sha256-LgYuK7OsgTtMxuQF4xeFGQbjnAXhkNPXvA8Zr79FvWs=",
+        "owner": "input-output-hk",
+        "repo": "ops-lib",
+        "rev": "07a9d53b7552a97cb088342930ecebaddfcb1330",
+        "type": "github"
+      },
+      "original": {
+        "dir": "zfs",
+        "owner": "input-output-hk",
+        "ref": "zfs-image",
+        "repo": "ops-lib",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bitte": "bitte",
@@ -288,6 +306,7 @@
           "bitte",
           "nixpkgs"
         ],
+        "ops-lib": "ops-lib_2",
         "terranix": [
           "bitte",
           "terranix"
