@@ -138,7 +138,7 @@
     data = ''
       genesis:
       bft:
-        signing_key: {{with secret "kv/data/nomad-cluster/bft/${
+        signing_key: {{with secret "kv/data/nomad-cluster/bft/${namespace}/${
           toString index
         }"}}{{.Data.data.value}}{{end}}
     '';
