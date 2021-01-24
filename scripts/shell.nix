@@ -1,7 +1,7 @@
 let
   sources = import ./nix/sources.nix { };
   pkgs = import sources.nixpkgs { };
-  repl = import ../repl.nix;
+  vit-pkgs = import ../default.nix { };
 
   src = pkgs.fetchurl {
     url =
@@ -29,6 +29,7 @@ in pkgs.stdenv.mkDerivation {
     jormungandr
     cardano-cli
     bech32
+    pkgs.python3Packages.black
     pkgs.python3Packages.ipython
     pkgs.python3Packages.cbor2
     pkgs.python3Packages.docopt
@@ -39,7 +40,7 @@ in pkgs.stdenv.mkDerivation {
     cardanolib-py
     vit-kedqr
     jorvit
-    repl.packages.x86_64-linux.vit-servicing-station
+    vit-pkgs.defaultNix.legacyPackages.x86_64-linux.vit-servicing-station
   ];
   shellHook = ''
     export CARDANO_NODE_SOCKET_PATH=/home/sam/work/iohk/cardano-node/master/state-node-testnet/node.socket

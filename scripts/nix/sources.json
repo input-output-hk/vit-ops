@@ -5,22 +5,10 @@
         "homepage": "https://cardano.org",
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "5af4d86aa36241cba8914c9827c72f8b7caf152a",
-        "sha256": "17xh743dip3igym07my0zyy1a5xn2wf09jh6drzhqmb4aagfi96x",
+        "rev": "cbd7dcc58be81a5174f6aca9431f93ed370b3993",
+        "sha256": "1fx0sy5hgfqaim1lv1ajx2ih87nb7m4z996cfs7bbmyjchg9nqyy",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/5af4d86aa36241cba8914c9827c72f8b7caf152a.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "cardano-wallet": {
-        "branch": "master",
-        "description": "HTTP server & command-line for managing UTxOs and HD wallets in Cardano.",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "cardano-wallet",
-        "rev": "ac9e1d0b04d901eec6904d5951e81fac50150357",
-        "sha256": "00p7d8gm3k8x200mwf0jnnyssrpzapwxk8hwmsp6a48g1sfh32n1",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/ac9e1d0b04d901eec6904d5951e81fac50150357.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/cbd7dcc58be81a5174f6aca9431f93ed370b3993.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
@@ -41,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "jorvit",
-        "rev": "10bd81888f85f19fc616fe5d6521cecd9709ea9e",
-        "sha256": "1rmv96zspriq4czc00s9f4xkl6j2d4awkgz2c3rdx145pznikkrj",
+        "rev": "3a1c167cc338e9c42f8dec14c56da174a50af215",
+        "sha256": "1pxw09hlh4xxfz1iq551lj5xy2aim551si4vfj4p3i4h3qlv9fbd",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/jorvit/archive/10bd81888f85f19fc616fe5d6521cecd9709ea9e.tar.gz",
+        "url": "https://github.com/input-output-hk/jorvit/archive/3a1c167cc338e9c42f8dec14c56da174a50af215.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
@@ -60,15 +48,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
-        "branch": "nixos-20.03",
+        "branch": "nixos-20.09",
         "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "c9f5211b769a2edc46037cafcdf4e15b694820d6",
-        "sha256": "1qra1lrj3chmyrxmybaqgidp562wcss69461svwx8mzhli50xq5c",
+        "repo": "nixpkgs",
+        "rev": "b94726217f7cdc02ddf277b65553762d520da196",
+        "sha256": "1v3v7f2apmsdwv1w6hvsxr8whggjbiaxy00k47pxdzyigxv3s400",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/c9f5211b769a2edc46037cafcdf4e15b694820d6.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/b94726217f7cdc02ddf277b65553762d520da196.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vit-kedqr": {
