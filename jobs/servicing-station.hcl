@@ -26,6 +26,7 @@ job "servicing-station" {
 
   group "servicing-station" {
     network {
+      mode = "host"
       port "web" {}
       port "promtail" {}
     }
