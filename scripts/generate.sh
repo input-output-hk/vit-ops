@@ -37,21 +37,20 @@ genesis="$(
     < genesis-template.json
 )"
 
-qrCodes="$(< qr_codes.json)"
 crs=$(jcli votes crs generate)
 
 for i in $(seq 0 2); do
   jcli key generate --type=ed25519 > "committee$i.sk"
   jcli key to-public < "committee$i.sk" > "./committee$i.pk"
 
-  commAccount="$(jcli address account "$(< ./committee$i.pk)")"
-  qrCodes="$(echo "$qrCodes" | jq --arg k "$commAccount" '.[$k] = 10000000001')"
+  commAccount="$(jcli address account "$(< "./committee$i.pk")")"
+  genesis="$(echo "$genesis" | jq --arg k "$commAccount" '.initial[0].fund += [{"address":$k,"value":10000000001}]')"
 
   jcli key generate --type=ed25519 > "bft$i.sk"
   jcli key to-public < "bft$i.sk" > "./bft$i.pk"
 
-  bftAccount="$(jcli address account "$(< ./bft$i.pk)")"
-  qrCodes="$(echo "$qrCodes" | jq --arg k "$bftAccount" '.[$k] = 10000000002')"
+  bftAccount="$(jcli address account "$(< "./bft$i.pk")")"
+  genesis="$(echo "$genesis" | jq --arg k "$bftAccount" '.initial[0].fund += [{"address":$k,"value":10000000002}]')"
   genesis="$(echo "$genesis" | jq --arg k "$(< "bft$i.pk")" '.blockchain_configuration.consensus_leader_ids += [ $k ]')"
 
   bytes="$(jcli key to-bytes < "committee$i.pk")"
@@ -70,16 +69,27 @@ for i in $(seq 0 2); do
   voteplan="$(echo "$voteplan" | jq --arg k "$(< "member$i.pk")" '.committee_member_public_keys += [ $k ]')"
 done
 
-set +x
-for addr in $(echo "$qrCodes" | jq '. | keys | .[]' -r); do
-  genesis="$(echo "$genesis" | jq --arg k "$addr" '.initial[0].fund += [{"address":$k,"value":10000000002}]')"
-done
-set -x
+# set +x
+# for addr in $(echo "$qrCodes" | jq '. | keys | .[]' -r); do
+#   genesis="$(echo "$genesis" | jq --arg k "$addr" '.initial[0].fund += [{"address":$k,"value":10000000002}]')"
+# done
+# set -x
 
 echo "$genesis" > genesis.json
 jcli genesis encode --input genesis.json --output block0.bin
 
 jcli votes encrypting-key "${voteKeys[@]}" > "./vote.pk"
+
+# voteplans
+# chain_vote_start_time = fund_start_time
+# chain_vote_end_time = fund_end_time
+# chain_committee_end_time = fund_end_time + 1 day
+
+# funds
+# rewards_info
+# fund_start_time
+# fund_end_time
+# next_fund_start_time
 
 echo "$voteplan" > voteplan.json
 jcli certificate new vote-plan voteplan.json --output voteplan.certificate

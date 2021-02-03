@@ -52,7 +52,7 @@ job "[[$name]]" {
       env {
         PATH = "/bin"
         NAMESPACE = "[[.namespace]]"
-        [[ if eq .role "leader" ]]PRIVATE = "true"[[ end ]]
+        PRIVATE = "[[ eq .role "leader" ]]"
         REQUIRED_PEER_COUNT = [[ printf "%0.f" .requiredPeerCount ]]
         RUST_BACKTRACE = "full"
         STORAGE_DIR = "/local/storage"
@@ -137,7 +137,7 @@ job "[[$name]]" {
             ]
           },
           "rest": {
-            "listen": "{{ env "NOMAD_IP_rest" }}:{{ env "NOMAD_PORT_rest" }}"
+            "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
           },
           "skip_bootstrap": [[ eq 0.0 .requiredPeerCount ]]
         }
@@ -230,7 +230,7 @@ job "[[$name]]" {
         omit_hostname = false
 
         [global_tags]
-        client_id = "{{ env "NOMAD_GROUP_NAME" }}"
+        client_id = "[[$name]]"
         namespace = "{{ env "NOMAD_NAMESPACE" }}"
 
         [inputs.prometheus]

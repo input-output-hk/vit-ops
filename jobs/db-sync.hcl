@@ -5,7 +5,7 @@ job "db-sync" {
 
   constraint {
     attribute = "${attr.unique.platform.aws.instance-id}"
-    value     = "i-0205f47513cff5c29"
+    value     = "[[.dbSyncInstance]]"
   }
 
   group "db-sync" {
@@ -33,7 +33,7 @@ job "db-sync" {
       }
 
       config {
-        flake = "github:input-output-hk/cardano-db-sync?rev=[[.dbSyncRev]]#cardano-db-sync-extended-testnet"
+        flake = "github:input-output-hk/cardano-db-sync?rev=[[.dbSyncRev]]#cardano-db-sync-extended-mainnet"
         command = "/bin/cardano-db-sync-extended-entrypoint"
       }
 
@@ -81,7 +81,7 @@ job "db-sync" {
       }
 
       config {
-        flake = "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-testnet-debug"
+        flake = "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-mainnet-debug"
         command = "/bin/cardano-node-entrypoint"
       }
 
