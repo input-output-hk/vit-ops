@@ -1,0 +1,408 @@
+{
+  "payload_type": "private",
+  "vote_start": {
+    "epoch": 0,
+    "slot_id": 540
+  },
+  "vote_end": {
+    "epoch": 2,
+    "slot_id": 540
+  },
+  "committee_end": {
+    "epoch": 3,
+    "slot_id": 540
+  },
+  "proposals": [
+    {
+      "external_id": "4b3a30755447dce82734bc05dc840575b6a665e4af66fb527193a011542b8aa9",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "e8f5e5af0847a38921a85dc52625850213b1aa2e74e05eeea8da3c0bd9b7b398",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "78267552dc78deb924a695d22f49d85bae7f8ec8cec9e401ebd9a2f78a3de1de",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "9e0488e22a7a85ae419c8d6845a813b738f0b02ccc7dbeacf0393fb766399850",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "e42648f426777ee320de0d64b4b363e913b755d5e34718c65442f20ac7b63139",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "6631c17ecf90e987bd92a12ff30c1e1261e9fd3234d0233b7e1f88516400e4b0",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "84b22ea19728413791e4956f0830dbdebeeb1da196946f478b9a054351c8b310",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "296594a03752f073095bb111539bbda32da15e3980eeace4b015e717eaeda9a0",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "a477bc86af78a760110c6948b2f8d6db452538ffecd30341098f04e405e10747",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "df9d69de921fb67444df7ad303cb3aaa06a08ff34bf5de3c2ad78909d4ff2d44",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "c07873160b0d23a2555ef56e6f3a580b4693772c5915aec5677f03005b00d765",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "329decee9f44b6ee0c3c8712a6240f0eb1420cd7df049a7a95dce39d7e274bc7",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f8323c9817087ea1f66b66f442a23e8bd68fb6445da10fc4bec9397a943de03d",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "68cb8cdeb38f4d20c0b32ec45b0bf0f2bd8064aae0b8f3a4a6a8a568cd7380e3",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "694483ea62a63c75e37d179f6f81ddd515727e5fd255af39bc88f72c13fde26f",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "b4138d2782dd97c4dc5ed9f044d72f09c84152f7837cc473e18d5cddf8bfc4bd",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "e24b616156ef885cc0a2a07aa6d9d1ff9d5c4d609dedde2be8b45369f327adba",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "a384e2b3e2eee690a654b489480cd3dde085fdc61adf00acb1ff4aae3c618fd0",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "232d25c8f3f615586fdb7482014065510d0753acc2508de03a5f2cc7ea45c185",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f75f0d4eca1bdfb137af8c97a15d0be82e7e13dffc74ee61fbdf5f805eb02bfe",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "277fe4f0a923fc9df3c668f95d8c731fabd18cd1d7f27d1340ebbce9001962bb",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "59e3e769e4a41ff95d4c12a1dbaf61698f27c0f04b77c82b51e14620326e2d8a",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f4beb6117818c6e8df6743c7eff164d566b6d04c9f86fe346341af1f0a8fba7b",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "d04ab634867cf652c6221b6471994e579b3df4625de6fec962b742a3d433273b",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "498d5c87b37e63eb702d400f7a174402e22a96b89ebfe07b331ae97ca6478141",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "a8521be6648d5b38f1dc4eb78cbf35f502a16cce4e39a5b9883439a982bd12a0",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "3a5a4ecb5933032504f5e2a040fa72b58784ed7aa5049bbc5eb900ce156c1f62",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "e1e60001ae0a4d1b899bb475e6af9e646cb5127a6a3142dfb5d5a3806ac97bab",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "ba266f2dd2b294487a9b7f77ea5fde181d8ae459ce06b2910948e08e290524e8",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "44c3a457386e361eedf2ef47e62fe54b659796ded11c22145a73a940508b913f",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "9ade11f196aaf40fe58fd631e6e4073f35022bda46d4fa64e679b10e63eb800d",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "ccf4efa76ddeda154f5ff34c1574ee993050298f83b1931838df85aa79b2ef94",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "a5a60ffbb902c90b41b136364ab90b4ace1d038a3d634da1d1e5225bb5f21878",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "c3a26d30b4a4d5fe29029ebf5d897c43774f096c557388f241dec49ee56223fc",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "299ad711b60dcd16ec6229a8e453bbe42fd3660816ac51a0e8c99f89661d135f",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "2be421cbe1a4feace98182512dfc21ca47d7d95727689492faea20f9a9d0afdb",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "a00212a34b82761d62d9eb1f96411e50fdcee9bb355b54052753dda89bbeee90",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "4b11b6766c669ee5caa6805045fd43d74e5c3c61e955dfb4eea2466c1da3b580",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "b6c8719adc0c75b57e0a9c5298fb96e09c41420c29735944c774627d418f29d5",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "8d8fdfc8c5d5b49193005ed5d92255bf68594d7040f9723db67a499fe6b592d5",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "8b14e726de154a1623c2d2201e57226c0ddf9a51e954a6bb8b03ecbce8d23537",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "cd24f476067f4929e789233e77981348146dc431b5faeac9c4da1174ee08ae8a",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "c5d378ec53b054a49f1f8bc72996340a007dfa8c7cf15636a559ff2f669e63b0",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "ead8a8f8c95848ca359495f773dd045bafefffdf37f5e5fb80961dad28af2931",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "6ecfdca9ac8c8b04f1af82458d1b57a61194de16315a996611082a23fcfc1f50",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "96cbd85c71dadb6c5dd97b3a158e8e4bbe3c55d0475652b7cf2e6ab67366cc7d",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "006f16b5e0fbe0fa18aaac9227cd130b9536ddf4e7a7182363d4e3125141ee43",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "7ec2e24930f388d0fb8a21f713826ee0fb139f36f30bc3f0feae7a7c06717bf4",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "43f8e97285864e0c883080bf54106a97bf9a04569a0fdecdb6ff931334839299",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "748f7976a301b21104114deb327902e6dd6cad639d8dd87206188c4ad312f5ff",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "74b7edc1c632e91facb2d4fda53283cf4e43efaab506f46336bffcb536bbf1f2",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "657ad18b3d8f2fb3bd48469e9a2d508c13744745131e6a56bb7a811defeb2098",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "3c7892b2df2b6d5cf520dbf5c5cec80dd992ce13db6ea236e80bf0cf291d7a22",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "7d60a255d731c7c225843753a62525fc6db7a4353a42872d239951d33183e830",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "1ab312a51d340ea16a79ce4e39828bed44bde024c46cefa782c71f1aad114687",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "31876fd042d9ee37c4605d14c937addf5f58c830109afbfc2372e11cc4608330",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "2e43d5d535b69aa9bef58b9c8023507f5ab9cbb33c94749a58633c31a2b78da3",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "eeb8e91c37d9b5e0438ed4d814e2dac1c79fee076b10d29cc4da818056d21635",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "12c7f4c03da40d33948b9bc630853a6141d9e35ba8991ce0bfc0e40ccdfddd20",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "e5d0defa4393a49c3e0349def8f1594828fbf94c1f5f32930490634f1439d7d2",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "5688bdb349c3af5393e0b598234479eec5d0ca58cda9193e753635ebdedcc9f1",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "3a29b18c36b91487c61517fa3c84fd31d9055f8456f34bf37a4f012736e51419",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "ccd4cb6df8d1ec94420cdd4f10cdd3c9a31c6bb9078d3f49a8353c02e0feceb3",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "663d982d2328f3c8c8b01b701a34a3b3f2ba1c0aa9f1791748fc66b25517c71e",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "5c46f352d3419c7e1e325040fcd9d833a34b3223043ce879d935abd319235bc5",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f2c1042af484d838c6f4ef3c4fd0995aaeca0ddc91be514729d34b1abdf0edf1",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "9a065bf1482adb420e3749c924185100d0c10cbda9195f59ea82524dc44bce6a",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "307bb91290a30f677fd95d1450d0107c26eb8281a4ee2ccfa49691dca58c988f",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "b5ed94c0a824006ef568082a4c7d34b88949bc55c0a97a66e09d8c23ab387adb",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "711fa6bd510655f7cb1112bf81fff05e9d10db78e585ba7bf6881924bfcddbb4",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f03b1247b9d1d8f76df9740e1a8bf42c2d04d6cda03e708b720a1c5418659935",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "068e55f019195fef9b7e75129db75e19d3e71684e121ae19df19eaf63751d662",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "0d1470a11b14d154d3eb0e0e24b56bf89e8416a74f1da74958c526a31dc37fa9",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "190d162eab89fbc349c629b51b968dd93cce094cd4fe8e44bf0fe08c991867a3",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "22a8a357084029f1fc1570ead33a0f70c3e861193203f875d74f0fbb989d86c7",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "2df12a79e4db0fae7e51fbec6a109c4a5b8cb02f293974aa2720153365c2e295",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "7e6101312e2aeeb217d9b69d52676500253ae2681bd34f091daf155ad93aef05",
+      "options": 3,
+      "action": "off_chain"
+    },
+    {
+      "external_id": "f4ae31357dfa0a30b93508536c9a1214ca9ffd62a84b6e63ca1669fc8934ec1e",
+      "options": 3,
+      "action": "off_chain"
+    }
+  ],
+  "committee_member_public_keys": []
+}

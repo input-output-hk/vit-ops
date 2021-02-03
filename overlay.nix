@@ -65,26 +65,26 @@ in {
     CONSUL_HTTP_ADDR = "https://consul.${domain}";
     NIX_USER_CONF_FILES = ./nix.conf;
 
-    buildInputs = [
-      final.awscli
-      final.bitte
-      final.cfssl
-      final.consul
-      final.consul-template
-      final.direnv
-      final.jormungandr
-      final.jq
-      final.nixFlakes
-      final.nixfmt
-      final.nomad
-      final.openssl
-      final.restic
-      final.terraform-with-plugins
-      final.vault-bin
-      final.crystal
-      final.pkgconfig
-      final.openssl
-      prev.sops
+    buildInputs = with final; [
+      awscli
+      bitte
+      cfssl
+      consul
+      consul-template
+      crystal
+      direnv
+      jormungandr
+      jq
+      levant
+      nixFlakes
+      nixfmt
+      nomad
+      openssl
+      pkgconfig
+      restic
+      sops
+      terraform-with-plugins
+      vault-bin
     ];
   };
 
