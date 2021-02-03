@@ -12,7 +12,7 @@ nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
       networking.firewall.allowedTCPPorts = [ 80 ];
       users.users.root.password = "nixos";
       services.openssh.permitRootLogin = lib.mkDefault "yes";
-      services.getty.autologinUser = lib.mkDefault "root";
+      services.mingetty.autologinUser = lib.mkDefault "root";
 
       fileSystems."/" = {
         device = "/dev/disk/by-label/nixos";
@@ -35,7 +35,9 @@ nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
         inherit lib pkgs config;
         partitionTableType = "none";
         format = "raw";
-        additionalSpace = "1024M";
+
+        # additionalSpace = "1024M";
+        diskSize = 1000;
       };
     })
   ];

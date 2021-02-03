@@ -1,28 +1,7 @@
-variable "namespace" {
-  type = string
-}
-
-variable "rev" {
-  type = string
-}
-
-variable "datacenters" {
-  type = list(string)
-  default = [ "eu-central-1", "us-east-2" ]
-}
-
-variable "domain" {
-  type = string
-  default = "dryrun-servicing-station.vit.iohk.io"
-}
-
-locals {
-  artifact = lookup(jsondecode(file("./artifacts.json")), var.namespace, {})
-}
-
 job "servicing-station" {
-  namespace = var.namespace
-  datacenters = var.datacenters
+  namespace = "[[ .namespace ]]"
+  datacenters = [[ .datacenters | mustToJson ]]
+  type = "service"
 
   group "servicing-station" {
     network {
@@ -32,10 +11,10 @@ job "servicing-station" {
     }
 
     service {
-      name = "${var.namespace}-servicing-station"
+      name = "[[.namespace]]-servicing-station"
       address_mode = "host"
       port = "web"
-      tags = [ "ingress", var.namespace ]
+      tags = [ "ingress", "[[.namespace]]" ]
 
       check {
         type = "http"
@@ -46,11 +25,11 @@ job "servicing-station" {
       }
 
       meta {
-        IngressHost = var.domain
+        IngressHost = "[[.domain]]"
         IngressMode = "http"
         IngressBind = "*:443"
-        IngressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql }"
-        IngressServer = "_${var.namespace}-servicing-station._tcp.service.consul"
+        IngressIf = "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql /api/v0/challenges }"
+        IngressServer = "_[[.namespace]]-servicing-station._tcp.service.consul"
         IngressCheck = <<-EOS
         http-check send meth GET uri /api/v0/graphql/playground
         http-check expect status 200
@@ -63,11 +42,10 @@ job "servicing-station" {
     }
 
     service {
-      name = "${var.namespace}-servicing-station-jormungandr"
+      name = "[[.namespace]]-servicing-station-jormungandr"
       address_mode = "host"
       port = "web"
-      tags = [ "ingress", var.namespace ]
-
+      tags = [ "ingress", "[[.namespace]]" ]
       check {
         type = "http"
         port = "web"
@@ -77,11 +55,11 @@ job "servicing-station" {
       }
 
       meta {
-        IngressHost = var.domain
+        IngressHost = "[[.domain]]"
         IngressMode = "http"
         IngressBind = "*:443"
         IngressIf = "{ path_beg /api/v0/account /api/v0/message /api/v0/settings /api/v0/vote }"
-        IngressServer = "_${var.namespace}-follower-0-jormungandr-rest._tcp.service.consul"
+        IngressServer = "_[[.namespace]]-follower-0-jormungandr-rest._tcp.service.consul"
         IngressCheck = <<-EOS
         http-check send meth GET uri /api/v0/node/stats
         http-check expect status 200
@@ -97,7 +75,7 @@ job "servicing-station" {
       driver = "exec"
 
       config {
-        flake = "github:input-output-hk/vit-ops?rev=${var.rev}#vit-servicing-station"
+        flake = "github:input-output-hk/vit-ops?rev=[[.vitOpsRev]]#vit-servicing-station"
         command = "/bin/vit-servicing-station-server"
         args = [ "--in-settings-file", "local/station-config.yaml" ]
       }
@@ -120,7 +98,7 @@ job "servicing-station" {
             "priv_key_file": null
           },
           "cors": {
-            "allowed_origins": [ "https://${var.domain}", "http://127.0.0.1" ],
+            "allowed_origins": [ "https://[[.domain]]", "http://127.0.0.1" ],
             "max_age_secs": null
           },
           "db_url": "local/database.sqlite3/database.sqlite3",
@@ -134,28 +112,30 @@ job "servicing-station" {
         EOS
       }
 
-      artifact {
-        source = local.artifact.block0.url
-        destination = "local/block0.bin"
-        options {
-          checksum = local.artifact.block0.checksum
+      [[ with $artifact := get (fileContents "./artifacts.json" | parseJSON) .namespace ]]
+        artifact {
+          destination = "local/block0.bin"
+          source = "[[ $artifact.block0.url ]]"
+          options {
+            checksum = "[[ $artifact.block0.checksum ]]"
+          }
         }
-      }
 
-      artifact {
-        source = local.artifact.database.url
-        destination = "local/database.sqlite3"
-        options {
-          checksum = local.artifact.database.checksum
+        artifact {
+          destination = "local/database.sqlite3"
+          source = "[[ $artifact.database.url ]]"
+          options {
+            checksum = "[[ $artifact.database.checksum ]]"
+          }
         }
-      }
+      [[ end ]]
     }
 
     task "promtail" {
       driver = "exec"
 
       config {
-        flake = "github:input-output-hk/vit-ops?rev=${var.rev}#grafana-loki"
+        flake = "github:input-output-hk/vit-ops?rev=[[.vitOpsRev]]#grafana-loki"
         command = "/bin/promtail"
         args = [ "-config.file", "local/config.yaml" ]
       }

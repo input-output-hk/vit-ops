@@ -431,11 +431,11 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1611006951,
-        "narHash": "sha256-sRKr5QwJA1OwCD92NZfixji+VAJXvHTvQhiAr7ZpSRM=",
+        "lastModified": 1612359750,
+        "narHash": "sha256-4zieCQfdGIBLkE8oP5gCSoZ+qC3bp0RCA0YrPfavbIw=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "c849eb7a117aae841d5603b62d96ba0aca466803",
+        "rev": "f40e51c0744a7a7a08d009b59e8922f61dec7ab4",
         "type": "github"
       },
       "original": {

@@ -37,10 +37,13 @@
           vitOpsOverlay
         ];
       };
+
+      nixosConfigurations = hashiStack.nixosConfigurations // {
+        nspawn-test = import ./nspawn/test.nix { inherit nixpkgs; };
+      };
     in {
-      inherit self;
-      inherit (hashiStack)
-        nomadJobs dockerImages clusters nixosConfigurations consulTemplates;
+      inherit self nixosConfigurations;
+      inherit (hashiStack) nomadJobs dockerImages clusters consulTemplates;
       inherit (pkgs) sources;
       legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;

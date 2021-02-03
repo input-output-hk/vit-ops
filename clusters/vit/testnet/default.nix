@@ -18,6 +18,7 @@ in {
   services.nomad.namespaces = {
     catalyst-dryrun = { description = "Catalyst (dryrun)"; };
     catalyst-fund2 = { description = "Catalyst (fund2) "; };
+    catalyst-fund3 = { description = "Catalyst (fund3) "; };
   };
 
   cluster = {
