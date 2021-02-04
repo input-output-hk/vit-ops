@@ -64,6 +64,10 @@ job "servicing-station" {
         http-check send meth GET uri /api/v0/node/stats
         http-check expect status 200
         EOS
+        IngressBackendExtra = <<-EOS
+        acl is_origin_null req.hdr(Origin) -i null
+        http-request del-header Origin if is_origin_null
+        EOS
       }
     }
 
