@@ -2,6 +2,6 @@
   "namespace": "catalyst-dryrun",
   "datacenters": [ "eu-central-1", "us-east-2" ],
   "dbSyncRev": "123312bccc171e2d9fc8e437abb4fd69b0169459",
-  "vitOpsRev": "ffa388f46e186bce47db0104e1cdcc360cf73902",
+  "vitOpsRev": "976053383c8933a36340715a90c08362136e72e7",
   "domain": "dryrun-servicing-station.vit.iohk.io"
 }
