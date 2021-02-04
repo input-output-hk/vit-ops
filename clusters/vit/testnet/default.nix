@@ -47,6 +47,7 @@ in {
         ./nix-builder.nix
         ./reaper.nix
         ./host-volumes.nix
+        ./nspawn.nix
       ];
 
       withNamespace = name:

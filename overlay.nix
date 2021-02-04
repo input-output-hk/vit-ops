@@ -28,6 +28,8 @@ in {
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
+  nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix {};
+
   debugUtils = with final; [
     bashInteractive
     coreutils
@@ -57,6 +59,8 @@ in {
     # for bitte-cli
     LOG_LEVEL = "debug";
 
+    DOMAIN = domain;
+    NOMAD_NAMESPACE = "catalyst-dryrun";
     BITTE_CLUSTER = cluster;
     AWS_PROFILE = "vit";
     AWS_DEFAULT_REGION = final.clusters.${cluster}.proto.config.cluster.region;

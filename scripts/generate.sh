@@ -80,17 +80,6 @@ jcli genesis encode --input genesis.json --output block0.bin
 
 jcli votes encrypting-key "${voteKeys[@]}" > "./vote.pk"
 
-# voteplans
-# chain_vote_start_time = fund_start_time
-# chain_vote_end_time = fund_end_time
-# chain_committee_end_time = fund_end_time + 1 day
-
-# funds
-# rewards_info
-# fund_start_time
-# fund_end_time
-# next_fund_start_time
-
 echo "$voteplan" > voteplan.json
 jcli certificate new vote-plan voteplan.json --output voteplan.certificate
 rm -rf jnode_VIT_*
