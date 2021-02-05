@@ -13,7 +13,7 @@ job "test" {
         ephemeral = true
         console = "read-only"
         image_download {
-          url = "http://127.0.0.1:8080/v0/github/input-output-hk/vit-ops/ref/master/nspawn-test"
+          url = "http://127.0.0.1:8080/v0/github/input-output-hk/vit-ops/ref/master/nix-jobs"
         }
       }
     }

@@ -7,6 +7,7 @@
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     terranix.follows = "bitte/terranix";
     utils.follows = "bitte/utils";
     jormungandr-nix = {
@@ -17,10 +18,14 @@
     vit-servicing-station.url = "github:input-output-hk/vit-servicing-station";
   };
 
-  outputs = { self, nixpkgs, utils, bitte, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
     let
       vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
       bitteOverlay = bitte.overlay.x86_64-linux;
+      rustOverlay = final: prev: {
+        inherit (nixpkgs-unstable.legacyPackages.x86_64-linux)
+          rustc cargo rust-analyzer rustfmt;
+      };
 
       hashiStack = bitte.mkHashiStack {
         flake = self;
@@ -34,6 +39,7 @@
         overlays = [
           (final: prev: { inherit (hashiStack) clusters dockerImages; })
           bitteOverlay
+          rustOverlay
           vitOpsOverlay
         ];
       };

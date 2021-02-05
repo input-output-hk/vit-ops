@@ -70,6 +70,8 @@ in {
     CONSUL_HTTP_ADDR = "https://consul.${domain}";
     NIX_USER_CONF_FILES = ./nix.conf;
 
+    RUST_SRC_PATH = final.rustPlatform.rustcSrc;
+
     buildInputs = with final; [
       awscli
       bitte
@@ -90,6 +92,13 @@ in {
       sops
       terraform-with-plugins
       vault-bin
+
+      dhall
+      rustc
+      cargo
+      rustracer
+      rust-analyzer
+      rustfmt
     ];
   };
 
