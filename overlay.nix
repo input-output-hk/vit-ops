@@ -98,6 +98,8 @@ in {
       rustracer
       rust-analyzer
       rustfmt
+
+      ruby
     ];
   };
 

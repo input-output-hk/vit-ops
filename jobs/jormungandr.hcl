@@ -268,12 +268,12 @@ job "[[$name]]" {
           url: http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:3100/loki/api/v1/push
 
         scrape_configs:
-         - job_name: {{ env "NOMAD_GROUP_NAME" }}
+         - job_name: [[$id]]
            pipeline_stages:
            static_configs:
            - labels:
-              syslog_identifier: {{ env "NOMAD_GROUP_NAME" }}
-              namespace: {{ env "NOMAD_NAMESPACE" }}
+              syslog_identifier: [[$name]]
+              namespace: [[.namespace]]
               dc: {{ env "NOMAD_DC" }}
               host: {{ env "HOSTNAME" }}
               __path__: /alloc/logs/*.std*.0

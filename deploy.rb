@@ -58,7 +58,7 @@ when 'stop'
   nomad 'job', 'stop', '-purge', job_name: job
 when 'reset'
   p :reset
-  system('./scripts/reset.sh', NAMESPACE)
+  system('./scripts/reset.sh')
   # TODO
 else
   warn 'first argument needs to be run|stop|reset'
