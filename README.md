@@ -1,5 +1,26 @@
 ## Development
 
+    nix.binaryCaches = [
+      "https://hydra.iohk.io"
+      "https://cache.nixos.org"
+      "https://vit-ops.cachix.org"
+    ];
+    nix.binaryCachePublicKeys = [
+      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho="
+    ];
+    nix.extraOptions = ''
+      experimental-features = nix-command flakes ca-references
+    '';
+    nix.package = pkgs.nixUnstable;
+
+    environment.systemPackages = with pkgs; [
+      neovim
+      gitFull
+    ];
+
+
 ### Github Access Token
 
 * Github users who are in the IOHK team `jormungandr` have the ability to authenticate to the vit-ops project as developers.
