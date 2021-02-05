@@ -131,7 +131,7 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 CONT=""
 until [ -n "$CONT" ]; do
-  read -r -p "Confirm by writing confirm (confirm)?" CONT
+  read -r -p "Confirm by writing confirm (confirm)? " CONT
   if [ "$CONT" = "confirm" ]; then
     vault kv put "kv/nomad-cluster/$NOMAD_NAMESPACE/reset" value=false
   fi
