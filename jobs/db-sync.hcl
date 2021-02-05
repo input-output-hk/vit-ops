@@ -1,6 +1,6 @@
 job "db-sync" {
   namespace = "[[ .namespace ]]"
-  datacenters = [[ .datacenters | mustToJson ]]
+  datacenters = [[ .datacenters ]]
   type = "service"
 
   constraint {

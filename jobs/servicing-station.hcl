@@ -1,6 +1,6 @@
 job "servicing-station" {
   namespace = "[[ .namespace ]]"
-  datacenters = [[ .datacenters | mustToJson ]]
+  datacenters = [[ .datacenters ]]
   type = "service"
 
   group "servicing-station" {
@@ -20,7 +20,7 @@ job "servicing-station" {
         type = "http"
         port = "web"
         interval = "10s"
-        path = "/api/v0/graphql/playground"
+        path = "/api/v0/health"
         timeout = "2s"
       }
 
@@ -50,7 +50,7 @@ job "servicing-station" {
         type = "http"
         port = "web"
         interval = "10s"
-        path = "/api/v0/graphql/playground"
+        path = "/api/v0/health"
         timeout = "2s"
       }
 

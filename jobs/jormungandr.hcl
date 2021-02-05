@@ -1,10 +1,10 @@
-[[ $name := printf "%s-%0.f" .role .index ]]
+[[ $name := printf "%s-%s" .role .index ]]
 [[ $id := printf "%s-%s" .namespace $name ]]
 [[ $publicPort := add 7200 .index ]]
 
 job "[[$name]]" {
   namespace = "[[ .namespace ]]"
-  datacenters = [[ .datacenters | mustToJson ]]
+  datacenters = [[ .datacenters ]]
   type = "service"
 
   group "jormungandr" {
@@ -53,7 +53,7 @@ job "[[$name]]" {
         PATH = "/bin"
         NAMESPACE = "[[.namespace]]"
         PRIVATE = "[[ eq .role "leader" ]]"
-        REQUIRED_PEER_COUNT = [[ printf "%0.f" .requiredPeerCount ]]
+        REQUIRED_PEER_COUNT = [[ .requiredPeerCount ]]
         RUST_BACKTRACE = "full"
         STORAGE_DIR = "/local/storage"
         AWS_DEFAULT_REGION = "us-east-1"
@@ -139,7 +139,7 @@ job "[[$name]]" {
           "rest": {
             "listen": "0.0.0.0:{{ env "NOMAD_PORT_rest" }}"
           },
-          "skip_bootstrap": [[ eq 0.0 .requiredPeerCount ]]
+          "skip_bootstrap": [[ eq "0" .requiredPeerCount ]]
         }
         JSON
       }
