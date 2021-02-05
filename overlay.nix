@@ -27,7 +27,12 @@ in {
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
-  nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix {};
+  nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix { };
+
+  checkFmt = final.writeShellScriptBin "check_fmt.sh" ''
+    export PATH="$PATH:${lib.makeBinPath (with final; [ git nixfmt gnugrep ])}"
+    . ${./pkgs/check_fmt.sh}
+  '';
 
   debugUtils = with final; [
     bashInteractive
