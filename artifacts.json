@@ -2,11 +2,11 @@
   "catalyst-dryrun": {
     "block0": {
       "url": "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin",
-      "checksum": "sha256:3a04ebc5eb198402d89202a52bedb3ba4c7db154e83c4d9773183e6096e76839"
+      "checksum": "sha256:e56a02940cf15f0af49f67203e7ae7074d677261c999738ca09c46cddf1506a3"
     },
     "database": {
       "url": "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3",
-      "checksum": "sha256:94780ab5a849244a16bcc5539f821bf1f3c7c8b9b23699d905f01c6549836220"
+      "checksum": "sha256:073c89a5612e65b0c89ac1cf7823ac17a892438ff8a77ff6e960cfcb9c357dda"
     }
   }
 }
