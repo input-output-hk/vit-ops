@@ -1,9 +1,6 @@
-inputs: final: prev:
+{ inputs, self }: final: prev:
 let lib = final.lib;
 in {
-  rev =
-    self.rev or (builtins.throw "please commit and push before invoking jobs");
-
   artifacts = builtins.fromJSON (builtins.readFile ./artifacts.json);
 
   jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
