@@ -58,24 +58,23 @@ in {
   ];
 
   devShell = let
-    cluster = "vit-testnet";
-    domain = final.clusters.${cluster}.proto.config.cluster.domain;
+    clusterName = builtins.elemAt (builtins.attrNames final.clusters) 0;
+    cluster = final.clusters.${clusterName}.proto.config.cluster;
   in prev.mkShell {
     # for bitte-cli
     LOG_LEVEL = "debug";
 
-    DOMAIN = domain;
+    DOMAIN = cluster.domain;
     NOMAD_NAMESPACE = "catalyst-dryrun";
-    BITTE_CLUSTER = cluster;
+    BITTE_CLUSTER = cluster.name;
     AWS_PROFILE = "vit";
-    AWS_DEFAULT_REGION = final.clusters.${cluster}.proto.config.cluster.region;
+    AWS_DEFAULT_REGION = cluster.region;
+    TERRAFORM_ORGANIZATION = cluster.terraformOrganization;
 
-    VAULT_ADDR = "https://vault.${domain}";
-    NOMAD_ADDR = "https://nomad.${domain}";
-    CONSUL_HTTP_ADDR = "https://consul.${domain}";
+    VAULT_ADDR = "https://vault.${cluster.domain}";
+    NOMAD_ADDR = "https://nomad.${cluster.domain}";
+    CONSUL_HTTP_ADDR = "https://consul.${cluster.domain}";
     NIX_USER_CONF_FILES = ./nix.conf;
-
-    RUST_SRC_PATH = final.rustPlatform.rustcSrc;
 
     buildInputs = with final; [
       awscli
@@ -97,13 +96,7 @@ in {
       sops
       terraform-with-plugins
       vault-bin
-
       dhall
-      rustc
-      cargo
-      rustracer
-      rust-analyzer
-      rustfmt
 
       ruby
     ];

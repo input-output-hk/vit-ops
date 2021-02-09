@@ -36,15 +36,17 @@ def levant(*args, job_name: nil)
 end
 
 def nomad(*args, job_name: nil)
+  threads = []
   json.each do |namespace, nvalues|
     next if namespace != NAMESPACE
 
     nvalues['jobs'].each do |job|
       next if job_name && job['name'] != job_name
 
-      system('nomad', *args, job['name'])
+      threads << Thread.new{ system('nomad', *args, job['name']) }
     end
   end
+  threads.each(&:join)
 end
 
 job = ARGV[1]
