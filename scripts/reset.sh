@@ -104,7 +104,7 @@ if ! git diff --exit-code ./artifacts.json; then
   echo "Found difference in artifacts.json, pushing for consistency"
   git add ./artifacts.json
   git commit -m "update artifacts for $NOMAD_NAMESPACE"
-  git push origin nix-jobs
+  git push origin nix-jobs-final
 fi
 
 echo "[x] Artifacts"

@@ -21,6 +21,12 @@ in {
     catalyst-fund3 = { description = "Catalyst (fund3) "; };
   };
 
+  nix = {
+    substituters = [ "https://vit-ops.cachix.org" ];
+    trusted-public-keys =
+      [ "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho=" ];
+  };
+
   cluster = {
     name = "vit-testnet";
 
@@ -66,6 +72,12 @@ in {
         region = "us-east-2";
         desiredCapacity = 3;
         modules = mkModules "catalyst-fund2";
+      }
+      {
+        region = "eu-west-1";
+        desiredCapacity = 1;
+        instanceType = "c4.xlarge";
+        modules = mkModules "catalyst-fund3";
       }
     ] (args:
       let
@@ -159,6 +171,7 @@ in {
           ./monitoring-server.nix
           ./secrets.nix
           ./nix-builder.nix
+          ./ingress.nix
         ];
 
         securityGroupRules = {

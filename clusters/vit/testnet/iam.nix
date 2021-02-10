@@ -45,5 +45,6 @@ let
     };
   };
 in {
-  cluster.iam.roles.client.policies = allowS3For "artifacts" "infra" [ "artifacts" ];
+  cluster.iam.roles.client.policies =
+    allowS3For "artifacts" "infra" [ "artifacts" ];
 }
