@@ -22,8 +22,8 @@ in {
   };
 
   nix = {
-    substituters = [ "https://vit-ops.cachix.org" ];
-    trusted-public-keys =
+    binaryCaches = [ "https://vit-ops.cachix.org" ];
+    binaryCachePublicKeys =
       [ "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho=" ];
   };
 
@@ -76,7 +76,8 @@ in {
       {
         region = "eu-west-1";
         desiredCapacity = 1;
-        instanceType = "c4.xlarge";
+        instanceType = "c5.4xlarge";
+        volumeSize = 200;
         modules = mkModules "catalyst-fund3";
       }
     ] (args:

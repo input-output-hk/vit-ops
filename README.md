@@ -96,71 +96,54 @@
 
 Some arguments below may differ over time.
 
-    bitte ssh 10.24.66.211
-    nix run github:input-output-hk/voting-tools#voting-tools \
-      genesis \
-      --testnet-magic 1097911063 \
-      --db cexplorer \
-      --db-user cexplorer \
-      --db-host /var/lib/nomad/alloc/9aab6f67-635f-e066-a823-1fde40ffee47/alloc \
-      --out-file out \
-      --scale 1000000 \
-      --slot-no 18433484 \
-      > genesis
+    $ bitte ssh 10.24.66.211
+    $ nix run github:input-output-hk/voting-tools#voting-tools \
+        genesis \
+        --testnet-magic 1097911063 \
+        --db cexplorer \
+        --db-user cexplorer \
+        --db-host /var/lib/nomad/alloc/9aab6f67-635f-e066-a823-1fde40ffee47/alloc \
+        --out-file out \
+        --scale 1000000 \
+        --slot-no 18433484
 
 ### Rewards
 
 Some arguments below may differ over time.
 
-    bitte ssh 10.24.66.211
-    nix run github:input-output-hk/voting-tools \
-      rewards \
-      --testnet-magic 1097911063 \
-      --db cexplorer \
-      --db-user cexplorer \
-      --db-host /var/lib/nomad/alloc/9aab6f67-635f-e066-a823-1fde40ffee47/alloc \
-      --slot-no 18433484 \
-      --total-rewards 500000000000 \
-      --out-file rewards
+    $ bitte ssh 10.24.66.211
+    $ nix run github:input-output-hk/voting-tools \
+        rewards \
+        --testnet-magic 1097911063 \
+        --db cexplorer \
+        --db-user cexplorer \
+        --db-host /var/lib/nomad/alloc/9aab6f67-635f-e066-a823-1fde40ffee47/alloc \
+        --slot-no 18433484 \
+        --total-rewards 500000000000 \
+        --out-file rewards
 
 ### Stopping dryrun
 
-    ./deploy.rb stop
+    $ ./deploy.rb stop
 
 ### Starting dryrun
 
-    ./deploy.rb run
+    $ ./deploy.rb run
 
 ### Resetting dryrun
 
 You'll need a database.sqlite3 and block0.bin file in the current directory.
 Afterwards you can run the deploy script:
 
-    ./deploy.rb reset
+    $ ./deploy.rb reset
 
 ### Get Vote Plan to prepare for tallying
 
-    bitte ssh 10.24.29.200
-    mkdir -p output
-    cp -r /var/lib/nomad/alloc/957d45be-db9d-d8f6-9dea-e81694b48442/jormungandr/local/storage .
-    nix run github:input-output-hk/catalyst-fund-archive-tool ./storage ./output
+    $ bitte ssh 10.24.29.200
+    $ mkdir -p output
+    $ cp -r /var/lib/nomad/alloc/957d45be-db9d-d8f6-9dea-e81694b48442/jormungandr/local/storage .
+    $ nix run github:input-output-hk/catalyst-fund-archive-tool ./storage ./output
 
 ## Tally votes
 
-    VOTE_PLAN_ID=$(jcli rest v0 vote active plans get --output-format json|jq '.[0].id')
-    COMMITTEE_KEY=committee_03.sk
-    COMMITTEE_ADDR=$(jcli address account $(jcli key to-public < "$COMMITTEE_KEY"))
-    COMMITTEE_ADDR_COUNTER=$(jcli rest v0 account get "$COMMITTEE_ADDR" --output-format json|jq .counter)
-    jcli certificate new vote-tally --vote-plan-id "$VOTE_PLAN_ID" --output vote_tally.certificate
-    jcli transaction new --staging vote_tally.staging
-    jcli transaction add-account "$COMMITTEE_ADDR" 0 --staging vote_tally.staging
-    jcli transaction add-certificate $(< vote_tally.certificate) --staging vote_tally.staging
-    jcli transaction finalize --staging vote_tally.staging
-    jcli transaction data-for-witness --staging vote_tally.staging > vote_tally.witness_data
-    jcli transaction make-witness --genesis-block-hash $(jcli genesis hash < block0.bin) --type account --account-spending-counter "$COMMITTEE_ADDR_COUNTER" $(< vote_tally.witness_data) vote_tally.witness "$COMMITTEE_KEY"
-    jcli transaction add-witness --staging vote_tally.staging vote_tally.witness
-    jcli transaction seal --staging vote_tally.staging
-    jcli transaction auth --staging vote_tally.staging --key "$COMMITTEE_KEY"
-    jcli transaction to-message --staging vote_tally.staging > vote_tally.fragment
-    jcli rest v0 message post --file vote_tally.fragment
-    jcli rest v0 vote active plans get
+    $ ./scripts/tally.sh

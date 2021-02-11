@@ -37,8 +37,8 @@ job "db-sync" {
       driver = "exec"
 
       resources {
-        cpu = 700
-        memory = 4000
+        cpu = 13600
+        memory = 8000
       }
 
       volume_mount {
@@ -61,8 +61,8 @@ job "db-sync" {
       driver = "exec"
 
       resources {
-        cpu = 1900
-        memory = 512
+        cpu = 13600
+        memory = 4000
       }
 
       volume_mount {
@@ -85,8 +85,8 @@ job "db-sync" {
       driver = "exec"
 
       resources {
-        cpu = 1800
-        memory = 2000
+        cpu = 13600
+        memory = 8000
       }
 
       volume_mount {

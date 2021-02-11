@@ -52,7 +52,7 @@ let namespaces =
         }
       , catalyst-fund3 = Namespace::{
         , domain = "servicing-station.${fqdn}"
-        , dbSyncInstance = "i-07bd940275dceaec0"
+        , dbSyncInstance = "i-03d242d53cb137764"
         , jobs = [ db-sync ]
         }
       }
