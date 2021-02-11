@@ -97,7 +97,7 @@
 Some arguments below may differ over time.
 
     $ bitte ssh 10.24.66.211
-    $ nix run github:input-output-hk/voting-tools#voting-tools \
+    $ nix run github:input-output-hk/voting-tools#voting-tools -- \
         genesis \
         --testnet-magic 1097911063 \
         --db cexplorer \
@@ -112,7 +112,7 @@ Some arguments below may differ over time.
 Some arguments below may differ over time.
 
     $ bitte ssh 10.24.66.211
-    $ nix run github:input-output-hk/voting-tools \
+    $ nix run github:input-output-hk/voting-tools -- \
         rewards \
         --testnet-magic 1097911063 \
         --db cexplorer \

@@ -94,7 +94,7 @@ in {
       terraform-with-plugins
       vault-bin
       dhall
-
+      dhall-json
       ruby
     ];
   };
