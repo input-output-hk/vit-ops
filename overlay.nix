@@ -1,62 +1,36 @@
-inputs: final: prev:
+{ inputs, self }:
+final: prev:
 let lib = final.lib;
 in {
+  artifacts = builtins.fromJSON (builtins.readFile ./artifacts.json);
 
-  consul-templates = let
-    sources = lib.pipe final.nomadJobs [
-      (lib.filterAttrs (n: v: v ? evaluated))
-      (lib.mapAttrsToList (n: v: {
-        path = [ n v.evaluated.Job.Namespace ];
-        taskGroups = v.evaluated.Job.TaskGroups;
-      }))
-      (map (e:
-        map (tg:
-          map (t:
-            if t.Templates != null then
-              map (tpl: {
-                name = lib.concatStringsSep "/"
-                  (e.path ++ [ tg.Name t.Name tpl.DestPath ]);
-                tmpl = tpl.EmbeddedTmpl;
-              }) t.Templates
-            else
-              null) tg.Tasks) e.taskGroups))
-      builtins.concatLists
-      builtins.concatLists
-      (lib.filter (e: e != null))
-      builtins.concatLists
-      (map (t: {
-        name = t.name;
-        path = final.writeText t.name t.tmpl;
-      }))
-    ];
-  in final.linkFarm "consul-templates" sources;
-
-  inherit (final.dockerTools) buildLayeredImage;
-
-  mkEnv = lib.mapAttrsToList (key: value: "${key}=${value}");
-
-  jormungandr = let
-    version = "0.10.0-alpha.2";
-    src = final.fetchurl {
-      url =
-        "https://github.com/input-output-hk/jormungandr/releases/download/v${version}/jormungandr-${version}-x86_64-unknown-linux-musl-generic.tar.gz";
-      sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
-    };
-  in final.runCommand "jormungandr" { buildInputs = [ final.gnutar ]; } ''
-    mkdir -p $out/bin
-    cd $out/bin
-    tar -zxvf ${src}
-  '';
+  jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
 
   jormungandr-monitor =
     final.callPackage (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
     };
 
-  vit-servicing-station =
-    inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
+  vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {
+    vit-servicing-station =
+      inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
+  };
+
+  jormungandr-entrypoint = final.callPackage ./pkgs/jormungandr.nix { };
+
+  print-env = final.callPackage ./pkgs/print-env.nix { };
+
+  jormungandr-monitor-entrypoint =
+    final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
+
+  nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix { };
+
+  checkFmt = final.writeShellScriptBin "check_fmt.sh" ''
+    export PATH="$PATH:${lib.makeBinPath (with final; [ git nixfmt gnugrep ])}"
+    . ${./pkgs/check_fmt.sh}
+  '';
 
   debugUtils = with final; [
     bashInteractive
@@ -72,6 +46,7 @@ in {
     procps
     ripgrep
     sqlite-interactive
+    strace
     tcpdump
     tmux
     tree
@@ -80,41 +55,47 @@ in {
   ];
 
   devShell = let
-    cluster = "vit-testnet";
-    domain = final.clusters.${cluster}.proto.config.cluster.domain;
+    clusterName = builtins.elemAt (builtins.attrNames final.clusters) 0;
+    cluster = final.clusters.${clusterName}.proto.config.cluster;
   in prev.mkShell {
     # for bitte-cli
     LOG_LEVEL = "debug";
 
-    BITTE_CLUSTER = cluster;
+    DOMAIN = cluster.domain;
+    NOMAD_NAMESPACE = "catalyst-dryrun";
+    BITTE_CLUSTER = cluster.name;
     AWS_PROFILE = "vit";
-    AWS_DEFAULT_REGION = final.clusters.${cluster}.proto.config.cluster.region;
+    AWS_DEFAULT_REGION = cluster.region;
+    TERRAFORM_ORGANIZATION = cluster.terraformOrganization;
 
-    VAULT_ADDR = "https://vault.${domain}";
-    NOMAD_ADDR = "https://nomad.${domain}";
-    CONSUL_HTTP_ADDR = "https://consul.${domain}";
+    VAULT_ADDR = "https://vault.${cluster.domain}";
+    NOMAD_ADDR = "https://nomad.${cluster.domain}";
+    CONSUL_HTTP_ADDR = "https://consul.${cluster.domain}";
     NIX_USER_CONF_FILES = ./nix.conf;
 
-    buildInputs = [
-      final.awscli
-      final.bitte
-      final.cfssl
-      final.consul
-      final.consul-template
-      final.direnv
-      final.jormungandr
-      final.jq
-      final.nixFlakes
-      final.nixfmt
-      final.nomad
-      final.openssl
-      final.restic
-      final.terraform-with-plugins
-      final.vault-bin
-      final.crystal
-      final.pkgconfig
-      final.openssl
-      prev.sops
+    buildInputs = with final; [
+      awscli
+      bitte
+      cfssl
+      consul
+      consul-template
+      crystal
+      direnv
+      jormungandr
+      jq
+      levant
+      nixFlakes
+      nixfmt
+      nomad
+      openssl
+      pkgconfig
+      restic
+      sops
+      terraform-with-plugins
+      vault-bin
+      dhall
+
+      ruby
     ];
   };
 

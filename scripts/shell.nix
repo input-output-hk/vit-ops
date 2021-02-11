@@ -3,17 +3,6 @@ let
   pkgs = import sources.nixpkgs { };
   repl = import ../repl.nix;
 
-  src = pkgs.fetchurl {
-    url =
-      "https://github.com/input-output-hk/jormungandr/releases/download/v0.10.0-alpha.2/jormungandr-0.10.0-alpha.2-x86_64-unknown-linux-musl-generic.tar.gz";
-    sha256 = "sha256-WmlQuY/FvbFR3ba38oh497XmCtftjsrHu9bfKsubqi0=";
-  };
-  jormungandr =
-    pkgs.runCommand "jormungandr" { buildInputs = [ pkgs.gnutar ]; } ''
-      mkdir -p $out/bin
-      cd $out/bin
-      tar -zxvf ${src}
-    '';
   cardanolib-py = (import (sources.cardano-node + "/nix") {
     gitrev = sources.cardano-node.rev;
   }).cardanolib-py;
@@ -26,7 +15,7 @@ let
 in pkgs.stdenv.mkDerivation {
   name = "vit-meta-shell";
   buildInputs = [
-    jormungandr
+    repl.legacyPackages.x86_64-linux.jormungandr
     cardano-cli
     bech32
     pkgs.python3Packages.ipython
@@ -39,10 +28,10 @@ in pkgs.stdenv.mkDerivation {
     cardanolib-py
     vit-kedqr
     jorvit
-    repl.packages.x86_64-linux.vit-servicing-station
+    repl.legacyPackages.x86_64-linux.textql
+    repl.legacyPackages.x86_64-linux.vit-servicing-station
   ];
   shellHook = ''
-    export CARDANO_NODE_SOCKET_PATH=/home/sam/work/iohk/cardano-node/master/state-node-testnet/node.socket
     source <(cardano-cli --bash-completion-script cardano-cli)
   '';
 }

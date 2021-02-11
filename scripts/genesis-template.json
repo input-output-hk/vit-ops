@@ -1,13 +1,9 @@
 {
   "blockchain_configuration": {
-    "block0_date": 1605546000,
+    "block0_date": 1611064800,
     "discrimination": "production",
     "block0_consensus": "bft",
-    "consensus_leader_ids": [
-      "ed25519_pk169pp82fcgn9mzaxumempmjnqpyqzhgr4xfzs4t85xkjm4z4hrjqsnpq4ke",
-      "ed25519_pk1m7xre5p7txtuecc94nnvgcl950kjahu4mzv9h0nn0g5d434t503s3a3ggn",
-      "ed25519_pk1xmxdn2gyw6xvqsfr99ex2da2zh7v9jqmgc2z0ngcxmv88t85w9vqppjqd4"
-    ],
+    "consensus_leader_ids": [],
     "linear_fees": {
       "constant": 0,
       "coefficient": 0,
@@ -17,10 +13,11 @@
     "slot_duration": 20,
     "block_content_max_size": 102400,
     "epoch_stability_depth": 102400,
-    "committees": [
-      "84634f4eb1c69ae81cbe6b736abd555a258cadbbdb2aef0ad6153fe163d15561",
-      "6114d2652fa99402949521f6b008f990af677cec535f20f2fadf050167c0d838",
-      "b83a1a1a8c69f913ae04dca5eb25b723e81d7016cd57a438637361d11c47e104"
-    ]
-  }
+    "committees": []
+  },
+  "initial": [
+    {
+      "fund": []
+    }
+  ]
 }

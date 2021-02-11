@@ -1,15 +1,21 @@
-{ lib, buildLayeredImage, mkEnv, writeShellScript, jormungandr, jq, remarshal
-, coreutils, restic, diffutils, procps }:
+{ runCommand, writeShellScriptBin, lib, symlinkJoin, debugUtils, fetchurl
+, gnutar, jq, remarshal, coreutils, restic, procps, diffutils, jormungandr, ...
+}:
 let
-  entrypoint = writeShellScript "jormungandr" ''
+  entrypoint = writeShellScriptBin "entrypoint" ''
     set -exuo pipefail
+
+    ulimit -n 1024
 
     nodeConfig="$NOMAD_TASK_DIR/node-config.json"
     runConfig="$NOMAD_TASK_DIR/running.json"
     runYaml="$NOMAD_TASK_DIR/running.yaml"
     name="jormungandr"
 
+    chmod u+rwx -R "$NOMAD_TASK_DIR" || true
+
     function convert () {
+      chmod u+rwx -R "$NOMAD_TASK_DIR" || true
       cp "$nodeConfig" "$runConfig"
       remarshal --if json --of yaml "$runConfig" > "$runYaml"
     }
@@ -23,6 +29,8 @@ let
       echo "$STORAGE_DIR not found, restoring backup..."
 
       restic restore latest \
+        --verbose=5 \
+        --no-lock \
         --tag "$NAMESPACE" \
         --target / \
       || echo "couldn't restore backup, continue startup procedure..."
@@ -75,15 +83,16 @@ let
       sleep 10
     done
   '';
-in {
-  jormungandr = buildLayeredImage {
-    name = "docker.vit.iohk.io/jormungandr";
-    config = {
-      Entrypoint = [ entrypoint ];
-
-      Env = mkEnv {
-        PATH = lib.makeBinPath [ jormungandr jq remarshal coreutils restic procps diffutils ];
-      };
-    };
-  };
+in symlinkJoin {
+  name = "entrypoint";
+  paths = debugUtils ++ [
+    coreutils
+    diffutils
+    entrypoint
+    jormungandr
+    jq
+    procps
+    remarshal
+    restic
+  ];
 }

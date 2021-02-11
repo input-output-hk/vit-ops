@@ -1,1 +1,0 @@
-{ ... }: { services.minio.enable = true; }

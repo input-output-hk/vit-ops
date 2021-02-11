@@ -5,22 +5,22 @@
     bitte.url = "github:input-output-hk/bitte";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
-    nixpkgs.follows = "bitte/nixpkgs";
-    terranix.follows = "bitte/terranix";
-    utils.url = "github:numtide/flake-utils";
-    rust-libs.url =
-      "github:input-output-hk/rust-libs.nix/vit-servicing-station";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
+    nixpkgs.follows = "bitte/nixpkgs";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    terranix.follows = "bitte/terranix";
+    utils.follows = "bitte/utils";
     jormungandr-nix = {
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
     };
+    jormungandr.url = "github:input-output-hk/jormungandr/add-flake";
     vit-servicing-station.url = "github:input-output-hk/vit-servicing-station";
   };
 
-  outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
     let
-      vitOpsOverlay = import ./overlay.nix inputs;
+      vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
       bitteOverlay = bitte.overlay.x86_64-linux;
 
       hashiStack = bitte.mkHashiStack {
@@ -38,9 +38,13 @@
           vitOpsOverlay
         ];
       };
+
+      nixosConfigurations = hashiStack.nixosConfigurations // {
+        nspawn-test = import ./nspawn/test.nix { inherit nixpkgs; };
+      };
     in {
-      inherit self;
-      inherit (hashiStack) nomadJobs dockerImages clusters nixosConfigurations;
+      inherit self nixosConfigurations;
+      inherit (hashiStack) nomadJobs dockerImages clusters consulTemplates;
       inherit (pkgs) sources;
       legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;
