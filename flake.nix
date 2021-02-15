@@ -15,7 +15,7 @@
       flake = false;
     };
     jormungandr.url = "github:input-output-hk/jormungandr/add-flake";
-    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station";
+    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station/flake-nix-hash";
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:

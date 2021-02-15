@@ -468,15 +468,16 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1612359750,
-        "narHash": "sha256-4zieCQfdGIBLkE8oP5gCSoZ+qC3bp0RCA0YrPfavbIw=",
+        "lastModified": 1613408208,
+        "narHash": "sha256-p36fduzJ/LRGhbyTpNpEF12s5n+wIy3VNHuGCD69+Z8=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "f40e51c0744a7a7a08d009b59e8922f61dec7ab4",
+        "rev": "49e5cc295aba087b8a45ec7d64638be7a5581b62",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "flake-nix-hash",
         "repo": "vit-servicing-station",
         "type": "github"
       }
