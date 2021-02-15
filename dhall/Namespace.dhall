@@ -10,7 +10,7 @@ in  { Type =
         }
     , default =
       { datacenters = [ "eu-central-1", "us-east-2", "eu-west-1" ]
-      , vitOpsRev = "976053383c8933a36340715a90c08362136e72e7"
+      , vitOpsRev = "c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
       , dbSyncRev = "123312bccc171e2d9fc8e437abb4fd69b0169459"
       , dbSyncInstance = Text
       , jobs = [] : List Job.Type
