@@ -86,16 +86,18 @@ artifacts="$(cat artifacts.json || echo '{}')"
 
 artifacts="$(
   echo "$artifacts" \
-    | jq --arg h "sha256:$(
-        sha256sum block0.bin | awk '{ print $1 }'
-      )" '."catalyst-dryrun".block0.checksum = $h'
+    | jq \
+      --arg n "$NOMAD_NAMESPACE" \
+      --arg h "sha256:$(sha256sum block0.bin | awk '{ print $1 }')" \
+      '.[$n].block0.checksum = $h'
 )"
 
 artifacts="$(
   echo "$artifacts" \
-    | jq --arg h "sha256:$(
-        sha256sum database.sqlite3 | awk '{ print $1 }'
-      )" '."catalyst-dryrun".database.checksum = $h'
+    | jq \
+    --arg n "$NOMAD_NAMESPACE" \
+    --arg h "sha256:$(sha256sum database.sqlite3 | awk '{ print $1 }')" \
+    '.[$n].database.checksum = $h'
 )"
 
 echo "$artifacts"  > artifacts.json
