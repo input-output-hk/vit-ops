@@ -1,6 +1,6 @@
 job "db-sync" {
   namespace = "[[ .namespace ]]"
-  datacenters = [[ .datacenters ]]
+  datacenters = [[ .datacenters | toJson ]]
   type = "service"
 
   constraint {
@@ -47,7 +47,7 @@ job "db-sync" {
       }
 
       config {
-        flake = "github:input-output-hk/cardano-db-sync?rev=[[.dbSyncRev]]#cardano-db-sync-extended-mainnet"
+        flake = "github:input-output-hk/cardano-db-sync?rev=[[.dbSyncRev]]#cardano-db-sync-extended-[[.dbSyncNetwork]]"
         command = "/bin/cardano-db-sync-extended-entrypoint"
       }
 
@@ -62,7 +62,7 @@ job "db-sync" {
 
       resources {
         cpu = 13600
-        memory = 4000
+        memory = 1000
       }
 
       volume_mount {
@@ -86,7 +86,7 @@ job "db-sync" {
 
       resources {
         cpu = 13600
-        memory = 8000
+        memory = 3000
       }
 
       volume_mount {
@@ -103,5 +103,42 @@ job "db-sync" {
         PATH = "/bin"
       }
     }
+
+    task "promtail" {
+      driver = "exec"
+
+      config {
+        flake = "github:input-output-hk/vit-ops?rev=[[.vitOpsRev]]#grafana-loki"
+        command = "/bin/promtail"
+        args = [ "-config.file", "local/config.yaml" ]
+      }
+
+      template {
+        destination = "local/config.yaml"
+        data = <<-YAML
+        server:
+          http_listen_port: {{ env "NOMAD_PORT_promtail" }}
+          grpc_listen_port: 0
+
+        positions:
+          filename: /local/positions.yaml # This location needs to be writeable by promtail.
+
+        client:
+          url: http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:3100/loki/api/v1/push
+
+        scrape_configs:
+         - job_name: db-sync-[[.dbSyncNetwork]]
+           pipeline_stages:
+           static_configs:
+           - labels:
+              syslog_identifier: db-sync-[[.dbSyncNetwork]]
+              namespace: [[.namespace]]
+              dc: {{ env "NOMAD_DC" }}
+              host: {{ env "HOSTNAME" }}
+              __path__: /alloc/logs/*.std*.0
+        YAML
+      }
+    }
+
   }
 }

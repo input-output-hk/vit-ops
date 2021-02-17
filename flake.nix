@@ -14,7 +14,7 @@
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
     };
-    jormungandr.url = "github:input-output-hk/jormungandr/add-flake";
+    jormungandr.url = "github:input-output-hk/jormungandr/v0.10.0-alpha.3-cargohash";
     vit-servicing-station.url = "github:input-output-hk/vit-servicing-station/flake-nix-hash";
   };
 

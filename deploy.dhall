@@ -48,12 +48,14 @@ let namespaces =
       { catalyst-dryrun = Namespace::{
         , domain = "dryrun-servicing-station.${fqdn}"
         , dbSyncInstance = "i-0205f47513cff5c29"
+        , dbSyncNetwork = "testnet"
         , jobs = defaultJobs
         }
       , catalyst-fund3 = Namespace::{
         , domain = "servicing-station.${fqdn}"
         , dbSyncInstance = "i-03d242d53cb137764"
-        , jobs = [ db-sync ]
+        , dbSyncNetwork = "mainnet"
+        , jobs = defaultJobs
         }
       }
 

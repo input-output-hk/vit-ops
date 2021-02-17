@@ -95,16 +95,16 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1611311607,
-        "narHash": "sha256-F3TSi+aSrqgunuJY7JxwVNZytEugnCEzC6ZfamvK/J4=",
+        "lastModified": 1613563888,
+        "narHash": "sha256-i89xBP3GeteN1UikNpCclf83MK7s1TF0iasvuZr+4dk=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "60cc4729707f4e18aee225e652bf602de980e445",
+        "rev": "28f00d4382fe7cda113fe4aa2256e1e505acd320",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "add-flake",
+        "ref": "v0.10.0-alpha.3-cargohash",
         "repo": "jormungandr",
         "type": "github"
       }
