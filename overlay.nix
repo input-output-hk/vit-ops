@@ -32,6 +32,8 @@ in {
     . ${./pkgs/check_fmt.sh}
   '';
 
+  cue = final.callPackage ./pkgs/cue.nix {};
+
   debugUtils = with final; [
     bashInteractive
     coreutils
@@ -79,12 +81,9 @@ in {
       cfssl
       consul
       consul-template
-      crystal
       direnv
       jormungandr
       jq
-      levant
-      nixFlakes
       nixfmt
       nomad
       openssl
@@ -93,9 +92,8 @@ in {
       sops
       terraform-with-plugins
       vault-bin
-      dhall
-      dhall-json
       ruby
+      cue
     ];
   };
 

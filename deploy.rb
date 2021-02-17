@@ -11,40 +11,29 @@ require 'json'
 # ./deploy.rb stop
 # ./deploy.rb reset
 
+%w[NOMAD_NAMESPACE CONSUL_HTTP_TOKEN NOMAD_ADDR NOMAD_TOKEN].each do |key|
+  ENV[key] || raise("missing environment variable #{key}")
+end
+
 NAMESPACE = ENV.fetch('NOMAD_NAMESPACE', 'catalyst-dryrun')
 ENV['NOMAD_NAMESPACE'] = NAMESPACE
 
-def json
-  JSON.parse(`dhall-to-json --file ./deploy.dhall`)
+JOBS = JSON.parse(`cue list`)
+
+def sh!(*args)
+  system(*args) or raise("failed to run #{args.join(' ')}")
 end
 
-def levant(*args, job_name: nil)
-  json.each do |namespace, nvalues|
-    next if namespace != NAMESPACE
-
-    jobs = nvalues.delete 'jobs'
-    vars = { namespace: namespace }.merge nvalues
-    jobs.each do |job|
-      next if job_name && job['name'] != job_name
-
-      template = job.delete 'template'
-      vars.merge! job
-      flags = vars.flat_map { |k, v| ['-var', "#{k}=#{v}"] }
-      system('levant', *args, *flags, template)
-    end
+def cue(*args, job_name: nil)
+  JOBS.each do |job|
+    sh!('cue', '-t', "job=#{job}", *args) if !job_name || (job == job_name)
   end
 end
 
 def nomad(*args, job_name: nil)
   threads = []
-  json.each do |namespace, nvalues|
-    next if namespace != NAMESPACE
-
-    nvalues['jobs'].each do |job|
-      next if job_name && job['name'] != job_name
-
-      threads << Thread.new{ system('nomad', *args, job['name']) }
-    end
+  JOBS.each do |job|
+    threads << Thread.new { sh!('nomad', *args, job) } if !job_name || (job != job_name)
   end
   threads.each(&:join)
 end
@@ -52,10 +41,12 @@ end
 job = ARGV[1]
 
 case ARGV[0]
+when 'list'
+  pp JOBS
 when 'run'
-  levant 'deploy', job_name: job
+  cue 'run', job_name: job
 when 'render'
-  levant 'render', job_name: job
+  cue 'render', job_name: job
 when 'stop'
   nomad 'job', 'stop', '-purge', job_name: job
 when 'reset'

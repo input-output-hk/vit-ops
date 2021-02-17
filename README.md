@@ -92,11 +92,11 @@
 
 ## Deployments
 
-### Snapshots
+### Testnet Snapshot
 
 Some arguments below may differ over time.
 
-    $ bitte ssh 10.24.66.211
+    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-dryrun cue dbSyncInstance)"
     $ nix run github:input-output-hk/voting-tools#voting-tools -- \
         genesis \
         --testnet-magic 1097911063 \
@@ -107,11 +107,22 @@ Some arguments below may differ over time.
         --scale 1000000 \
         --slot-no 18433484
 
-### Rewards
+### Mainnet Snapshot
+
+    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-fund3 cue dbSyncInstance)"
+    $ nix run github:input-output-hk/voting-tools/master#voting-tools -- \
+        genesis \
+        --mainnet \
+        --db cexplorer \
+        --db-user cexplorer \
+        --db-host /var/lib/nomad/alloc/54a497e0-bc1e-28af-8b15-21edaff781c1/alloc/ \
+        --out-file genesis.json
+
+### Testnet Rewards
 
 Some arguments below may differ over time.
 
-    $ bitte ssh 10.24.66.211
+    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-dryrun cue dbSyncInstance)"
     $ nix run github:input-output-hk/voting-tools -- \
         rewards \
         --testnet-magic 1097911063 \
@@ -144,6 +155,14 @@ Afterwards you can run the deploy script:
     $ cp -r /var/lib/nomad/alloc/957d45be-db9d-d8f6-9dea-e81694b48442/jormungandr/local/storage .
     $ nix run github:input-output-hk/catalyst-fund-archive-tool ./storage ./output
 
-## Tally votes
+### Tally votes
 
     $ ./scripts/tally.sh
+
+
+## Checklist for Dryrun
+
+- [ ] Make Snapshot
+- [ ] Send generated funds data to person in charge of generating the Genesis and DB
+- [ ] Receive the new block0.bin and database.sqlite3
+- [ ] Reset the namespace using the above instructions
