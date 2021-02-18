@@ -20,44 +20,56 @@ let Namespace = {
 	jobs: [string]: types.#stanza.job
 }
 
+_defaultJobs: {
+	"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
+	"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
+	"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
+	"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
+	"servicing-station": #ServicingStation
+}
+
 #namespaces: [Name=_]: Namespace & {vars: namespace: Name}
 
 #namespaces: {
 	"catalyst-dryrun": {
 		vars: {
-			#domain: "dryrun-servicing-station.\(fqdn)"
+			#domain:    "dryrun-servicing-station.\(fqdn)"
+			#vitOpsRev: "c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
 		}
-		jobs: {
-			"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
-			"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
-			"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
-			"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
-			"servicing-station": #ServicingStation
-		}
+		jobs: _defaultJobs
 	}
 
 	"catalyst-fund3": {
+		vars: #domain: "servicing-station.\(fqdn)"
+		jobs: _defaultJobs
+	}
+
+	"catalyst-perf": {
 		vars: {
-			#domain: "servicing-station.\(fqdn)"
+			#domain:    "perf-servicing-station.\(fqdn)"
+			#vitOpsRev: #namespaces["catalyst-dryrun"].vars.#vitOpsRev
 		}
+		jobs: _defaultJobs
+	}
+
+	"catalyst-test": {
 		jobs: {
-			"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
-			"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
-			"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
-			"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
-			"servicing-station": #ServicingStation
+			devbox: #DevBox
 		}
 	}
 
-	// i-03d242d53cb137764 -> i-0425dd53d4b0f8939
-	// mainnet => i-0425dd53d4b0f8939 | c5.4xlarge | eu-west-1a | 10.32.121.96 | 34.245.54.60
-	// testnet => i-0ce9a9084a83348e6 | c5.4xlarge | eu-west-1a | 10.32.84.131 | 34.245.86.116
-	// i-0205f47513cff5c29 -> i-0ce9a9084a83348e6
-
 	"catalyst-sync": {
 		jobs: {
-			"db-sync-mainnet": #DbSync & {#dbSyncNetwork: "mainnet", #dbSyncInstance: "i-0425dd53d4b0f8939"}
-			"db-sync-testnet": #DbSync & {#dbSyncNetwork: "testnet", #dbSyncInstance: "i-0ce9a9084a83348e6"}
+			"db-sync-mainnet": #DbSync & {
+				#dbSyncNetwork:  "mainnet"
+				#dbSyncInstance: "i-0425dd53d4b0f8939"
+				#domain:         "snapshot-mainnet.\(fqdn)"
+			}
+			"db-sync-testnet": #DbSync & {
+				#dbSyncNetwork:  "testnet"
+				#dbSyncInstance: "i-0ce9a9084a83348e6"
+				#domain:         "snapshot-testnet.\(fqdn)"
+			}
 		}
 	}
 }

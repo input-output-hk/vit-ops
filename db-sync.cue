@@ -10,6 +10,7 @@ import (
 	#dbSyncNetwork:  "testnet" | "mainnet"
 	#dbSyncRev:      =~"^\(_hex){40}$"
 	#vitOpsRev:      string
+	#domain:         string
 
 	namespace: string
 	datacenters: [...string]
@@ -51,6 +52,16 @@ import (
 			port:         "snapshot"
 			task:         "snapshot"
 			tags: [ "snapshot", #dbSyncNetwork, namespace]
+			meta: {
+				IngressHost:   #domain
+				IngressMode:   "http"
+				IngressBind:   "*:443"
+				IngressServer: "_\(namespace)-snapshot-\(#dbSyncNetwork)._tcp.service.consul"
+				IngressCheck: """
+					http-check send meth GET uri /api/health
+					http-check expect status 200
+					"""
+			}
 		}
 
 		task: "db-sync": {
@@ -142,6 +153,14 @@ import (
 			template: "local/snapshot.config": {
 				left_delimiter:  "[["
 				right_delimiter: "]]"
+				_magic:          string
+				if #dbSyncNetwork == "mainnet" {
+					_magic: "\"--mainnet\""
+				}
+				if #dbSyncNetwork == "testnet" {
+					_magic: "\"--testnet-magic\", \"1097911063\","
+				}
+
 				data: """
         {
           "port": [[ env "NOMAD_PORT_snapshot" ]],
@@ -150,7 +169,7 @@ import (
             "bin": "voting-tools",
             "args": [
               "genesis",
-              "--testnet-magic", "1097911063",
+              \(_magic)
               "--db", "cexplorer",
               "--db-user", "cexplorer",
               "--db-host", "/alloc",

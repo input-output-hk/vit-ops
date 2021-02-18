@@ -220,9 +220,9 @@ import (
 				env:         true
 				change_mode: "restart"
 				data: """
-        PORT="{{ env "NOMAD_PORT_prometheus" }}"
-        JORMUNGANDR_API="http://{{ env "NOMAD_ADDR_rest" }}/api"
-        """
+					PORT="{{ env "NOMAD_PORT_prometheus" }}"
+					JORMUNGANDR_API="http://{{ env "NOMAD_ADDR_rest" }}/api"
+					"""
 			}
 		}
 

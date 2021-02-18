@@ -27,12 +27,14 @@ in {
 
   nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix { };
 
+  devbox-entrypoint = final.callPackage ./pkgs/devbox.nix { };
+
   checkFmt = final.writeShellScriptBin "check_fmt.sh" ''
     export PATH="$PATH:${lib.makeBinPath (with final; [ git nixfmt gnugrep ])}"
     . ${./pkgs/check_fmt.sh}
   '';
 
-  cue = final.callPackage ./pkgs/cue.nix {};
+  cue = final.callPackage ./pkgs/cue.nix { };
 
   debugUtils = with final; [
     bashInteractive
