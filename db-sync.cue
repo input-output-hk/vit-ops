@@ -134,7 +134,7 @@ import (
 			}
 
 			config: {
-				flake:   "github:input-output-hk/vit-testing/update-cargo-hash#snapshot-trigger-service"
+				flake:   "github:input-output-hk/vit-testing/add-voting-tools#snapshot-trigger-service"
 				command: "/bin/snapshot-trigger-service"
 				args: ["--config", "/local/snapshot.config"]
 			}
