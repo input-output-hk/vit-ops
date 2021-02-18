@@ -13,7 +13,20 @@ in {
   };
 
   services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
-  services.nomad.policies.developer.namespace."catalyst-*".policy = "write";
+  services.nomad.policies.developer = {
+    hostVolume."catalyst-*".policy = "write";
+    namespace."catalyst-*" = {
+      capabilities = [
+        "submit-job"
+        "dispatch-job"
+        "read-logs"
+        "alloc-exec"
+        "alloc-node-exec"
+        "alloc-lifecycle"
+      ];
+      policy = "write";
+    };
+  };
 
   services.nomad.namespaces = {
     catalyst-dryrun = { description = "Catalyst (dryrun)"; };
