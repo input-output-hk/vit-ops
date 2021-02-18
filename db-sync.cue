@@ -58,9 +58,9 @@ import (
 				IngressBind:   "*:443"
 				IngressServer: "_\(namespace)-snapshot-\(#dbSyncNetwork)._tcp.service.consul"
 				IngressCheck: """
-					http-check send meth GET uri /api/health
-					http-check expect status 200
-					"""
+        http-check send meth GET uri /api/health
+        http-check expect status 200
+        """
 			}
 		}
 
@@ -158,7 +158,7 @@ import (
 					_magic: "\"--mainnet\""
 				}
 				if #dbSyncNetwork == "testnet" {
-					_magic: "\"--testnet-magic\", \"1097911063\","
+					_magic: "\"--testnet-magic\", \"1097911063\""
 				}
 
 				data: """
@@ -169,7 +169,7 @@ import (
             "bin": "voting-tools",
             "args": [
               "genesis",
-              \(_magic)
+              \(_magic),
               "--db", "cexplorer",
               "--db-user", "cexplorer",
               "--db-host", "/alloc",

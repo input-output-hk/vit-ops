@@ -10,12 +10,13 @@ import (
 		Namespace: string
 		ID:        Name
 		Name:      string
-		Type:      *"service" | "system" | "batch"
-		Priority:  uint | *50
+		Type:      "service" | "system" | "batch"
+		Priority:  uint
 		Datacenters: [...string]
 		TaskGroups: [...TaskGroup]
 		Constraints: [...Constraint]
 		ConsulToken: *null | string
+		VaultToken:  *null | string
 		Vault:       *null | #json.Vault
 	}
 
@@ -261,6 +262,7 @@ toJson: #json.Job & {
 	Datacenters: #job.datacenters
 	Namespace:   #job.namespace
 	Type:        #job.type
+	Priority:    #job.priority
 
 	if #job.vault != null {
 		Vault: {
@@ -418,8 +420,9 @@ toJson: #json.Job & {
 		type:      "batch" | *"service" | "system"
 		constraints: [...#stanza.constraint]
 		group: [string]: #stanza.group & {#type: type}
-		update: #stanza.update
-		vault:  *null | #stanza.vault
+		update:   #stanza.update
+		vault:    *null | #stanza.vault
+		priority: uint | *50
 	}
 
 	constraint: {

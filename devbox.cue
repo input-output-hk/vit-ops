@@ -20,7 +20,7 @@ import (
 			}
 
 			config: {
-				flake:   "github:input-output-hk/cardano-node?rev=\(#vitOpsRev)#devbox-entrypoint"
+				flake:   "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
 				command: "/bin/entrypoint"
 			}
 

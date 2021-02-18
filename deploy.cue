@@ -55,6 +55,11 @@ _defaultJobs: {
 	"catalyst-test": {
 		jobs: {
 			devbox: #DevBox
+			"catalyst-test": {
+				jobs: {
+					devbox: #DevBox & {#vitOpsRev: "32490d199a3ff806935c10fbdc052408e45075de"}
+				}
+			}
 		}
 	}
 
