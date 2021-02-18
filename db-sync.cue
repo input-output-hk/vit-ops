@@ -34,6 +34,7 @@ import (
 	group: "db-sync": {
 		network: {
 			mode: "host"
+			port: snapshot: {}
 		}
 
 		count: 1
@@ -42,6 +43,13 @@ import (
 			type:      "host"
 			read_only: false
 			source:    "\(namespace)-db-sync"
+		}
+
+		service: "\(namespace)-snapshot-\(#dbSyncNetwork)": {
+			address_mode: "host"
+			port:         "snapshot"
+			task:         "snapshot"
+			tags: [ "snapshot", #dbSyncNetwork, namespace]
 		}
 
 		task: "db-sync": {
@@ -112,6 +120,49 @@ import (
 
 			env: {
 				PATH: "/bin"
+			}
+		}
+
+		task: "snapshot": {
+			driver: "exec"
+
+			resources: {
+				cpu:    100
+				memory: 32
+			}
+
+			volume_mount: "persist": {
+				destination: "/persist"
+			}
+
+			config: {
+				flake:   "github:input-output-hk/vit-testing/update-cargo-hash#snapshot-trigger-service"
+				command: "/bin/snapshot-trigger-service"
+				args: ["--config", "/local/snapshot.config"]
+			}
+
+			template: "local/snapshot.config": {
+				left_delimiter:  "[["
+				right_delimiter: "]]"
+				data: """
+        {
+          "port": [[ env "NOMAD_PORT_snapshot" ]],
+          "result_dir": "/persist/snapshot",
+          "command": {
+            "bin": "voting-tools",
+            "args": [
+              "genesis",
+              "--testnet-magic", "1097911063",
+              "--db", "cexplorer",
+              "--db-user", "cexplorer",
+              "--db-host", "/alloc",
+              "--out-file", "{{RESULT_DIR}}/genesis.yaml",
+              "--scale", "1000000"
+            ]
+          },
+          "token": "RBj0OfHw5jT87A"
+        }
+        """
 			}
 		}
 
