@@ -25,7 +25,7 @@ command: render: {
 
 command: run: {
 	environment: os.Getenv & {
-		NOMAD_NAMESPACE:   "catalyst-dryrun" | "catalyst-fund3"
+		NOMAD_NAMESPACE:   string
 		CONSUL_HTTP_TOKEN: string
 		NOMAD_ADDR:        string
 		NOMAD_TOKEN:       string
@@ -56,7 +56,7 @@ command: run: {
 
 command: list: {
 	environment: os.Getenv & {
-		NOMAD_NAMESPACE: "catalyst-dryrun" | "catalyst-fund3"
+		NOMAD_NAMESPACE: string
 	}
 
 	display: cli.Print & {
@@ -66,11 +66,7 @@ command: list: {
 }
 
 command: dbSyncInstance: {
-	environment: os.Getenv & {
-		NOMAD_NAMESPACE: "catalyst-dryrun" | "catalyst-fund3"
-	}
-
 	display: cli.Print & {
-		text: #namespaces[environment.NOMAD_NAMESPACE].vars.#dbSyncInstance
+		text: #namespaces["catalyst-sync"].jobs[#jobName].#dbSyncInstance
 	}
 }

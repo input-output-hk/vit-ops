@@ -5,9 +5,10 @@ import (
 )
 
 #DbSync: types.#stanza.job & {
-	#dbSyncInstance: string
+	_hex:            "[0-9a-f]"
+	#dbSyncInstance: =~"^i-\(_hex){17}$"
 	#dbSyncNetwork:  "testnet" | "mainnet"
-	#dbSyncRev:      string
+	#dbSyncRev:      =~"^\(_hex){40}$"
 	#vitOpsRev:      string
 
 	namespace: string
@@ -60,8 +61,7 @@ import (
 				memory: 8000
 			}
 
-			volume_mount: {
-				volume:      "persist"
+			volume_mount: "persist": {
 				destination: "/persist"
 			}
 
@@ -84,8 +84,7 @@ import (
 				memory: 1000
 			}
 
-			volume_mount: {
-				volume:      "persist"
+			volume_mount: "persist": {
 				destination: "/persist"
 			}
 
@@ -108,13 +107,12 @@ import (
 				memory: 3000
 			}
 
-			volume_mount: {
-				volume:      "persist"
+			volume_mount: "persist": {
 				destination: "/persist"
 			}
 
 			config: {
-				flake:   "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-mainnet-debug"
+				flake:   "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-\(#dbSyncNetwork)-debug"
 				command: "/bin/cardano-node-entrypoint"
 			}
 

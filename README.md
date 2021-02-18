@@ -96,7 +96,7 @@
 
 Some arguments below may differ over time.
 
-    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-dryrun cue dbSyncInstance)"
+    $ bitte ssh "$(cue -t job=db-sync-testnet dbSyncInstance)"
     $ nix run github:input-output-hk/voting-tools#voting-tools -- \
         genesis \
         --testnet-magic 1097911063 \
@@ -109,7 +109,7 @@ Some arguments below may differ over time.
 
 ### Mainnet Snapshot
 
-    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-fund3 cue dbSyncInstance)"
+    $ bitte ssh "$(cue -t job=db-sync-mainnet dbSyncInstance)"
     $ nix run github:input-output-hk/voting-tools/master#voting-tools -- \
         genesis \
         --mainnet \
@@ -122,7 +122,7 @@ Some arguments below may differ over time.
 
 Some arguments below may differ over time.
 
-    $ bitte ssh "$(NOMAD_NAMESPACE=catalyst-dryrun cue dbSyncInstance)"
+    $ bitte ssh "$(cue -t job=db-sync-testnet dbSyncInstance)"
     $ nix run github:input-output-hk/voting-tools -- \
         rewards \
         --testnet-magic 1097911063 \

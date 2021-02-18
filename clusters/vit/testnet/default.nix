@@ -19,6 +19,7 @@ in {
     catalyst-dryrun = { description = "Catalyst (dryrun)"; };
     catalyst-fund2 = { description = "Catalyst (fund2) "; };
     catalyst-fund3 = { description = "Catalyst (fund3) "; };
+    catalyst-sync = { description = "Catalyst (sync) "; };
   };
 
   nix = {
@@ -50,7 +51,6 @@ in {
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./secrets.nix
         ./docker-auth.nix
-        ./nix-builder.nix
         ./reaper.nix
         ./host-volumes.nix
         ./nspawn.nix
@@ -75,10 +75,10 @@ in {
       }
       {
         region = "eu-west-1";
-        desiredCapacity = 1;
+        desiredCapacity = 3;
         instanceType = "c5.4xlarge";
         volumeSize = 200;
-        modules = mkModules "catalyst-fund3";
+        modules = mkModules "catalyst-sync";
       }
     ] (args:
       let
@@ -171,7 +171,6 @@ in {
           (bitte + /profiles/monitoring.nix)
           ./monitoring-server.nix
           ./secrets.nix
-          ./nix-builder.nix
           ./ingress.nix
         ];
 

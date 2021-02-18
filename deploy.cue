@@ -11,13 +11,11 @@ let Namespace = {
 		let hex = "[0-9a-f]"
 		let datacenter = "eu-central-1" | "us-east-2" | "eu-west-1"
 
-		namespace:       string
-		#domain:         string
-		#dbSyncInstance: =~"^i-\(hex){17}$"
-		#vitOpsRev:      =~"^\(hex){40}$" | *"c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
-		#dbSyncRev:      =~"^\(hex){40}$" | *"123312bccc171e2d9fc8e437abb4fd69b0169459"
-		#dbSyncNetwork:  "testnet" | "mainnet"
-		datacenters:     [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
+		namespace:   string
+		#domain:     string
+		#vitOpsRev:  =~"^\(hex){40}$" | *"c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
+		#dbSyncRev:  =~"^\(hex){40}$" | *"1518c0ee4eaf21caff207b1fc09ff047eda50ee0"
+		datacenters: [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
 	}
 	jobs: [string]: types.#stanza.job
 }
@@ -27,9 +25,7 @@ let Namespace = {
 #namespaces: {
 	"catalyst-dryrun": {
 		vars: {
-			#domain:         "dryrun-servicing-station.\(fqdn)"
-			#dbSyncInstance: "i-0205f47513cff5c29"
-			#dbSyncNetwork:  "testnet"
+			#domain: "dryrun-servicing-station.\(fqdn)"
 		}
 		jobs: {
 			"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
@@ -37,24 +33,31 @@ let Namespace = {
 			"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
 			"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
 			"servicing-station": #ServicingStation
-			"db-sync":           #DbSync
 		}
 	}
 
 	"catalyst-fund3": {
 		vars: {
-			#domain:         "servicing-station.\(fqdn)"
-			#dbSyncInstance: "i-03d242d53cb137764"
-			#dbSyncNetwork:  "mainnet"
+			#domain: "servicing-station.\(fqdn)"
 		}
 		jobs: {
-			"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
 			"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
 			"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
 			"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
 			"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
 			"servicing-station": #ServicingStation
-			"db-sync":           #DbSync
+		}
+	}
+
+	// i-03d242d53cb137764 -> i-0425dd53d4b0f8939
+	// mainnet => i-0425dd53d4b0f8939 | c5.4xlarge | eu-west-1a | 10.32.121.96 | 34.245.54.60
+	// testnet => i-0ce9a9084a83348e6 | c5.4xlarge | eu-west-1a | 10.32.84.131 | 34.245.86.116
+	// i-0205f47513cff5c29 -> i-0ce9a9084a83348e6
+
+	"catalyst-sync": {
+		jobs: {
+			"db-sync-mainnet": #DbSync & {#dbSyncNetwork: "mainnet", #dbSyncInstance: "i-0425dd53d4b0f8939"}
+			"db-sync-testnet": #DbSync & {#dbSyncNetwork: "testnet", #dbSyncInstance: "i-0ce9a9084a83348e6"}
 		}
 	}
 }

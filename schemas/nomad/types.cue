@@ -238,9 +238,9 @@ import (
 		ChangeSignal: string | *""
 		Splay:        uint | *5000000000
 		Perms:        *"0644" | =~"^[0-7]{3}$"
-		LeftDelim:    string | *"{{"
-		RightDelim:   string | *"}}"
-		Envvars:      bool | *false
+		LeftDelim:    string
+		RightDelim:   string
+		Envvars:      bool
 	}
 
 	Vault: {
@@ -356,6 +356,8 @@ toJson: #json.Job & {
 				Envvars:      tpl.env
 				ChangeMode:   tpl.change_mode
 				ChangeSignal: tpl.change_signal
+				LeftDelim:    tpl.left_delimiter
+				RightDelim:   tpl.right_delimiter
 			}]
 
 			Artifacts: [ for artName, art in t.artifact {
@@ -375,6 +377,13 @@ toJson: #json.Job & {
 					Policies:     t.vault.policies
 				}
 			}
+
+			VolumeMounts: [ for volName, vol in t.volume_mount {
+				Destination:     vol.destination
+				PropagationMode: "private"
+				ReadOnly:        vol.read_only
+				Volume:          volName
+			}]
 		}]
 
 		if tg.vault != null {
@@ -532,16 +541,18 @@ toJson: #json.Job & {
 		restart: #stanza.restart & {#type: #type}
 
 		template: [Destination=_]: {
-			destination:   Destination
-			data:          *"" | string
-			source:        *"" | string
-			env:           bool | *false
-			change_mode:   *"restart" | "noop" | "signal"
-			change_signal: *"" | string
+			destination:     Destination
+			data:            *"" | string
+			source:          *"" | string
+			env:             bool | *false
+			change_mode:     *"restart" | "noop" | "signal"
+			change_signal:   *"" | string
+			left_delimiter:  string | *"{{"
+			right_delimiter: string | *"}}"
 		}
 
-		vault:        *null | #stanza.vault
-		volume_mount: #stanza.volume_mount
+		vault: *null | #stanza.vault
+		volume_mount: [string]: #stanza.volume_mount
 	}
 
 	update: {

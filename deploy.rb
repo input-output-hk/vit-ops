@@ -26,14 +26,20 @@ end
 
 def cue(*args, job_name: nil)
   JOBS.each do |job|
-    sh!('cue', '-t', "job=#{job}", *args) if !job_name || (job == job_name)
+    if !job_name || job == job_name
+      p "cue -t job=#{job} #{args.join(' ')}"
+      sh!('cue', '-t', "job=#{job}", *args)
+    end
   end
 end
 
 def nomad(*args, job_name: nil)
   threads = []
   JOBS.each do |job|
-    threads << Thread.new { sh!('nomad', *args, job) } if !job_name || (job != job_name)
+    if !job_name || job == job_name
+      p "nomad #{args.join(' ')} #{job}"
+      threads << Thread.new { sh!('nomad', *args, job) }
+    end
   end
   threads.each(&:join)
 end

@@ -16,6 +16,11 @@
         path = "/var/lib/nomad-volumes/catalyst-fund3-db-sync";
         read_only = false;
       };
+
+      catalyst-sync-db-sync = {
+        path = "/var/lib/nomad-volumes/catalyst-sync-db-sync";
+        read_only = false;
+      };
     }];
   };
 
