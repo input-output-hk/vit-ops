@@ -103,7 +103,7 @@ artifacts="$(
     '.[$n].database: { url: $u, checksum: $h }'
 )"
 
-echo "$artifacts" | cue import json: - > artifacts.cue
+echo "$artifacts" | cue import -p bitte json: - > artifacts.cue
 
 if ! git diff --exit-code ./artifacts.cue; then
   echo "Found difference in artifacts.cue, pushing for consistency"
