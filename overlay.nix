@@ -34,6 +34,11 @@ in {
     . ${./pkgs/check_fmt.sh}
   '';
 
+  checkCue = final.writeShellScriptBin "check_cue.sh" ''
+    export PATH="$PATH:${lib.makeBinPath (with final; [ cue ])}"
+    cue vet -c
+  '';
+
   cue = final.callPackage ./pkgs/cue.nix { };
 
   debugUtils = with final; [
