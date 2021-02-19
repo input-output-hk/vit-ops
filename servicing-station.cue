@@ -82,7 +82,7 @@ import (
 			driver: "exec"
 
 			config: {
-				flake:   "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#vit-servicing-station"
+				flake:   "github:input-output-hk/vit-servicing-station/flake-nix-hash#vit-servicing-station"
 				command: "/bin/vit-servicing-station-server"
 				args: ["--in-settings-file", "local/station-config.yaml"]
 			}

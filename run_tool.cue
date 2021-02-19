@@ -7,6 +7,8 @@ import (
 	"tool/exec"
 	"tool/http"
 	"strings"
+	"tool/file"
+	"crypto/sha256"
 )
 
 #jobName:       string @tag(job)
@@ -90,6 +92,48 @@ command: plan: {
     body: \(json.Indent(_response.body, "", "  "))
     trailer: \(json.Indent(json.Marshal(_response.trailer), "", "  "))
     """
+	}
+}
+
+command: artifacts: {
+	environment: os.Getenv & {
+		NOMAD_NAMESPACE: string
+	}
+
+	block0: file.Read & {
+		filename: "block0.bin"
+	}
+
+	database: file.Read & {
+		filename: "database.sqlite3"
+	}
+
+	write: file.Create & {
+		_checksum: {
+			block0:   sha256.Sum256(block0.contents)
+			database: sha256.Sum256(database.contents)
+		}
+		_updated: artifacts & {
+			"\(environment.NOMAD_NAMESPACE)": {
+				block0: {
+					url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/\(environment.NOMAD_NAMESPACE)/block0.bin"
+					checksum: "sha256:\(_checksum.block0)"
+				}
+				database: {
+					url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/\(environment.NOMAD_NAMESPACE)/database.sqlite3"
+					checksum: "sha256:\(_checksum.database)"
+				}
+			}
+		}
+
+		filename:    "database.cue"
+		permissions: 0o644
+		contents:    "\(_updated)"
+	}
+
+	display: cli.Print & {
+		_keys: [ for k, v in rendered[environment.NOMAD_NAMESPACE] {k}]
+		text: json.Indent(json.Marshal(_keys), "", "  ")
 	}
 }
 

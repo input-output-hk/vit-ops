@@ -47,7 +47,7 @@ _defaultJobs: {
 	"catalyst-perf": {
 		vars: {
 			#domain:    "perf-servicing-station.\(fqdn)"
-			#vitOpsRev: #namespaces["catalyst-dryrun"].vars.#vitOpsRev
+			#vitOpsRev: "c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
 		}
 		jobs: _defaultJobs
 	}
@@ -84,3 +84,10 @@ for nsName, nsValue in #namespaces {
 		}
 	}
 }
+
+flakes: [
+	for namespaceName, namespace in #namespaces
+	for jobName, job in namespace.jobs
+	for groupName, group in (job & namespace.vars).group
+	for taskName, task in group.task {task.config.flake},
+]
