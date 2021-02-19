@@ -91,7 +91,7 @@ artifacts="$(
       --arg n "$NOMAD_NAMESPACE" \
       --arg u "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/$NOMAD_NAMESPACE/block0.bin" \
       --arg h "sha256:$(sha256sum block0.bin | awk '{ print $1 }')" \
-      '.[$n].block0: { url: $u, checksum: $h }'
+      '.[$n].block0: { "url": $u, "checksum": $h }'
 )"
 
 artifacts="$(
@@ -100,7 +100,7 @@ artifacts="$(
     --arg n "$NOMAD_NAMESPACE" \
     --arg u "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/$NOMAD_NAMESPACE/database.sqlite3" \
     --arg h "sha256:$(sha256sum database.sqlite3 | awk '{ print $1 }')" \
-    '.[$n].database: { url: $u, checksum: $h }'
+    '.[$n].database: { "url": $u, "checksum": $h }'
 )"
 
 echo "$artifacts" | cue import -p bitte json: - > artifacts.cue
