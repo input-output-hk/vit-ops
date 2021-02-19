@@ -6,11 +6,24 @@ import (
 
 let fqdn = "vit.iohk.io"
 
-let Namespace = {
+_defaultJobs: {
+	"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
+	"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
+	"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
+	"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
+	"servicing-station": #ServicingStation
+}
+
+artifacts: [string]: [string]: {url: string, checksum: string}
+
+Namespace: [Name=_]: {
 	vars: {
 		let hex = "[0-9a-f]"
 		let datacenter = "eu-central-1" | "us-east-2" | "eu-west-1"
 
+		namespace:   Name
+		#block0:     artifacts[Name].block0
+		#database:   artifacts[Name].database
 		namespace:   string
 		#domain:     string
 		#vitOpsRev:  =~"^\(hex){40}$" | *"c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
@@ -20,15 +33,7 @@ let Namespace = {
 	jobs: [string]: types.#stanza.job
 }
 
-_defaultJobs: {
-	"leader-0":          #Jormungandr & {#role: "leader", #index:   0}
-	"leader-1":          #Jormungandr & {#role: "leader", #index:   1}
-	"leader-2":          #Jormungandr & {#role: "leader", #index:   2}
-	"follower-0":        #Jormungandr & {#role: "follower", #index: 0}
-	"servicing-station": #ServicingStation
-}
-
-#namespaces: [Name=_]: Namespace & {vars: namespace: Name}
+#namespaces: Namespace
 
 #namespaces: {
 	"catalyst-dryrun": {

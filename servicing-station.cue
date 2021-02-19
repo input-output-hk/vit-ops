@@ -5,6 +5,8 @@ import (
 )
 
 #ServicingStation: types.#stanza.job & {
+	#block0: {url: string, checksum: string}
+	#database: {url: string, checksum: string}
 	#vitOpsRev: string
 	#domain:    string
 
@@ -118,7 +120,6 @@ import (
           """
 			}
 
-			#block0: artifacts[namespace].block0
 			artifact: "local/block0.bin": {
 				source: #block0.url
 				options: {
@@ -126,7 +127,6 @@ import (
 				}
 			}
 
-			#database: artifacts[namespace].database
 			artifact: "local/database.sqlite3": {
 				source: #database.url
 				options: {

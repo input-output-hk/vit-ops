@@ -6,6 +6,7 @@ import (
 )
 
 #Jormungandr: types.#stanza.job & {
+	#block0: {url: string, checksum: string}
 	#role:              "leader" | "follower"
 	#index:             uint
 	#name:              "\(#role)-\(#index)"
@@ -188,7 +189,6 @@ import (
 				}
 			}
 
-			#block0: artifacts[namespace].block0
 			artifact: "local/block0.bin": {
 				source: #block0.url
 				options: {
