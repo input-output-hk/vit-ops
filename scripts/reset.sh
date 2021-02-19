@@ -82,29 +82,32 @@ aws s3 ls &> /dev/null \
 
 echo "[x] AWS credentials"
 
-artifacts="$(cat artifacts.json || echo '{}')"
+# TODO: do this in CUE
+artifacts="$(cue export --out json ./artifacts.cue || echo '{}')"
 
 artifacts="$(
   echo "$artifacts" \
     | jq \
       --arg n "$NOMAD_NAMESPACE" \
+      --arg u "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/$NOMAD_NAMESPACE/block0.bin" \
       --arg h "sha256:$(sha256sum block0.bin | awk '{ print $1 }')" \
-      '.[$n].block0.checksum = $h'
+      '.[$n].block0: { url: $u, checksum: $h }'
 )"
 
 artifacts="$(
   echo "$artifacts" \
     | jq \
     --arg n "$NOMAD_NAMESPACE" \
+    --arg u "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/$NOMAD_NAMESPACE/database.sqlite3" \
     --arg h "sha256:$(sha256sum database.sqlite3 | awk '{ print $1 }')" \
-    '.[$n].database.checksum = $h'
+    '.[$n].database: { url: $u, checksum: $h }'
 )"
 
-echo "$artifacts"  > artifacts.json
+echo "$artifacts" | cue import json: - > artifacts.cue
 
-if ! git diff --exit-code ./artifacts.json; then
-  echo "Found difference in artifacts.json, pushing for consistency"
-  git add ./artifacts.json
+if ! git diff --exit-code ./artifacts.cue; then
+  echo "Found difference in artifacts.cue, pushing for consistency"
+  git add ./artifacts.cue
   git commit -m "update artifacts for $NOMAD_NAMESPACE"
   git push origin nix-jobs-final
 fi

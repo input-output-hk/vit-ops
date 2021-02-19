@@ -188,7 +188,7 @@ import (
 				}
 			}
 
-			#block0: #artifacts[namespace].block0
+			#block0: artifacts[namespace].block0
 			artifact: "local/block0.bin": {
 				source: #block0.url
 				options: {

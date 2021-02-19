@@ -2,8 +2,6 @@
 final: prev:
 let lib = final.lib;
 in {
-  artifacts = builtins.fromJSON (builtins.readFile ./artifacts.json);
-
   jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
 
   jormungandr-monitor =
