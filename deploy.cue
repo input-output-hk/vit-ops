@@ -38,8 +38,7 @@ Namespace: [Name=_]: {
 #namespaces: {
 	"catalyst-dryrun": {
 		vars: {
-			#domain:    "dryrun-servicing-station.\(fqdn)"
-			#vitOpsRev: "c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
+			#domain: "dryrun-servicing-station.\(fqdn)"
 		}
 		jobs: _defaultJobs
 	}
@@ -51,15 +50,14 @@ Namespace: [Name=_]: {
 
 	"catalyst-perf": {
 		vars: {
-			#domain:    "perf-servicing-station.\(fqdn)"
-			#vitOpsRev: "c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
+			#domain: "perf-servicing-station.\(fqdn)"
 		}
 		jobs: _defaultJobs
 	}
 
 	"catalyst-test": {
 		jobs: {
-			devbox: #DevBox & {#vitOpsRev: "32490d199a3ff806935c10fbdc052408e45075de"}
+			devbox: #DevBox & {#vitOpsRev: "ae41a5b3e645f9a0837a123361d5de19156268c5"}
 		}
 	}
 
