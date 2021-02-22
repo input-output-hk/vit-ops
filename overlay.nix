@@ -27,6 +27,10 @@ in {
 
   devbox-entrypoint = final.callPackage ./pkgs/devbox.nix { };
 
+  cardano-node = inputs.cardano-node.legacyPackages.${final.system};
+
+  inherit (cardano-node) cardano-cli;
+
   checkFmt = final.writeShellScriptBin "check_fmt.sh" ''
     export PATH="$PATH:${lib.makeBinPath (with final; [ git nixfmt gnugrep ])}"
     . ${./pkgs/check_fmt.sh}

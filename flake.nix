@@ -14,8 +14,9 @@
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
     };
-    jormungandr.url = "github:input-output-hk/jormungandr/v0.10.0-alpha.3-cargohash";
-    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station/flake-nix-hash";
+    jormungandr.url = "github:input-output-hk/jormungandr/use-rust-nix";
+    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station/use-rust-nix";
+    cardano-node.url = "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26";
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:

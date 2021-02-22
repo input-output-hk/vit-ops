@@ -14,6 +14,7 @@ in symlinkJoin {
   name = "entrypoint";
   paths = [
     bashInteractive
+    cardano-cli
     cargo
     coreutils
     curl

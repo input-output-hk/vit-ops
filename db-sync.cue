@@ -51,16 +51,16 @@ import (
 			address_mode: "host"
 			port:         "snapshot"
 			task:         "snapshot"
-			tags: [ "snapshot", #dbSyncNetwork, namespace]
+			tags: [ "ingress", "snapshot", #dbSyncNetwork, namespace]
 			meta: {
 				IngressHost:   #domain
 				IngressMode:   "http"
 				IngressBind:   "*:443"
 				IngressServer: "_\(namespace)-snapshot-\(#dbSyncNetwork)._tcp.service.consul"
 				IngressCheck: """
-        http-check send meth GET uri /api/health
-        http-check expect status 200
-        """
+					http-check send meth GET uri /api/health
+					http-check expect status 200
+					"""
 			}
 		}
 
@@ -149,6 +149,8 @@ import (
 				command: "/bin/snapshot-trigger-service"
 				args: ["--config", "/local/snapshot.config"]
 			}
+
+			template: "genesis-template.json": data: "{}"
 
 			template: "local/snapshot.config": {
 				left_delimiter:  "[["

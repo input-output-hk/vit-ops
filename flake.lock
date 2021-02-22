@@ -52,6 +52,27 @@
         "type": "github"
       }
     },
+    "cardano-node": {
+      "inputs": {
+        "haskell-nix": "haskell-nix",
+        "nixpkgs": "nixpkgs_5",
+        "utils": "utils_4"
+      },
+      "locked": {
+        "lastModified": 1611848469,
+        "narHash": "sha256-9L0S/QvPjjPaWCb4M36969oTyNsAiLp+k09ecFCIiXM=",
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "14229feb119cc3431515dde909a07bbf214f5e26",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "cardano-node",
+        "rev": "14229feb119cc3431515dde909a07bbf214f5e26",
+        "type": "github"
+      }
+    },
     "crystal": {
       "inputs": {
         "nixpkgs": "nixpkgs",
@@ -68,6 +89,21 @@
       "original": {
         "owner": "kreisys",
         "repo": "crystal",
+        "type": "github"
+      }
+    },
+    "haskell-nix": {
+      "locked": {
+        "lastModified": 1611120169,
+        "narHash": "sha256-ad4VJZBNu7OLrWT+QOnNhd8YevSXpYgZug3sFnAlk/Y=",
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
+        "rev": "e6ba58f72fa787330ada12b31281bb1c87369cc3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "repo": "haskell.nix",
         "type": "github"
       }
     },
@@ -91,20 +127,21 @@
     },
     "jormungandr": {
       "inputs": {
-        "nixpkgs": "nixpkgs_5",
-        "utils": "utils_4"
+        "nixpkgs": "nixpkgs_6",
+        "rust-nix": "rust-nix",
+        "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1613563888,
-        "narHash": "sha256-i89xBP3GeteN1UikNpCclf83MK7s1TF0iasvuZr+4dk=",
+        "lastModified": 1613746879,
+        "narHash": "sha256-rt3g80wpTdA/wuW7LLHTeEfFfu6UKhI3BfwRA1JJQEw=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "28f00d4382fe7cda113fe4aa2256e1e505acd320",
+        "rev": "a9ed05df94720dcad7d7d056c6a9cbc4dc7fcb62",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "v0.10.0-alpha.3-cargohash",
+        "ref": "use-rust-nix",
         "repo": "jormungandr",
         "type": "github"
       }
@@ -256,26 +293,72 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1610720724,
-        "narHash": "sha256-plSXE0DbKAu+JvyQWoyYubBSY8l5h9IAsXC83E6tEW0=",
+        "lastModified": 1611413872,
+        "narHash": "sha256-nD9e3f9P+YQ1qDSHdRXIAor40eqANBv1o03zGvpJsnM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "95e1ba302d0927ca05566d39be9e27532c346ba8",
+        "rev": "fe08be60cb84148a3dba29cfdb090fa185cacdaa",
         "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-20.09",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_6": {
+      "locked": {
+        "lastModified": 1613582597,
+        "narHash": "sha256-6LvipIvFuhyorHpUqK3HjySC5Y6gshXHFBhU9EJ4DoM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "6b1057b452c55bb3b463f0d7055bc4ec3fd1f381",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_7": {
+      "locked": {
+        "lastModified": 1611935233,
+        "narHash": "sha256-DNKjtkkkMS2nYWE/AkpAXIsIY3p79DC5nkrLdtONdD8=",
+        "path": "/nix/store/sh56vwghlzjcw517a60l76qf6wqfb3mx-source",
+        "rev": "90a9b71b73ffdf2b7fc8f9d03e81968cbc1ff344",
+        "type": "path"
       },
       "original": {
         "id": "nixpkgs",
         "type": "indirect"
       }
     },
-    "nixpkgs_6": {
+    "nixpkgs_8": {
       "locked": {
-        "lastModified": 1610565421,
-        "narHash": "sha256-8gUzX5p/MAbRBroaWOv2v9sup2qBnQVkdyy6Id/1lec=",
+        "lastModified": 1613582597,
+        "narHash": "sha256-6LvipIvFuhyorHpUqK3HjySC5Y6gshXHFBhU9EJ4DoM=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e41f385b1c196a4b2a6daee2a9a3295593ed6455",
+        "rev": "6b1057b452c55bb3b463f0d7055bc4ec3fd1f381",
         "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_9": {
+      "locked": {
+        "lastModified": 1611935233,
+        "narHash": "sha256-DNKjtkkkMS2nYWE/AkpAXIsIY3p79DC5nkrLdtONdD8=",
+        "path": "/nix/store/sh56vwghlzjcw517a60l76qf6wqfb3mx-source",
+        "rev": "90a9b71b73ffdf2b7fc8f9d03e81968cbc1ff344",
+        "type": "path"
       },
       "original": {
         "id": "nixpkgs",
@@ -336,6 +419,7 @@
     "root": {
       "inputs": {
         "bitte": "bitte",
+        "cardano-node": "cardano-node",
         "jormungandr": "jormungandr",
         "jormungandr-nix": "jormungandr-nix",
         "nixpkgs": [
@@ -353,6 +437,44 @@
           "utils"
         ],
         "vit-servicing-station": "vit-servicing-station"
+      }
+    },
+    "rust-nix": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_7"
+      },
+      "locked": {
+        "lastModified": 1613148821,
+        "narHash": "sha256-DfzLE4HNVuLnKYJfe4FDuNTZEGbiGBv6sbNQmwFWN5g=",
+        "owner": "input-output-hk",
+        "repo": "rust.nix",
+        "rev": "14f7bccda47d9c7ea9cbd647a75e3446085f458f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "ref": "work",
+        "repo": "rust.nix",
+        "type": "github"
+      }
+    },
+    "rust-nix_2": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_9"
+      },
+      "locked": {
+        "lastModified": 1613148821,
+        "narHash": "sha256-DfzLE4HNVuLnKYJfe4FDuNTZEGbiGBv6sbNQmwFWN5g=",
+        "owner": "input-output-hk",
+        "repo": "rust.nix",
+        "rev": "14f7bccda47d9c7ea9cbd647a75e3446085f458f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "input-output-hk",
+        "ref": "work",
+        "repo": "rust.nix",
+        "type": "github"
       }
     },
     "stdlib": {
@@ -449,35 +571,51 @@
     },
     "utils_5": {
       "locked": {
-        "lastModified": 1610051610,
-        "narHash": "sha256-U9rPz/usA1/Aohhk7Cmc2gBrEEKRzcW4nwPWMPwja4Y=",
-        "owner": "numtide",
+        "lastModified": 1613500319,
+        "narHash": "sha256-ybAq6pImFCSnwyhhmnnvV567JM4GuhCEG/PHBkSS86U=",
+        "owner": "kreisys",
         "repo": "flake-utils",
-        "rev": "3982c9903e93927c2164caa727cd3f6a0e6d14cc",
+        "rev": "28e72370213c9bc2cf094ab07b8ac95f3c6bb60f",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
+        "owner": "kreisys",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "utils_6": {
+      "locked": {
+        "lastModified": 1613500319,
+        "narHash": "sha256-ybAq6pImFCSnwyhhmnnvV567JM4GuhCEG/PHBkSS86U=",
+        "owner": "kreisys",
+        "repo": "flake-utils",
+        "rev": "28e72370213c9bc2cf094ab07b8ac95f3c6bb60f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kreisys",
         "repo": "flake-utils",
         "type": "github"
       }
     },
     "vit-servicing-station": {
       "inputs": {
-        "nixpkgs": "nixpkgs_6",
-        "utils": "utils_5"
+        "nixpkgs": "nixpkgs_8",
+        "rust-nix": "rust-nix_2",
+        "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1613408208,
-        "narHash": "sha256-p36fduzJ/LRGhbyTpNpEF12s5n+wIy3VNHuGCD69+Z8=",
+        "lastModified": 1613746143,
+        "narHash": "sha256-cVWFLpP+YgRlibwl/D+Fk0QUnsN15uJCxEn/w5x83bA=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "49e5cc295aba087b8a45ec7d64638be7a5581b62",
+        "rev": "533499902f1445d8d84c7b86e61c55572bf71173",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "flake-nix-hash",
+        "ref": "use-rust-nix",
         "repo": "vit-servicing-station",
         "type": "github"
       }
