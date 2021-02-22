@@ -31,4 +31,14 @@ artifacts: {
 			checksum: "sha256:22b4437bb66f599417ed427bd1a5d79f1b6cb20baa15c0fd4915253c89dae407"
 		}
 	}
+	"catalyst-test": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-test/block0.bin"
+			checksum: "sha256:2db6f2654ba9c4cf388a78d3b030ba687209d36ac84d01937d3f54f609d1d49d"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-test/database.sqlite3"
+			checksum: "sha256:a1fdbe68017cc91ad83fd5c26584b047fdbfd8b05b7cdbf7ad85bb2551dc6275"
+		}
+	}
 }
