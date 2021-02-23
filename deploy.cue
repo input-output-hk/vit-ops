@@ -57,7 +57,7 @@ Namespace: [Name=_]: {
 
 	"catalyst-test": {
 		jobs: {
-			devbox: #DevBox & {#vitOpsRev: "f039c08aae56038e8751cb4fc984c9f9709b9d34"}
+			devbox: #DevBox & {#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"}
 		}
 	}
 
