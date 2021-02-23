@@ -2,6 +2,7 @@ package bitte
 
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
+	"strings"
 )
 
 #ServicingStation: types.#stanza.job & {
@@ -9,6 +10,23 @@ import (
 	#database: {url: string, checksum: string}
 	#vitOpsRev: string
 	#domain:    string
+
+	#servicingStationEndpoints: [
+		"/api/v0/block0",
+		"/api/v0/fund",
+		"/api/v0/proposals",
+		"/api/v0/graphql/playground",
+		"/api/v0/graphql",
+		"/api/v0/challenges",
+		"/api/v1/fragments",
+	]
+
+	#jormungandrEndpoints: [
+		"/api/v0/account",
+		"/api/v0/message",
+		"/api/v0/settings",
+		"/api/v0/vote",
+	]
 
 	namespace: string
 	datacenters: [...string]
@@ -38,7 +56,7 @@ import (
 				IngressHost:   #domain
 				IngressMode:   "http"
 				IngressBind:   "*:443"
-				IngressIf:     "{ path_beg /api/v0/block0 /api/v0/fund /api/v0/proposals /api/v0/graphql/playground /api/v0/graphql /api/v0/challenges }"
+				IngressIf:     "{ path_beg \(strings.Join(#servicingStationEndpoints, " ")) }"
 				IngressServer: "_\(namespace)-servicing-station._tcp.service.consul"
 				IngressCheck: """
 					http-check send meth GET uri /api/v0/graphql/playground
@@ -67,7 +85,7 @@ import (
 				IngressHost:   #domain
 				IngressMode:   "http"
 				IngressBind:   "*:443"
-				IngressIf:     "{ path_beg /api/v0/account /api/v0/message /api/v0/settings /api/v0/vote }"
+				IngressIf:     "{ path_beg \(strings.Join(#jormungandrEndpoints, " ")) }"
 				IngressServer: "_\(namespace)-follower-0-jormungandr-rest._tcp.service.consul"
 				IngressCheck: """
 					http-check send meth GET uri /api/v0/node/stats
