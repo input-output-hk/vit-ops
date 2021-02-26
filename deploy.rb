@@ -1,7 +1,18 @@
-#!/usr/bin/env ruby
+#! /usr/bin/env nix-shell
+#! nix-shell -i ruby -p "ruby.withPackages (ps: with ps; [ rest-client ])
 # frozen_string_literal: true
 
+# Hack to avoid cookie issue
+module HTTP
+  class CookieJar
+    def cookies(*args)
+      []
+    end
+  end
+end
+
 require 'json'
+require 'rest-client'
 
 # Example usage:
 # With NOMAD_NAMESPACE set:
@@ -18,18 +29,43 @@ end
 NAMESPACE = ENV.fetch('NOMAD_NAMESPACE', 'catalyst-dryrun')
 ENV['NOMAD_NAMESPACE'] = NAMESPACE
 
-JOBS = JSON.parse(`cue list`)
+OUTPUT = JSON.parse(`cue export`)
+JOBS = OUTPUT.fetch('rendered').fetch(NAMESPACE).keys
 
 def sh!(*args)
   system(*args) or raise("failed to run #{args.join(' ')}")
 end
 
-def cue(*args, job_name: nil)
+def run(job_name: nil)
   JOBS.each do |job|
-    if !job_name || job == job_name
-      p "cue -t job=#{job} #{args.join(' ')}"
-      sh!('cue', '-t', "job=#{job}", *args)
-    end
+    next if job_name && job != job_name
+
+    body = OUTPUT.fetch('rendered').fetch(NAMESPACE).fetch(job)
+    body['Job']['ConsulToken'] = ENV.fetch('CONSUL_HTTP_TOKEN')
+    response = RestClient.post "#{ENV.fetch('NOMAD_ADDR')}/v1/jobs", body.to_json, {
+      'X-Nomad-Token': ENV.fetch('NOMAD_TOKEN'),
+      'X-Vault-Token': `vault print token`.strip
+    }
+    puts "Response: #{response.code}"
+    pp JSON.parse(response.body)
+  end
+end
+
+
+def plan(job_name: nil)
+  JOBS.each do |job|
+    next if job_name && job != job_name
+
+    body = OUTPUT.fetch('rendered').fetch(NAMESPACE).fetch(job)
+    body['Job']['ConsulToken'] = ENV.fetch('CONSUL_HTTP_TOKEN')
+    body['Diff'] = true
+    id = body.fetch('Job').fetch('ID')
+    response = RestClient.post "#{ENV.fetch('NOMAD_ADDR')}/v1/job/#{id}/plan", body.to_json, {
+      'X-Nomad-Token': ENV.fetch('NOMAD_TOKEN'),
+      'X-Vault-Token': `vault print token`.strip
+    }
+    puts "Response: #{response.code}"
+    pp JSON.parse(response.body)
   end
 end
 
@@ -50,7 +86,9 @@ case ARGV[0]
 when 'list'
   pp JOBS
 when 'run'
-  cue 'run', job_name: job
+  run job_name: job
+when 'plan'
+  plan job_name: job
 when 'render'
   cue 'render', job_name: job
 when 'stop'

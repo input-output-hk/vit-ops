@@ -26,7 +26,7 @@ command: render: {
 }
 
 command: run: {
-	environment: os.Getenv & {
+	environment: os.Environ & {
 		NOMAD_NAMESPACE:   string
 		CONSUL_HTTP_TOKEN: string
 		NOMAD_ADDR:        string
@@ -57,7 +57,7 @@ command: run: {
 }
 
 command: plan: {
-	environment: os.Getenv & {
+	environment: os.Environ & {
 		NOMAD_NAMESPACE:   string
 		CONSUL_HTTP_TOKEN: string
 		NOMAD_ADDR:        string
@@ -138,7 +138,7 @@ command: artifacts: {
 }
 
 command: list: {
-	environment: os.Getenv & {
+	environment: os.Environ & {
 		NOMAD_NAMESPACE: string
 	}
 
