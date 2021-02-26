@@ -3,12 +3,12 @@ package bitte
 artifacts: {
 	"catalyst-perf": {
 		block0: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:8c42ec7c57b52c6e8bf76e37203df7e447bca00534e37519cb6011762f142efa"
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-perf/block0.bin"
+			checksum: "sha256:15f5945f38c14c234aae5a4026eed1ff45dfb4a2403ab74643b392ea28a9a3a5"
 		}
 		database: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:6412fab14d27f931da40594aa8eaf73911177db6a5121892c8a8c6fcf205cff2"
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-perf/database.sqlite3"
+			checksum: "sha256:6a0788add82303e329d4748e65513af59af46ec7b9021381bc15a96c967f2c76"
 		}
 	}
 	"catalyst-dryrun": {
