@@ -15,8 +15,10 @@
       flake = false;
     };
     jormungandr.url = "github:input-output-hk/jormungandr/use-rust-nix";
-    vit-servicing-station.url = "github:input-output-hk/vit-servicing-station/use-rust-nix";
-    cardano-node.url = "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26";
+    vit-servicing-station.url =
+      "github:input-output-hk/vit-servicing-station/use-rust-nix";
+    cardano-node.url =
+      "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26";
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
@@ -51,9 +53,11 @@
       devShell.x86_64-linux = pkgs.devShell;
       hydraJobs.x86_64-linux = {
         inherit (pkgs)
-          devShellPath bitte nixFlakes sops generate-mantis-keys
-          terraform-with-plugins cfssl consul nomad vault-bin cue grafana
-          haproxy grafana-loki victoriametrics;
+          devShellPath bitte nixFlakes sops terraform-with-plugins cfssl consul
+          nomad vault-bin cue grafana haproxy grafana-loki victoriametrics
+          jormungandr-entrypoint jormungandr-monitor-entrypoint restic-backup
+          nomad-driver-nspawn devbox-entrypoint cardano-node
+          vit-servicing-station jormungandr-monitor jormungandr;
       } // (pkgs.lib.mapAttrs (_: v: v.config.system.build.toplevel)
         nixosConfigurations);
     };
