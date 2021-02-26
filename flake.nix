@@ -57,7 +57,7 @@
           nomad vault-bin cue grafana haproxy grafana-loki victoriametrics
           jormungandr-entrypoint jormungandr-monitor-entrypoint restic-backup
           nomad-driver-nspawn devbox-entrypoint cardano-node
-          vit-servicing-station jormungandr-monitor jormungandr;
+          jormungandr-monitor jormungandr;
       } // (pkgs.lib.mapAttrs (_: v: v.config.system.build.toplevel)
         nixosConfigurations);
     };
