@@ -24,7 +24,7 @@
 ### Github Access Token
 
 * Github users who are in the IOHK team `jormungandr` have the ability to authenticate to the vit-ops project as developers.
-  * If you are not in the `jormungandr` github team and require access to the vit-ops project, request team membership from the Mantis project team.
+  * If you are not in the `jormungandr` github team and require access to the vit-ops project, request team membership from the Jormungandr project team.
 
 * To authenticate to the vit-ops project, use your github ID to create a personal access token for vit-ops if you don't already have one:
   * Login into github.com with your github work user id.
