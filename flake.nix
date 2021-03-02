@@ -56,8 +56,8 @@
           devShellPath bitte nixFlakes sops terraform-with-plugins cfssl consul
           nomad vault-bin cue grafana haproxy grafana-loki victoriametrics
           jormungandr-entrypoint jormungandr-monitor-entrypoint restic-backup
-          nomad-driver-nspawn devbox-entrypoint cardano-cli
-          jormungandr-monitor jormungandr;
+          nomad-driver-nspawn devbox-entrypoint cardano-cli jormungandr-monitor
+          jormungandr vit-servicing-station-server vit-servicing-station-cli;
       } // (pkgs.lib.mapAttrs (_: v: v.config.system.build.toplevel)
         nixosConfigurations);
     };

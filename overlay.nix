@@ -9,10 +9,8 @@ in {
       jormungandr-cli = final.jormungandr;
     };
 
-  vit-servicing-station = final.callPackage ./pkgs/vit-servicing-station.nix {
-    vit-servicing-station =
-      inputs.vit-servicing-station.packages.${final.system}.vit-servicing-station;
-  };
+  inherit (inputs.vit-servicing-station.packages.${final.system})
+    vit-servicing-station-server vit-servicing-station-cli;
 
   jormungandr-entrypoint = final.callPackage ./pkgs/jormungandr.nix { };
 
@@ -115,7 +113,7 @@ in {
   # Used for caching
   devShellPath = prev.symlinkJoin {
     paths = final.devShell.buildInputs
-      ++ [ final.nixFlakes final.vit-servicing-station ];
+      ++ [ final.nixFlakes ];
     name = "devShell";
   };
 }
