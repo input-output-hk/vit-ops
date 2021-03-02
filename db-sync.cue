@@ -135,9 +135,14 @@ import (
 		task: "snapshot": {
 			driver: "exec"
 
+			vault: {
+				policies: ["nomad-cluster"]
+				change_mode: "noop"
+			}
+
 			resources: {
-				cpu:    100
-				memory: 32
+				cpu:    6800
+				memory: 2 * 1024
 			}
 
 			volume_mount: "persist": {
@@ -147,14 +152,15 @@ import (
 			config: {
 				flake:   "github:input-output-hk/vit-testing/add-voting-tools#snapshot-trigger-service"
 				command: "/bin/snapshot-trigger-service"
-				args: ["--config", "/local/snapshot.config"]
+				args: ["--config", "/secrets/snapshot.config"]
 			}
 
 			template: "genesis-template.json": data: "{}"
 
-			template: "local/snapshot.config": {
+			template: "secrets/snapshot.config": {
 				left_delimiter:  "[["
 				right_delimiter: "]]"
+				change_mode: "noop"
 				_magic:          string
 				if #dbSyncNetwork == "mainnet" {
 					_magic: "\"--mainnet\""
@@ -176,10 +182,11 @@ import (
               "--db-user", "cexplorer",
               "--db-host", "/alloc",
               "--out-file", "{{RESULT_DIR}}/genesis.yaml",
-              "--scale", "1000000"
+              "--scale", "1000000",
+              "--slot-no", "23118048"
             ]
           },
-          "token": "RBj0OfHw5jT87A"
+          "token": "[[with secret "kv/data/nomad-cluster/\(namespace)/\(#dbSyncNetwork)/snapshot"]][[.Data.data.token]][[end]]"
         }
         """
 			}

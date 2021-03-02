@@ -27,7 +27,7 @@ Namespace: [Name=_]: {
 		namespace:   string
 		#domain:     string
 		#vitOpsRev:  =~"^\(hex){40}$" | *"c9251b4f3f0b34a22e3968bf28d5a049da120f8f"
-		#dbSyncRev:  =~"^\(hex){40}$" | *"1518c0ee4eaf21caff207b1fc09ff047eda50ee0"
+		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
 	}
 	jobs: [string]: types.#stanza.job

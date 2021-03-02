@@ -14,7 +14,7 @@
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
     };
-    jormungandr.url = "github:input-output-hk/jormungandr/use-rust-nix";
+    jormungandr.url = "github:input-output-hk/jormungandr?ref=v0.10.0-alpha.3";
     vit-servicing-station.url =
       "github:input-output-hk/vit-servicing-station/use-rust-nix";
     cardano-node.url =
