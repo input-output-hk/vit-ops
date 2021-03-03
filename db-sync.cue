@@ -183,7 +183,7 @@ import (
               "--db-host", "/alloc",
               "--out-file", "{{RESULT_DIR}}/genesis.yaml",
               "--scale", "1000000",
-              "--slot-no", "23118048"
+              "--slot-no", "23231709"
             ]
           },
           "token": "[[with secret "kv/data/nomad-cluster/\(namespace)/\(#dbSyncNetwork)/snapshot"]][[.Data.data.token]][[end]]"
