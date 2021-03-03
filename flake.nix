@@ -2,7 +2,7 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte";
+    bitte.url = "github:input-output-hk/bitte/terraform-state-in-vault";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
@@ -47,8 +47,9 @@
       };
     in {
       inherit self nixosConfigurations;
-      inherit (hashiStack) nomadJobs dockerImages clusters consulTemplates;
+      inherit (hashiStack) nomadJobs dockerImages consulTemplates;
       inherit (pkgs) sources;
+      clusters.x86_64-linux = hashiStack.clusters;
       legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;
       hydraJobs.x86_64-linux = {
