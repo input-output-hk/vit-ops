@@ -150,7 +150,7 @@ import (
 			}
 
 			config: {
-				flake:   "github:input-output-hk/vit-testing/add-voting-tools-2#snapshot-trigger-service"
+				flake:   "github:input-output-hk/vit-testing/6cf436eff5d3acab78cb3e13efeaa62e8aa0336a#snapshot-trigger-service"
 				command: "/bin/snapshot-trigger-service"
 				args: ["--config", "/secrets/snapshot.config"]
 			}
