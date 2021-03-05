@@ -144,6 +144,7 @@ class VITBridge:
                     61284: {
                     1: bytes.fromhex(meta[1][2:]),
                     2: bytes.fromhex(meta[2][2:]),
+                    3: bytes.fromhex(meta[3][2:]),
                     }
             }
         return meta
@@ -222,10 +223,11 @@ SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id =
    , sig_table AS (select tx_id, json AS signature from tx_metadata where key = '61285')
 SELECT hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = meta_table.tx_id INNER JOIN sig_table USING(tx_id) WHERE hash=decode('{txhash}', 'hex');''')
         row = cursor.fetchone()
-        if (type(row[2]) is dict) and (type(row[3]) is dict) and ("1" in row[2]) and ("2" in row[2]) and "1" in row[3]:
+        if (type(row[2]) is dict) and (type(row[3]) is dict) and ("1" in row[2]) and ("2" in row[2]) and ("3" in row[2]) and "1" in row[3]:
             meta = {
                     1: row[2]["1"],
-                    2: row[2]["2"]
+                    2: row[2]["2"],
+                    3: row[2]["3"]
                    }
             stake_pub = self.strip_hex_prefix(meta[2])
             voting_key = self.strip_hex_prefix(meta[1])
@@ -236,12 +238,13 @@ SELECT hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id = me
 valid signature!
 stake_pub: {stake_pub}
 voting_key: {voting_key}
+address: {voting_key}
 signature: {sig_hex}
                 ''')
             else:
                 meta_raw = cbor2.dumps(self.meta_convert_raw(meta))
                 stake_pub_bech32 = self.prefix_bech32("ed25519_pk", self.strip_hex_prefix(meta[2]))
-                sig_bech32 = self.prefix_bech32(sig_hex)
+                sig_bech32 = self.prefix_bech32("ed25519_sig", sig_hex)
                 pub_key_file = "debug.pub"
                 data_file = "debug.data"
                 sig_file = "debug.sig"

@@ -26,10 +26,6 @@ in pkgs.stdenv.mkDerivation {
     pkgs.python3Packages.opencv4
 
     cardanolib-py
-    vit-kedqr
-    jorvit
-    repl.legacyPackages.x86_64-linux.textql
-    repl.legacyPackages.x86_64-linux.vit-servicing-station
   ];
   shellHook = ''
     source <(cardano-cli --bash-completion-script cardano-cli)
