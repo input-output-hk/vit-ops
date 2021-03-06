@@ -20,15 +20,6 @@ from cardanolib import CardanoCLIWrapper
 arguments = docopt(__doc__)
 
 bridge = VITBridge(arguments['--network-magic'], arguments['--state-dir'])
-cardano = CardanoCLIWrapper(arguments['--network-magic'], arguments['--state-dir'])
-
-tip = cardano.get_tip()
-utxo = cardano.get_utxo(arguments['--payment-address'])
-txins = [ tuple(list(utxo.keys())[0].split("#")) ]
-
-value = list(utxo.values())[0]["amount"]
-txouts = [( arguments['--payment-address'], value )]
-
 
 stake_skey = bridge.read_cardano_key(arguments["--stake-signing-key"])
 
@@ -38,15 +29,11 @@ vote_pk_bytes = bridge.convert_jcli_key_to_bytes(vote_pk)
 stake_sk = bridge.convert_key_to_jcli(stake_skey)
 stake_pk = bridge.jcli_key_public(stake_sk)
 
-meta = bridge.generate_meta_data(stake_skey, vote_pk_bytes)
+meta = bridge.generate_meta_data(stake_skey, vote_pk_bytes, arguments['--payment-address'])
 print("Validating signature in generated metadata")
 if bridge.validate_meta_data_presubmit(meta):
     print("Signature valid!")
 else:
     print("Signature failed!")
-cardano.build_tx("meta.txbody", txins=txins, txouts=txouts, ttl=tip["slotNo"], metadata = meta)
-fee = cardano.estimate_fee(len(txins), len(txouts), 1, txbody_file="meta.txbody")
-txouts = [( arguments["--payment-address"], value - fee )]
-cardano.build_tx("meta.txbody", txins=txins, txouts=txouts, ttl=tip["slotNo"] + 5000, metadata=meta, fee=fee)
-cardano.sign_tx("meta.txbody", "meta.txsigned", [ arguments["--payment-signing-key"] ])
-print("review tx generated in meta.txsigned and submit using cardano-cli")
+
+print(meta)
