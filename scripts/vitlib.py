@@ -149,13 +149,15 @@ class VITBridge:
             }
         return meta
 
-    def generate_meta_data(self, stake, vote):
+    def generate_meta_data(self, stake, vote, address):
         stake_priv = self.prefix_bech32("ed25519_sk", stake)
         stake_pub = self.jcli_key_public(stake_priv)
         stake_pub_hex = self.convert_jcli_key_to_bytes(stake_pub)
+        stake_address_hex = self.bech32_to_hex(address)
         meta_keys = {
                 1: f"0x{vote}",
                 2: f"0x{stake_pub_hex}",
+                3: f"0x{stake_address_hex}",
         }
         meta_keys_raw = self.meta_convert_raw(meta_keys)
         sig = self.bech32_to_hex(self.jcli_sign(stake_priv, cbor2.dumps(meta_keys_raw)))
