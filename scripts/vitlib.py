@@ -260,13 +260,51 @@ signature: {sig_hex}
 debug files written in current directory
                 ''')
 
-    def get_stake(self, stake_hash, slot=None):
+    def fetch_yoroi_registrations(self):
+        cursor = self.db.cursor()
+        cursor.execute('''SELECT DISTINCT (json ->> '1'), (json ->> '2'), (json ->> '3') FROM tx_metadata WHERE key = 61284 AND (json ->> '2') LIKE '0x8200581c%';''')
+        rows = cursor.fetchall()
+        total = 0
+        count_valid = 0
+        count_invalid = 0
+        registrations = []
+        for row in rows:
+            if not row[2]:
+                break
+            vote_pub = row[0][2:]
+            stake_hash = row[1][10:]
+            address = row[2][2:]
+            power = self.get_stake(stake_hash)
+            if power > 0:
+                power = power // 1000000
+            if power > 2950:
+                total += power
+                count_valid += 1
+                registrations.append({"vote_address": self.jcli_address(vote_pub), "stake_address": self.prefix_bech32("stake", f"e1{stake_hash}"), "address": self.prefix_bech32("addr", address), "power": power})
+            else:
+                count_invalid += 1
+        print(f"Total power: {total}")
+        print(f"Total registrations: {count_valid}")
+        print(f"Total invalid registrations: {count_invalid}")
+        with open("yoroi.json", "w") as f:
+            json.dump(registrations, f)
+
+    def gen_snapshot(self, slot=None):
+        cursor = self.db.cursor()
+        if slot:
+            cursor.execute(f'''CREATE TEMPORARY TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id WHERE block.slot_no < {slot});''')
+            cursor.execute(f'''CREATE TEMPORARY TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.hash_raw AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id WHERE block.slot_no < {slot});''')
+        else:
+            cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id);''')
+            cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.hash_raw AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id);''')
+        cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS utxo_snapshot AS (SELECT tx_out_snapshot.* FROM tx_out_snapshot LEFT OUTER JOIN tx_in_snapshot ON tx_out_snapshot.tx_id = tx_in_snapshot.tx_out_id AND tx_out_snapshot.index = tx_in_snapshot.tx_out_index WHERE tx_in_snapshot.tx_in_id IS NULL);''')
+
+    def get_stake(self, stake_hash):
         cursor = self.db.cursor()
         # TODO: pass stake_hash in tuple with %s
-        if slot:
-            query = f'''SELECT SUM(utxo_view.value) FROM utxo_view INNER JOIN tx ON tx.id = utxo_view.tx_id INNER JOIN block ON block.id = tx.block_id WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}' AND block.slot_no < {slot};'''
-        else:
-            query = f'''SELECT SUM(utxo_view.value) FROM utxo_view WHERE CAST(encode(address_raw, 'hex') AS text) LIKE '%{stake_hash}';'''
+        query = f'''SELECT SUM(utxo_snapshot.value) FROM utxo_snapshot WHERE stake_credential = decode('e1{stake_hash}', 'hex');'''
+        if len(stake_hash) != 56:
+            return 0
         cursor.execute(query)
         row = cursor.fetchone()
         if row[0]:
