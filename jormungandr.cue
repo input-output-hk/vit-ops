@@ -58,8 +58,8 @@ import (
 			}
 
 			resources: {
-				cpu:    700
-				memory: 512
+				cpu:    3300
+				memory: 1024
 			}
 
 			config: {
