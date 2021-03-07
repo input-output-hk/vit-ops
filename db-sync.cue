@@ -115,7 +115,7 @@ import (
 
 			resources: {
 				cpu:    13600
-				memory: 3000
+				memory: 4000
 			}
 
 			volume_mount: "persist": {
