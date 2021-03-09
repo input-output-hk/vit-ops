@@ -59,7 +59,7 @@ import (
 
 			resources: {
 				cpu:    3300
-				memory: 1024
+				memory: 2048
 			}
 
 			config: {
