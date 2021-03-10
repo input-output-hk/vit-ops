@@ -9,3 +9,4 @@ secrets/
 *.txsigned
 *.sig
 state*
+result*
