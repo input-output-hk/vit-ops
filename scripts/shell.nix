@@ -24,7 +24,8 @@ in pkgs.stdenv.mkDerivation {
     pkgs.python3Packages.psycopg2
     pkgs.python3Packages.cryptography
     pkgs.python3Packages.opencv4
-
+    pkgs.python3Packages.httpx
+    pkgs.python3Packages.pydantic
     cardanolib-py
   ];
   shellHook = ''
