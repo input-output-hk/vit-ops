@@ -1,52 +1,25 @@
 from typing import Dict, Optional, List, Union, Tuple
 
+import itertools
+
 import pydantic
 import httpx
 
 # VIT servicing station models
 
 
-class ProposalCategory(pydantic.BaseModel):
-    category_id: str
-    category_name: str
-    category_description: str
-
-
-class Proposer(pydantic.BaseModel):
-    proposer_name: str
-    proposer_email: str
-    proposer_url: str
-    proposer_relevant_experience: str
-
-
 class Proposal(pydantic.BaseModel):
     internal_id: int
     proposal_id: str
-    proposal_category: ProposalCategory
     proposal_title: str
-    proposal_summary: str
-    proposal_public_key: str
     proposal_funds: int
     proposal_url: str
-    proposal_impact_score: int
-    proposer: Proposer
     chain_proposal_id: str
     chain_proposal_index: int
     chain_vote_options: Dict[str, int]
-    chain_voteplan_id: str
-    chain_vote_start_time: str
-    chain_vote_end_time: str
-    chain_committee_end_time: str
-    chain_voteplan_payload: str
-    chain_vote_encryption_key: str
     fund_id: int
     challenge_id: int
     challenge_type: str
-    proposal_solution: Optional[str]
-    proposal_brief: Optional[str]
-    proposal_importance: Optional[str]
-    proposal_goal: Optional[str]
-    proposal_metrics: Optional[str]
 
 
 # Jormungandr models
@@ -61,7 +34,7 @@ class TallyResult(pydantic.BaseModel):
     options: Options
 
 
-class VoteProposalStatus(pydantic.BaseModel):
+class ProposalStatus(pydantic.BaseModel):
     index: int
     proposal_id: str
     options: Options
@@ -72,7 +45,7 @@ class VoteProposalStatus(pydantic.BaseModel):
 class VoteplanStatus(pydantic.BaseModel):
     id: str
     payload: str
-    proposals: List[VoteProposalStatus]
+    proposals: List[ProposalStatus]
 
 
 async def get_proposals(vit_servicing_station_url: str) -> [Proposal]:
@@ -89,13 +62,13 @@ async def get_active_voteplans(vit_servicing_station_url: str) -> [VoteplanStatu
         return [VoteplanStatus(**proposal_data) for proposal_data in proposals_result.json()]
 
 
-async def get_proposals_and_voteplans(vit_servicing_station_url: str) -> Tuple[List[Proposal], List[VoteplanStatus]]:
+async def get_proposals_and_voteplans(vit_servicing_station_url: str) -> Tuple[Dict[str, Proposal], List[ProposalStatus]]:
     proposals_task = asyncio.create_task(get_proposals(vit_servicing_station_url))
     voteplans_task = asyncio.create_task(get_active_voteplans(vit_servicing_station_url))
 
-    proposals = await proposals_task
-    voteplans = await voteplans_task
-    return proposals, voteplans
+    proposals = {proposal.proposal_id: proposal for proposal in await proposals_task}
+    voteplans_proposals = list(itertools.chain.from_iterable(voteplan.proposals for voteplan in await voteplans_task))
+    return proposals, voteplans_proposals
 
 
 if __name__ == "__main__":
