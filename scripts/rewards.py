@@ -1,10 +1,14 @@
-from typing import Dict, Optional, List, Union, Tuple, Set
+from typing import Dict, Optional, List, Tuple, Generator, TextIO
 
+import asyncio
+import json
 import itertools
+import enum
 from collections import namedtuple
 
 import pydantic
 import httpx
+import typer
 
 # VIT servicing station models
 
@@ -58,26 +62,62 @@ class VoteplanStatus(pydantic.BaseModel):
     proposals: List[ProposalStatus]
 
 
+# File loaders
+
+def load_json_from_file(file_path: str) -> Dict:
+    with open(file_path) as f:
+        return json.load(f)
+
+
+def get_proposals_from_file(proposals_file_path: str) -> Dict[str, Proposal]:
+    proposals: Generator[Proposal, None, None] = (
+        Proposal(**proposal_data) for proposal_data in load_json_from_file(proposals_file_path)
+    )
+    proposals_dict = {proposal.proposal_id: proposal for proposal in proposals}
+    return proposals_dict
+
+
+def get_voteplan_proposals_from_file(voteplan_file_path: str) -> Dict[str, ProposalStatus]:
+    voteplans_status: Generator[VoteplanStatus, None, None] = (
+        VoteplanStatus(**voteplan) for voteplan in load_json_from_file(voteplan_file_path)
+    )
+    flattened_voteplan_proposals = itertools.chain.from_iterable(
+        voteplan_status.proposals for voteplan_status in voteplans_status
+    )
+
+    voteplan_proposals_dict = {proposal.proposal_id: proposal for proposal in flattened_voteplan_proposals}
+    return voteplan_proposals_dict
+
+
+def get_proposals_and_voteplans_from_files(
+        proposals_file_path: str,
+        voteplan_file_path: str
+) -> Tuple[Dict[str, Proposal], Dict[str, ProposalStatus]]:
+    proposals = get_proposals_from_file(proposals_file_path)
+    voteplan_proposals = get_voteplan_proposals_from_file(voteplan_file_path)
+    return proposals, voteplan_proposals
+
+
 # API loaders
 
-async def get_proposals(vit_servicing_station_url: str) -> List[Proposal]:
+async def get_proposals_from_api(vit_servicing_station_url: str) -> List[Proposal]:
     async with httpx.AsyncClient() as client:
         proposals_result = await client.get(f"{vit_servicing_station_url}/api/v0/proposals")
         assert proposals_result.status_code == 200
         return [Proposal(**proposal_data) for proposal_data in proposals_result.json()]
 
 
-async def get_active_voteplans(vit_servicing_station_url: str) -> List[VoteplanStatus]:
+async def get_active_voteplans_from_api(vit_servicing_station_url: str) -> List[VoteplanStatus]:
     async with httpx.AsyncClient() as client:
         proposals_result = await client.get(f"{vit_servicing_station_url}/api/v0/vote/active/plans")
         assert proposals_result.status_code == 200
         return [VoteplanStatus(**proposal_data) for proposal_data in proposals_result.json()]
 
 
-async def get_proposals_and_voteplans(vit_servicing_station_url: str) \
+async def get_proposals_and_voteplans_from_api(vit_servicing_station_url: str) \
         -> Tuple[Dict[str, Proposal], Dict[str, ProposalStatus]]:
-    proposals_task = asyncio.create_task(get_proposals(vit_servicing_station_url))
-    voteplans_task = asyncio.create_task(get_active_voteplans(vit_servicing_station_url))
+    proposals_task = asyncio.create_task(get_proposals_from_api(vit_servicing_station_url))
+    voteplans_task = asyncio.create_task(get_active_voteplans_from_api(vit_servicing_station_url))
 
     proposals = {proposal.proposal_id: proposal for proposal in await proposals_task}
     voteplans_proposals = {
@@ -169,10 +209,13 @@ def calc_results(
         total_result, threshold_success = success_results[proposal_id]
         yes_result, no_result = extract_yes_no_votes(proposal, voteplan_proposal)
         funded = all((threshold_success, depletion > 0, depletion >= proposal.proposal_funds))
-        not_funded_reason = "" if funded else ( APPROVAL_THRESHOLD if not threshold_success else OVER_BUDGET)
+        not_funded_reason = "" if funded else (APPROVAL_THRESHOLD if not threshold_success else OVER_BUDGET)
+
         if funded:
             depletion -= proposal.proposal_funds
+
         ada_to_be_payed = proposal.proposal_funds*conversion_factor if funded else 0
+
         result = Result(
             proposal=proposal.proposal_title,
             yes=yes_result,
@@ -188,16 +231,65 @@ def calc_results(
             lovelace_to_be_payed=ada_to_be_payed*LOVELACE_FACTOR,
             link_to_ideascale=proposal.proposal_url,
         )
+
         result_lst.append(result)
 
     return result_lst
 
 
+# Output results
+
+def output_csv(results: List[Result]) -> Generator[str, None, None]:
+    fields = results[0]._fields
+    yield ";".join(fields)
+    yield from (
+        ";".join(getattr(result, field) for field in fields) for result in results
+    )
+
+
+def output_json(results: List[Result]) -> Generator[str, None, None]:
+    yield json.dumps(list(map(Result._asdict, results)))
+
+
+def dump_to_file(stream: Generator[str, None, None], out: TextIO):
+    out.writelines(stream)
+
+# CLI
+
+
+class OutputFormat(enum.Enum):
+    CSV: str = "csv"
+    JSON: str = "json"
+
+
+def calculate_rewards(
+        fund: float = typer.Option(...),
+        conversion_factor: float = typer.Option(...),
+        output_file: str = typer.Option(...),
+        threshold: float = typer.Option(0.15),
+        output_format: OutputFormat = typer.Option("csv"),
+        proposals_path: Optional[str] = typer.Option(None),
+        active_voteplan_path: Optional[str] = typer.Option(None),
+        vit_station_url: str = typer.Option("https://servicing-station.vit.iohk.io")):
+    """
+    Calculate catalyst rewards after tallying process.
+    If both --proposals-path and --active-voteplan-path are provided data is loaded from the json files on those locations.
+    Otherwise data is requested to the proper API endpoints pointed to the --vit-station-url option.
+    """
+    if all(path is not None for path in (proposals_path, active_voteplan_path)):
+        proposals, voteplan_proposals = (
+            # we already check that both paths are not None, we can disable type checking here
+            get_proposals_and_voteplans_from_files(proposals_path, active_voteplan_path)  # type: ignore
+        )
+    else:
+        proposals, voteplan_proposals = asyncio.run(get_proposals_and_voteplans_from_api(vit_station_url))
+
+    results = calc_results(proposals, voteplan_proposals, fund, conversion_factor, threshold)
+    out_stream = output_json(results) if output_format == OutputFormat.JSON else output_csv(results)
+
+    with open(output_file, "w") as out_file:
+        dump_to_file(out_stream, out_file)
+
+
 if __name__ == "__main__":
-    import asyncio
-    from pprint import pprint
-    vit_station_url: str = "https://servicing-station.vit.iohk.io"
-    proposals, voteplans = asyncio.run(get_proposals_and_voteplans(vit_station_url))
-    pprint(proposals)
-    pprint(voteplans)
-    assert set(proposals.keys()) == set(voteplans.keys())
+    typer.run(calculate_rewards)
