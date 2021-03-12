@@ -175,12 +175,12 @@ def calc_vote_difference_and_threshold_success(
 Result = namedtuple(
     "Result",
     (
+        "proposal_id",
         "proposal",
         "yes",
         "no",
         "result",
         "meets_approval_threshold",
-        "requested_ada",
         "requested_dollars",
         "status",
         "fund_depletion",
@@ -217,12 +217,12 @@ def calc_results(
         ada_to_be_payed = proposal.proposal_funds*conversion_factor if funded else 0
 
         result = Result(
+            proposal_id=proposal_id,
             proposal=proposal.proposal_title,
             yes=yes_result,
             no=no_result,
             result=total_result,
             meets_approval_threshold=YES if threshold_success else NO,
-            requested_ada=proposal.proposal_funds*conversion_factor,
             requested_dollars=proposal.proposal_funds,
             status=FUNDED if funded else NOT_FUNDED,
             fund_depletion=depletion,
