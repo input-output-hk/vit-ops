@@ -1,7 +1,8 @@
-package bitte
+package jobs
 
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
+	"list"
 )
 
 #DbSync: types.#stanza.job & {
@@ -12,9 +13,9 @@ import (
 	#vitOpsRev:      string
 	#domain:         string
 
-	namespace: string
-	datacenters: [...string]
-	type: "service"
+	namespace:   string
+	datacenters: list.MinItems(1)
+	type:        "service"
 
 	constraints: [{
 		attribute: "${attr.unique.platform.aws.instance-id}"
@@ -115,7 +116,7 @@ import (
 
 			resources: {
 				cpu:    13600
-				memory: 4000
+				memory: 8000
 			}
 
 			volume_mount: "persist": {
@@ -160,7 +161,7 @@ import (
 			template: "secrets/snapshot.config": {
 				left_delimiter:  "[["
 				right_delimiter: "]]"
-				change_mode: "noop"
+				change_mode:     "noop"
 				_magic:          string
 				if #dbSyncNetwork == "mainnet" {
 					_magic: "\"--mainnet\""

@@ -1,8 +1,9 @@
-package bitte
+package jobs
 
 import (
 	"strconv"
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
+	"list"
 )
 
 #Jormungandr: types.#stanza.job & {
@@ -21,8 +22,8 @@ import (
 		#requiredPeerCount: 3
 	}
 
-	namespace: string
-	datacenters: [...string]
+	namespace:   string
+	datacenters: list.MinItems(1)
 
 	type: "service"
 	group: "jormungandr": {
@@ -59,7 +60,7 @@ import (
 
 			resources: {
 				cpu:    3300
-				memory: 2048
+				memory: 4 * 1024
 			}
 
 			config: {

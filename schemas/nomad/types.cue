@@ -7,17 +7,18 @@ import (
 
 #json: {
 	Job: {
-		Namespace: string
-		ID:        Name
-		Name:      string
-		Type:      "service" | "system" | "batch"
-		Priority:  uint
-		Datacenters: [...string]
+		Namespace:   string
+		ID:          Name
+		Name:        string
+		Type:        "service" | "system" | "batch"
+		Priority:    uint
+		Datacenters: list.MinItems(1)
 		TaskGroups: [...TaskGroup]
 		Constraints: [...Constraint]
 		ConsulToken: *null | string
 		VaultToken:  *null | string
 		Vault:       *null | #json.Vault
+		Update:      *null | #json.Update
 	}
 
 	Constraint: {
@@ -59,13 +60,13 @@ import (
 		}
 	}
 
-	ReschedulePolicy: *null | {
-		Attempts:      uint | *10
-		DelayFunction: "constant" | "exponential" | *"fibonacci"
-		Delay:         uint | *30000000000
-		Interval:      uint | *0
-		MaxDelay:      uint | *3600000000000
-		Unlimited:     bool | *true
+	ReschedulePolicy: {
+		Attempts:      *null | uint
+		DelayFunction: *null | "constant" | "exponential" | "fibonacci"
+		Delay:         *null | uint & >=time.ParseDuration("5s")
+		Interval:      *null | uint
+		MaxDelay:      *null | uint
+		Unlimited:     *null | bool
 	}
 
 	Restart: {
@@ -73,6 +74,25 @@ import (
 		Delay:    uint
 		Interval: uint
 		Mode:     "fail" | "delay"
+	}
+
+	Migrate: {
+		HealthCheck:     *"checks" | "task_states"
+		HealthyDeadline: uint | *500000000000
+		MaxParallel:     uint | *1
+		MinHealthyTime:  uint | *10000000000
+	}
+
+	Update: {
+		AutoPromote:      bool | *false
+		AutoRevert:       bool | *false
+		Canary:           uint | *0
+		HealthCheck:      *"checks" | "task_states" | "manual"
+		HealthyDeadline:  uint | *null
+		MaxParallel:      uint | *1
+		MinHealthyTime:   uint | *null
+		ProgressDeadline: uint | *null
+		Stagger:          uint | *null
 	}
 
 	TaskGroup: {
@@ -94,25 +114,12 @@ import (
 			Size:    uint
 			Sticky:  bool
 		}
-		Migrate: *null | {
-			HealthCheck:     *"checks" | "task_states"
-			HealthyDeadline: uint | *500000000000
-			MaxParallel:     uint | *1
-			MinHealthyTime:  uint | *10000000000
-		}
-		Update: *null | {
-			MaxParallel:     uint | *1
-			HealthCheck:     *"checks" | "task_states" | "manual"
-			MinHealthyTime:  uint | *10000000000
-			HealthyDeadline: uint | *180000000000
-			AutoRevert:      bool | *false
-			Canary:          uint | *0
-		}
+		Migrate: #json.Migrate
+		Update:  *null | #json.Update
 		Networks: [...#json.Network]
 		StopAfterClientDisconnect: *null | uint
 		Scaling:                   null
 		Vault:                     *null | #json.Vault
-		RestartPolicy:             null
 	}
 
 	Port: {
@@ -134,26 +141,27 @@ import (
 	}
 
 	ServiceCheck: {
-		AddressMode:            *"host" | "driver" | "alloc"
+		AddressMode:            "alloc" | "driver" | "host"
 		Args:                   [...string] | *null
 		CheckRestart:           #json.CheckRestart
 		Command:                string | *""
 		Expose:                 false
 		FailuresBeforeCritical: uint | *0
-		Header:                 null
 		Id:                     string | *""
-		InitialStatus:          ""
-		Interval:               10000000000
-		Method:                 ""
+		InitialStatus:          string | *""
+		Interval:               uint | *10000000000
+		Method:                 string | *""
 		Name:                   string | *""
-		Path:                   string
+		Path:                   string | *""
 		PortLabel:              string
 		Protocol:               string | *""
 		SuccessBeforePassing:   0
 		TaskName:               string | *""
 		Timeout:                uint
 		TLSSkipVerify:          bool | *false
-		Type:                   "http" | "tcp" | "script"
+		Type:                   "http" | "tcp" | "script" | "grpc"
+		Body:                   string | *null
+		Header: [string]: [...string]
 	}
 
 	CheckRestart: *null | {
@@ -174,7 +182,7 @@ import (
 		CanaryTags:        [...string] | *[]
 		EnableTagOverride: bool | *false
 		PortLabel:         string
-		AddressMode:       "host" | "bridge"
+		AddressMode:       "alloc" | "auto" | "driver" | "host"
 		Checks: [...ServiceCheck]
 		CheckRestart: #json.CheckRestart
 		Connect:      null
@@ -185,11 +193,7 @@ import (
 	Task: {
 		Name:   string
 		Driver: "exec" | "docker" | "nspawn"
-		Config: {
-			args:    [...string] | *[]
-			command: string
-			flake:   string
-		}
+		Config: #stanza.taskConfig & {#driver: Driver}
 		Constraints: [...Constraint]
 		Affinities: [...Affinity]
 		Env: [string]: string
@@ -200,7 +204,7 @@ import (
 			DiskMB:   *null | uint
 		}
 		Meta: {}
-		RestartPolicy: null
+		RestartPolicy: *null | #json.RestartPolicy
 		ShutdownDelay: uint | *0
 		User:          string | *""
 		Lifecycle:     null
@@ -255,7 +259,7 @@ import (
 
 let durationType = string & =~"^[1-9]\\d*[hms]$"
 
-toJson: #json.Job & {
+#toJson: #json.Job & {
 	#job:        #stanza.job
 	#jobName:    string
 	Name:        #jobName
@@ -263,6 +267,21 @@ toJson: #json.Job & {
 	Namespace:   #job.namespace
 	Type:        #job.type
 	Priority:    #job.priority
+
+	if #job.update != null {
+		let u = #job.update
+		Update: {
+			AutoPromote:      u.auto_promote
+			AutoRevert:       u.auto_revert
+			Canary:           u.canary
+			HealthCheck:      u.health_check
+			HealthyDeadline:  time.ParseDuration(u.healthy_deadline)
+			MaxParallel:      u.max_parallel
+			MinHealthyTime:   time.ParseDuration(u.min_healthy_time)
+			ProgressDeadline: time.ParseDuration(u.progress_deadline)
+			Stagger:          time.ParseDuration(u.stagger)
+		}
+	}
 
 	if #job.vault != null {
 		Vault: {
@@ -285,11 +304,37 @@ toJson: #json.Job & {
 
 		Count: tg.count
 
+		if tg.reschedule != null {
+			ReschedulePolicy: {
+				Attempts:      tg.reschedule.attempts
+				DelayFunction: tg.reschedule.delay_function
+				if tg.reschedule.delay != _|_ {
+					Delay: time.ParseDuration(tg.reschedule.delay)
+				}
+				if tg.reschedule.interval != _|_ {
+					Interval: time.ParseDuration(tg.reschedule.interval)
+				}
+				if tg.reschedule.max_delay != _|_ {
+					MaxDelay: time.ParseDuration(tg.reschedule.max_delay)
+				}
+				Unlimited: tg.reschedule.unlimited
+			}
+		}
+
 		if tg.ephemeral_disk != null {
 			EphemeralDisk: {
 				Size:    tg.ephemeral_disk.size
 				Migrate: tg.ephemeral_disk.migrate
 				Sticky:  tg.ephemeral_disk.sticky
+			}
+		}
+
+		if tg.restart_policy != null {
+			RestartPolicy: {
+				Interval: time.ParseDuration(tg.restart_policy.interval)
+				Attempts: tg.restart_policy.attempts
+				Delay:    time.ParseDuration(tg.restart_policy.delay)
+				Mode:     tg.restart_policy.mode
 			}
 		}
 
@@ -321,18 +366,36 @@ toJson: #json.Job & {
 		}
 
 		Services: [ for sName, s in tg.service {
-			Name:         sName
-			TaskName:     s.task
-			Tags:         s.tags
-			AddressMode:  s.address_mode
-			CheckRestart: s.check_restart
+			Name:        sName
+			TaskName:    s.task
+			Tags:        s.tags
+			AddressMode: s.address_mode
+			if s.check_restart != null {
+				CheckRestart: {
+					Limit:          s.check_restart.limit
+					Grace:          time.ParseDuration(s.check_restart.grace)
+					IgnoreWarnings: s.check_restart.ignore_warnings
+				}
+			}
 			Checks: [ for cName, c in s.check {
 				{
-					Type:      c.type
-					PortLabel: c.port
-					Interval:  time.ParseDuration(c.interval)
-					Path:      c.path
-					Timeout:   time.ParseDuration(c.timeout)
+					AddressMode: c.address_mode
+					Type:        c.type
+					PortLabel:   c.port
+					Interval:    time.ParseDuration(c.interval)
+					if c.type == "http" {
+						Path: c.path
+					}
+					Timeout: time.ParseDuration(c.timeout)
+					Header:  c.header
+					Body:    c.body
+					if c.check_restart != null {
+						CheckRestart: {
+							Limit:          c.check_restart.limit
+							Grace:          time.ParseDuration(c.check_restart.grace)
+							IgnoreWarnings: c.check_restart.ignore_warnings
+						}
+					}
 				}
 			}]
 			PortLabel: s.port
@@ -345,6 +408,15 @@ toJson: #json.Job & {
 			Config:     t.config
 			Env:        t.env
 			KillSignal: t.kill_signal
+
+			if t.restart_policy != null {
+				RestartPolicy: {
+					Interval: time.ParseDuration(t.restart_policy.interval)
+					Attempts: t.restart_policy.attempts
+					Delay:    time.ParseDuration(t.restart_policy.delay)
+					Mode:     t.restart_policy.mode
+				}
+			}
 
 			Resources: {
 				CPU:      t.resources.cpu
@@ -415,13 +487,13 @@ toJson: #json.Job & {
 
 #stanza: {
 	job: {
-		datacenters: [...string]
-		namespace: string
-		type:      "batch" | *"service" | "system"
+		datacenters: list.MinItems(1)
+		namespace:   string
+		type:        "batch" | *"service" | "system"
 		constraints: [...#stanza.constraint]
 		group: [string]: #stanza.group & {#type: type}
-		update:   #stanza.update
-		vault:    *null | #stanza.vault
+		update:   #stanza.update | *null
+		vault:    #stanza.vault | *null
 		priority: uint | *50
 	}
 
@@ -438,18 +510,34 @@ toJson: #json.Job & {
 	}
 
 	group: {
+		#type:          "service" | "batch" | "system"
 		ephemeral_disk: #stanza.ephemeral_disk
 		network:        #stanza.network
 		service: [string]: #stanza.service
 		task: [string]:    #stanza.task
-		count: uint | *null
+		count: uint | *1
 		volume: [string]: #stanza.volume
-		restart: #stanza.restart & {#type: #type}
-		vault:   *null | #stanza.vault
+		restart:        #stanza.restart & {#type: #type}
+		vault:          *null | #stanza.vault
+		restart_policy: *null | #stanza.restart_policy
+
+		reschedule: *null | #stanza.reschedule
+	}
+
+	reschedule: {
+		attempts:       *_ | uint
+		delay:          *_ | durationType
+		delay_function: *_ | "constant" | "exponential" | "fibonacci"
+		max_delay:      *_ | durationType
+		interval:       *_ | durationType
+		unlimited:      *_ | bool
 	}
 
 	network: {
 		mode: "host" | "bridge"
+		dns:  *null | {
+			servers: [...string]
+		}
 		port: [string]: {
 			static:       *null | uint
 			to:           *null | uint
@@ -489,31 +577,61 @@ toJson: #json.Job & {
 		}
 	}
 
-	service: {
-		check_restart: null
-		port:          string
-		address_mode:  "host" | "driver" | "alloc"
-		tags: [...string]
-		task: string
-		check: [string]: {
-			type:     "http"
-			port:     string
-			interval: durationType
-			path:     string
-			timeout:  durationType
-			check_restart: {
-				limit:           uint
-				grace:           durationType
-				ignore_warnings: bool | *false
-			}
-		}
-		meta: [string]: string
+	check_restart: *null | {
+		limit:           uint
+		grace:           durationType
+		ignore_warnings: bool | *false
 	}
 
-	config: {
+	service: {
+		check_restart: #stanza.check_restart | *null
+		port:          string
+		address_mode:  "alloc" | "driver" | *"auto" | "host"
+		tags: [...string]
+		task: string
+		check: [string]: #stanza.check
+		meta: [string]:  string
+	}
+
+	check: {
+		address_mode:  "alloc" | "driver" | *"host"
+		type:          "http" | "tcp" | "script" | "grpc"
+		port:          string
+		interval:      durationType
+		path:          string
+		timeout:       durationType
+		check_restart: #stanza.check_restart | *null
+		header: [string]: [...string]
+		body: string | *null
+	}
+
+	taskConfig: dockerConfig | execConfig
+
+	execConfig: {
 		flake:   string
 		command: string
 		args: [...string]
+	}
+
+	#label: [string]: string
+
+	dockerConfig: {
+		image:   string
+		command: *null | string
+		args: [...string]
+		ports: [...string]
+		labels: [...#label]
+		logging: dockerConfigLogging
+	}
+
+	dockerConfigLogging: {
+		type: "journald"
+		config: [...dockerConfigLoggingConfig]
+	}
+
+	dockerConfigLoggingConfig: {
+		tag:    string
+		labels: string
 	}
 
 	task: {
@@ -525,7 +643,13 @@ toJson: #json.Job & {
 			source: string
 		}
 
-		config: #stanza.config
+		if driver == "docker" {
+			config: #stanza.dockerConfig
+		}
+
+		if driver == "exec" {
+			config: #stanza.execConfig
+		}
 
 		driver: "exec" | "docker" | "nspawn"
 
@@ -533,7 +657,7 @@ toJson: #json.Job & {
 
 		kill_signal: string | *"SIGINT"
 		if driver == "docker" {
-			kill_signal: string | *"SIGTERM"
+			kill_signal: "SIGTERM"
 		}
 
 		resources: {
@@ -552,66 +676,31 @@ toJson: #json.Job & {
 			change_signal:   *"" | string
 			left_delimiter:  string | *"{{"
 			right_delimiter: string | *"}}"
+			splay:           durationType | *"3s"
 		}
 
 		vault: *null | #stanza.vault
 		volume_mount: [string]: #stanza.volume_mount
+		restart_policy: *null | #stanza.restart_policy
+	}
+
+	restart_policy: {
+		interval: durationType
+		attempts: uint
+		delay:    durationType
+		mode:     "delay" | "fail"
 	}
 
 	update: {
-		// Specifies the number of allocations within a task group that can be
-		// updated at the same time. The task groups themselves are updated in
-		// parallel.
-		// max_parallel: 0 - Specifies that the allocation should use forced
-		// updates instead of deployments
-		max_parallel: uint | *1
-
-		// Specifies the mechanism in which allocations health is determined.
-		health_check: *"checks" | "task_states" | "manual"
-
-		// Specifies the minimum time the allocation must be in the healthy state
-		// before it is marked as healthy and unblocks further allocations from
-		// being updated.
-		min_healthy_time: durationType | *"10s"
-
-		// Specifies the deadline in which the allocation must be marked as healthy
-		// after which the allocation is automatically transitioned to unhealthy.
-		// If progress_deadline is non-zero, it must be greater than
-		// healthy_deadline.  Otherwise the progress_deadline may fail a deployment
-		// before an allocation reaches its healthy_deadline.
-		healthy_deadline: durationType | *"5m"
-
-		// Specifies the deadline in which an allocation must be marked as healthy.
-		// The deadline begins when the first allocation for the deployment is
-		// created and is reset whenever an allocation as part of the deployment
-		// transitions to a healthy state. If no allocation transitions to the
-		// healthy state before the progress deadline, the deployment is marked as
-		// failed. If the progress_deadline is set to 0, the first allocation to be
-		// marked as unhealthy causes the deployment to fail.
+		auto_promote:      bool | *false
+		auto_revert:       bool | *false
+		canary:            uint | *0
+		health_check:      *"checks" | "task_states" | "manual"
+		healthy_deadline:  durationType | *"5m"
+		max_parallel:      uint | *1
+		min_healthy_time:  durationType | *"10s"
 		progress_deadline: durationType | *"10m"
-
-		// Specifies if the job should auto-revert to the last stable job on
-		// deployment failure. A job is marked as stable if all the allocations as
-		// part of its deployment were marked healthy.
-		auto_revert: bool | *false
-
-		// Specifies if the job should auto-promote to the canary version when all
-		// canaries become healthy during a deployment. Defaults to false which
-		// means canaries must be manually updated with the nomad deployment
-		// promote command.
-		auto_promote: bool | *false
-
-		// Specifies that changes to the job that would result in destructive
-		// updates should create the specified number of canaries without stopping
-		// any previous allocations. Once the operator determines the canaries are
-		// healthy, they can be promoted which unblocks a rolling update of the
-		// remaining allocations at a rate of max_parallel.
-		canary: uint | *0
-
-		// Specifies the delay between each set of max_parallel updates when
-		// updating system jobs. This setting no longer applies to service jobs
-		// which use deployments.
-		stagger: durationType | *"30s"
+		stagger:           durationType | *"30s"
 	}
 
 	vault: {

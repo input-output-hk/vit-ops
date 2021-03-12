@@ -1,8 +1,9 @@
-package bitte
+package jobs
 
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	"strings"
+	"list"
 )
 
 #ServicingStation: types.#stanza.job & {
@@ -28,9 +29,9 @@ import (
 		"/api/v0/vote",
 	]
 
-	namespace: string
-	datacenters: [...string]
-	type: "service"
+	namespace:   string
+	datacenters: list.MinItems(1)
+	type:        "service"
 
 	group: "servicing-station": {
 		network: {

@@ -1,14 +1,15 @@
-package bitte
+package jobs
 
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
+	"list"
 )
 
 #DevBox: types.#stanza.job & {
-	#vitOpsRev: string
-	namespace:  string
-	datacenters: [...string]
-	type: "service"
+	#vitOpsRev:  string
+	namespace:   string
+	datacenters: list.MinItems(1)
+	type:        "service"
 
 	group: devbox: {
 		task: "devbox": {
