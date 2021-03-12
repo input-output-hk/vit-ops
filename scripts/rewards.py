@@ -45,7 +45,6 @@ class Options(pydantic.BaseModel):
 
 class TallyResult(pydantic.BaseModel):
     results: List[int]
-    options: Options
 
 
 class ProposalStatus(pydantic.BaseModel):
@@ -65,7 +64,7 @@ class VoteplanStatus(pydantic.BaseModel):
 # File loaders
 
 def load_json_from_file(file_path: str) -> Dict:
-    with open(file_path) as f:
+    with open(file_path, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -241,9 +240,9 @@ def calc_results(
 
 def output_csv(results: List[Result]) -> Generator[str, None, None]:
     fields = results[0]._fields
-    yield ";".join(fields)
+    yield f"{';'.join(fields)}\n"
     yield from (
-        ";".join(getattr(result, field) for field in fields) for result in results
+        f"{';'.join(str(getattr(result, field)) for field in fields)}\n" for result in results
     )
 
 
@@ -287,7 +286,7 @@ def calculate_rewards(
     results = calc_results(proposals, voteplan_proposals, fund, conversion_factor, threshold)
     out_stream = output_json(results) if output_format == OutputFormat.JSON else output_csv(results)
 
-    with open(output_file, "w") as out_file:
+    with open(output_file, "w", encoding="utf-8") as out_file:
         dump_to_file(out_stream, out_file)
 
 
