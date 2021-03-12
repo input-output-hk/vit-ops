@@ -26,6 +26,7 @@ in pkgs.stdenv.mkDerivation {
     pkgs.python3Packages.opencv4
     pkgs.python3Packages.httpx
     pkgs.python3Packages.pydantic
+    pkgs.python3Packages.typer
     cardanolib-py
   ];
   shellHook = ''
