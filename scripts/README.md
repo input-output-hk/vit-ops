@@ -28,3 +28,40 @@ python fetch.py
 nix-shell
 vit-kedqr -pin 1234 -input vote.sk
 ```
+
+# Calculate rewards results from valid tally data
+
+
+```shell
+nix-shell
+python rewards.py --help
+Usage: rewards.py [OPTIONS]
+
+  Calculate catalyst rewards after tallying process. If both --proposals-
+  path and --active-voteplan-path are provided data is loaded from the json
+  files on those locations. Otherwise data is requested to the proper API
+  endpoints pointed to the --vit-station-url option.
+
+Options:
+  --fund FLOAT                    [required]
+  --conversion-factor FLOAT       [required]
+  --output-file TEXT              [required]
+  --threshold FLOAT               [default: 0.15]
+  --output-format [csv|json]      [default: csv]
+  --proposals-path TEXT
+  --active-voteplan-path TEXT
+  --vit-station-url TEXT          [default: https://servicing-
+                                  station.vit.iohk.io]
+
+  --install-completion [bash|zsh|fish|powershell|pwsh]
+                                  Install completion for the specified shell.
+  --show-completion [bash|zsh|fish|powershell|pwsh]
+                                  Show completion for the specified shell, to
+                                  copy it or customize the installation.
+
+  --help                          Show this message and exit.
+
+
+```
+
+ Note, __finished tally data is expected__. This script would not be able to calculate anything if the tally data is incomplete.
