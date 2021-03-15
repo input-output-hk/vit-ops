@@ -17,8 +17,8 @@ FUNDED = "FUNDED"
 NOT_FUNDED = "NOT_FUNDED"
 YES = "YES"
 NO = "NO"
-OVER_BUDGET = "Not Funded - Over Budget"
-APPROVAL_THRESHOLD = "Not Funded - Approval Threshold"
+NOT_FUNDED_OVER_BUDGET = "Not Funded - Over Budget"
+NOT_FUNDED_APPROVAL_THRESHOLD = "Not Funded - Approval Threshold"
 LOVELACE_FACTOR = 1000000
 
 
@@ -235,7 +235,7 @@ def calc_results(
         total_result, threshold_success = success_results[proposal_id]
         yes_result, no_result = extract_yes_no_votes(proposal, voteplan_proposal)
         funded = all((threshold_success, depletion > 0, depletion >= proposal.proposal_funds))
-        not_funded_reason = "" if funded else (APPROVAL_THRESHOLD if not threshold_success else OVER_BUDGET)
+        not_funded_reason = "" if funded else (NOT_FUNDED_APPROVAL_THRESHOLD if not threshold_success else NOT_FUNDED_OVER_BUDGET)
 
         if funded:
             depletion -= proposal.proposal_funds
