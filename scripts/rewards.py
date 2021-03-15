@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List, Tuple, Generator, TextIO
+from typing import Dict, Optional, List, Tuple, Generator, TextIO, Union
 
 import asyncio
 import json
@@ -43,15 +43,42 @@ class Options(pydantic.BaseModel):
     end: int
 
 
+# we mimic the tally
 class TallyResult(pydantic.BaseModel):
     results: List[int]
+
+
+class DecryptedTally(pydantic.BaseModel):
+    decrypted: TallyResult
+
+
+class PrivateTallyState(pydantic.BaseModel):
+    state: DecryptedTally
+
+
+class PrivateTally(pydantic.BaseModel):
+    private: PrivateTallyState
+
+    # Should be guaranteed that we have a proper decrypted tally, so we unnest the tally result at the same level as
+    # public tally one
+    @property
+    def results(self):
+        return self.private.state.decrypted.results
+
+
+class PublicTally(pydantic.BaseModel):
+    public: TallyResult
+
+    @property
+    def results(self):
+        return self.public.results
 
 
 class ProposalStatus(pydantic.BaseModel):
     index: int
     proposal_id: str
     options: Options
-    tally: Optional[TallyResult]
+    tally: Optional[Union[PublicTally, PrivateTally]]
     votes_cast: int
 
 
