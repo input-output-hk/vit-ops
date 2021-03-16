@@ -173,7 +173,8 @@ def sanity_check_data(proposals: Dict[str, Proposal], voteplan_proposals: Dict[s
         raise SanityException("Extra proposals found, voteplan proposals do not match servicing station proposals")
     if any(proposal.tally is None for proposal in voteplan_proposals.values()):
         raise SanityException("Some proposal do not have a valid tally available")
-    if any(proposal.tally.results is None for proposal in voteplan_proposals.values()):
+    # we checked None before so it is ok to check for next item, we can discard the type checking
+    if any(proposal.tally.results is None for proposal in voteplan_proposals.values()):  # type: ignore
         raise SanityException("Some tally results are not available")
 
 
