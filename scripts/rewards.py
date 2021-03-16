@@ -1,5 +1,6 @@
 from typing import Dict, Optional, List, Tuple, Generator, TextIO, Union
 
+import sys
 import asyncio
 import json
 import itertools
@@ -63,7 +64,10 @@ class PrivateTally(pydantic.BaseModel):
     # public tally one
     @property
     def results(self):
-        return self.private.state.decrypted.results
+        try:
+            return self.private.state.decrypted.results
+        except AttributeError:
+            return None
 
 
 class PublicTally(pydantic.BaseModel):
@@ -71,7 +75,10 @@ class PublicTally(pydantic.BaseModel):
 
     @property
     def results(self):
-        return self.public.results
+        try:
+            return self.public.results
+        except AttributeError:
+            return None
 
 
 class ProposalStatus(pydantic.BaseModel):
@@ -155,12 +162,17 @@ async def get_proposals_and_voteplans_from_api(vit_servicing_station_url: str) \
 
 # Checkers
 
-def sanity_check_data(proposals: Dict[str, Proposal], voteplan_proposals: Dict[str, ProposalStatus]) -> bool:
+class SanityException(Exception):
+    ...
+
+
+def sanity_check_data(proposals: Dict[str, Proposal], voteplan_proposals: Dict[str, ProposalStatus]):
     if set(proposals.keys()) != set(voteplan_proposals.keys()):
-        raise Exception("Extra proposals found, voteplan proposals do not match servicing station proposals")
+        raise SanityException("Extra proposals found, voteplan proposals do not match servicing station proposals")
     if any(proposal.tally is None for proposal in voteplan_proposals.values()):
-        raise Exception(f"Some proposal do not have a valid tally available")
-    return True
+        raise SanityException("Some proposal do not have a valid tally available")
+    if any(proposal.tally.results is None for proposal in voteplan_proposals.values()):
+        raise SanityException("Some tally results are not available")
 
 
 # Analyse and compute needed data
@@ -309,6 +321,12 @@ def calculate_rewards(
         )
     else:
         proposals, voteplan_proposals = asyncio.run(get_proposals_and_voteplans_from_api(vit_station_url))
+
+    try:
+        sanity_check_data(proposals, voteplan_proposals)
+    except SanityException as e:
+        print(f"{e}")
+        sys.exit(1)
 
     results = calc_results(proposals, voteplan_proposals, fund, conversion_factor, threshold)
     out_stream = output_json(results) if output_format == OutputFormat.JSON else output_csv(results)
