@@ -39,12 +39,6 @@ in {
     cue vet -c
   '';
 
-
-  buildJobFlakes = final.writeShellScriptBin "build_job_flakes.sh" ''
-    export PATH="$PATH:${lib.makeBinPath (with final; [ cue jq coreutils findutils ])}"
-    cue eval --out json -e flakes | jq -r '. | unique | sort | .[]' | xargs nix build
-  '';
-
   cue = final.callPackage ./pkgs/cue.nix { };
 
   debugUtils = with final; [

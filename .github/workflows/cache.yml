@@ -21,5 +21,4 @@ jobs:
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
     - run: nix run .#checkFmt
     - run: nix run .#checkCue
-    - run: nix run .#buildJobFlakes
     - run: nix -L build .#devShellPath
