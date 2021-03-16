@@ -44,9 +44,13 @@ class Options(pydantic.BaseModel):
     end: int
 
 
+class Results(pydantic.BaseModel):
+    results: List[int]
+
+
 # we mimic the tally
 class TallyResult(pydantic.BaseModel):
-    results: List[int]
+    result: Results
 
 
 class DecryptedTally(pydantic.BaseModel):
@@ -58,25 +62,23 @@ class PrivateTallyState(pydantic.BaseModel):
 
 
 class PrivateTally(pydantic.BaseModel):
-    private: PrivateTallyState
+    Private: PrivateTallyState
 
-    # Should be guaranteed that we have a proper decrypted tally, so we unnest the tally result at the same level as
-    # public tally one
     @property
     def results(self):
         try:
-            return self.private.state.decrypted.results
+            return self.Private.state.decrypted.result.results
         except AttributeError:
             return None
 
 
 class PublicTally(pydantic.BaseModel):
-    public: TallyResult
+    Public: TallyResult
 
     @property
     def results(self):
         try:
-            return self.public.results
+            return self.Public.result.results
         except AttributeError:
             return None
 
