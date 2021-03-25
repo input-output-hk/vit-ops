@@ -39,8 +39,6 @@ in {
     cue vet -c
   '';
 
-  cue = final.callPackage ./pkgs/cue.nix { };
-
   debugUtils = with final; [
     bashInteractive
     coreutils
