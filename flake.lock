@@ -8,17 +8,18 @@
         "nix": "nix",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-terraform": "nixpkgs-terraform",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "nomad-source": "nomad-source",
         "ops-lib": "ops-lib",
         "terranix": "terranix",
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1616158509,
-        "narHash": "sha256-uQ4XuPor5s6HggrnZIT9GtB2DvZ9rcDASVgu4ZQcojM=",
+        "lastModified": 1616592378,
+        "narHash": "sha256-LpjifoqP1ETbJOSJBHn3LfSGNrJXVp3vBpidnViQRHQ=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "cc898b513253dd0e897ab473d4cb9d2b81eb5a5a",
+        "rev": "78715b8a0e3e53ef9a92f5db76d11227f3a8f455",
         "type": "github"
       },
       "original": {
@@ -34,11 +35,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1616178757,
-        "narHash": "sha256-QxXpG9B3Gu67T9hS2Ys4g+Yscc2OGYd23nbUzt6DI0o=",
+        "lastModified": 1616148874,
+        "narHash": "sha256-hMFh/KNvlawaepqTRHJQDRGQntJAlQgmMSUOQPRV/u8=",
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "rev": "9cec52b67af69cf8e6cb952adae4d4f4e8a39dfa",
+        "rev": "1d07591e0f859f7573a52093748fe160719c9f09",
         "type": "github"
       },
       "original": {
@@ -206,6 +207,22 @@
       }
     },
     "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1616259034,
+        "narHash": "sha256-WlMIiGIXJm7J+jemzd+ksoun6znWmabCZNz76szV158=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "4e0d3868c679da20108db402785f924daa1a7fb5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable_2": {
       "locked": {
         "lastModified": 1612497067,
         "narHash": "sha256-TNJ6BS6LyIaFTJi78jZt4YqDLGNQOvNbW3eFbEyBcq4=",
@@ -388,7 +405,7 @@
           "bitte",
           "nixpkgs"
         ],
-        "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs-unstable": "nixpkgs-unstable_2",
         "ops-lib": "ops-lib_2",
         "terranix": [
           "bitte",

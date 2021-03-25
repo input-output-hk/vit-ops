@@ -186,19 +186,33 @@ in {
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 300;
-        route53.domains = [ "*.${cluster.domain}" ];
-
-        modules = let
-        in [
-          (bitte + /profiles/monitoring.nix)
-          ./monitoring-server.nix
-          ./secrets.nix
-          ./ingress.nix
+        route53.domains = [
+          "consul.${cluster.domain}"
+          "docker.${cluster.domain}"
+          "monitoring.${cluster.domain}"
+          "nomad.${cluster.domain}"
+          "vault.${cluster.domain}"
         ];
+
+        modules = [ ./monitoring-server.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules)
-            internet internal ssh http https vit-public-rpc docker-registry;
+            internet internal ssh http https docker-registry;
+        };
+      };
+
+      routing = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.1.20";
+        subnet = cluster.vpc.subnets.core-2;
+        volumeSize = 30;
+        route53.domains = [ "*.${cluster.domain}" ];
+
+        modules = [ ./routing.nix ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internet internal ssh http routing;
         };
       };
     };

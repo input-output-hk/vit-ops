@@ -94,8 +94,10 @@ in {
       cidrs = internal;
     };
 
-    vit-public-rpc = {
-      port = 7100;
+    routing = {
+      from = 30000;
+      to = 40000;
+      protocols = [ "tcp" "udp" ];
       cidrs = global;
     };
   };
