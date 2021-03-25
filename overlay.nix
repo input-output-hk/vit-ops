@@ -108,4 +108,6 @@ in {
       ++ [ final.nixFlakes ];
     name = "devShell";
   };
+
+  inherit (inputs.nixpkgs-unstable.legacyPackages.${final.system}) traefik;
 }

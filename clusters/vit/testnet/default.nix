@@ -73,7 +73,6 @@ in {
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./secrets.nix
         ./docker-auth.nix
-        ./reaper.nix
         ./host-volumes.nix
         ./nspawn.nix
       ];
