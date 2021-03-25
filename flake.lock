@@ -315,11 +315,12 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1611935233,
-        "narHash": "sha256-DNKjtkkkMS2nYWE/AkpAXIsIY3p79DC5nkrLdtONdD8=",
-        "path": "/nix/store/sh56vwghlzjcw517a60l76qf6wqfb3mx-source",
-        "rev": "90a9b71b73ffdf2b7fc8f9d03e81968cbc1ff344",
-        "type": "path"
+        "lastModified": 1615473218,
+        "narHash": "sha256-omoGzEvHa5kmu7rjPhJYlpmggy3IdPV4fknNZ7ziBAE=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "9f2f79ca573f579b38b2b74eb15f9a40f11c13d2",
+        "type": "github"
       },
       "original": {
         "id": "nixpkgs",
@@ -573,16 +574,15 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1613746143,
-        "narHash": "sha256-cVWFLpP+YgRlibwl/D+Fk0QUnsN15uJCxEn/w5x83bA=",
+        "lastModified": 1614602457,
+        "narHash": "sha256-V/Jq0vEKWAU6AsSnOvHWerQ+3xi09MiDLJccwHTf9JU=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "533499902f1445d8d84c7b86e61c55572bf71173",
+        "rev": "160f09c7a26fe31628b7573e8c326e3d90f1ab47",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "use-rust-nix",
         "repo": "vit-servicing-station",
         "type": "github"
       }

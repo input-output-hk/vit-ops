@@ -103,7 +103,7 @@ import (
 			driver: "exec"
 
 			config: {
-				flake:   "github:input-output-hk/vit-servicing-station?rev=533499902f1445d8d84c7b86e61c55572bf71173#vit-servicing-station-server"
+				flake:   "github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
 				command: "/bin/vit-servicing-station-server"
 				args: ["--in-settings-file", "local/station-config.yaml"]
 			}

@@ -151,7 +151,7 @@ import (
 			}
 
 			config: {
-				flake:   "github:input-output-hk/vit-testing/8da3e1db7a79ecadb857fc52b10c6c379eb0f12f#snapshot-trigger-service"
+				flake:   "github:input-output-hk/vit-testing/9dbb1c283372eb8e9cad9806a5b9b76f8077fb62#snapshot-trigger-service"
 				command: "/bin/snapshot-trigger-service"
 				args: ["--config", "/secrets/snapshot.config"]
 			}
@@ -159,35 +159,27 @@ import (
 			template: "genesis-template.json": data: "{}"
 
 			template: "secrets/snapshot.config": {
-				left_delimiter:  "[["
-				right_delimiter: "]]"
 				change_mode:     "noop"
 				_magic:          string
 				if #dbSyncNetwork == "mainnet" {
-					_magic: "\"--mainnet\""
+					_magic: "\"mainnet\""
 				}
 				if #dbSyncNetwork == "testnet" {
-					_magic: "\"--testnet-magic\", \"1097911063\""
+				    _magic: "{ \"testnet\": 1097911063 }",
 				}
-
 				data: """
         {
-          "port": [[ env "NOMAD_PORT_snapshot" ]],
-          "result_dir": "/persist/snapshot",
-          "command": {
+          "port": {{ env "NOMAD_PORT_snapshot" }},
+          "result-dir": "/persist/snapshot",
+          "voting-tools": {
             "bin": "voting-tools",
-            "args": [
-              "genesis",
-              \(_magic),
-              "--db", "cexplorer",
-              "--db-user", "cexplorer",
-              "--db-host", "/alloc",
-              "--out-file", "{{RESULT_DIR}}/genesis.yaml",
-              "--scale", "1000000",
-              "--threshold", "200000000"
-            ]
+            "network": \(_magic),
+            "db": "cexplorer",
+            "db-user": "cexplorer",
+            "db-host": "/alloc",
+            "scale": 1000000
           },
-          "token": "[[with secret "kv/data/nomad-cluster/\(namespace)/\(#dbSyncNetwork)/snapshot"]][[.Data.data.token]][[end]]"
+          "token": "{{with secret "kv/data/nomad-cluster/\(namespace)/\(#dbSyncNetwork)/snapshot"}}{{.Data.data.token}}{{end}}"
         }
         """
 			}
