@@ -1,8 +1,5 @@
-{ ... }: {
-  imports = [
-    (bitte + /profiles/monitoring.nix)
-    ./secrets.nix
-  ]
+{ self, ... }: {
+  imports = [ (self.inputs.bitte + /profiles/monitoring.nix) ./secrets.nix ];
 
   services.grafana.provision.dashboards = [{
     name = "provisioned-vit-ops";
