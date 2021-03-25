@@ -86,12 +86,12 @@ in {
     in lib.listToAttrs (lib.forEach [
       {
         region = "eu-central-1";
-        desiredCapacity = 3;
+        desiredCapacity = 4;
         modules = mkModules "catalyst-dryrun";
       }
       {
         region = "us-east-2";
-        desiredCapacity = 3;
+        desiredCapacity = 4;
         modules = mkModules "catalyst-fund2";
       }
       {
