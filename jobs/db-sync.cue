@@ -2,6 +2,7 @@ package jobs
 
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
+	"github.com/input-output-hk/vit-ops/pkg/jobs/tasks:tasks"
 	"list"
 )
 
@@ -52,172 +53,41 @@ import (
 			address_mode: "host"
 			port:         "snapshot"
 			task:         "snapshot"
-			tags: [ "ingress", "snapshot", #dbSyncNetwork, namespace]
-			meta: {
-				IngressHost:   #domain
-				IngressMode:   "http"
-				IngressBind:   "*:443"
-				IngressServer: "_\(namespace)-snapshot-\(#dbSyncNetwork)._tcp.service.consul"
-				IngressCheck: """
-					http-check send meth GET uri /api/health
-					http-check expect status 200
-					"""
-			}
+			tags: [
+				"ingress",
+				"snapshot",
+				#dbSyncNetwork,
+				namespace,
+				"traefik.enable=true",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).rule=Host(`\(#domain)`)",
+				"traefik.http.routers.\(namespace)-faucet-rpc.entrypoints=https",
+				"traefik.http.routers.\(namespace)-faucet-rpc.tls=true",
+			]
 		}
 
-		task: "db-sync": {
-			driver: "exec"
-
-			resources: {
-				cpu:    13600
-				memory: 8000
-			}
-
-			volume_mount: "persist": {
-				destination: "/persist"
-			}
-
-			config: {
-				flake:   "github:input-output-hk/cardano-db-sync?rev=\(#dbSyncRev)#cardano-db-sync-extended-\(#dbSyncNetwork)"
-				command: "/bin/cardano-db-sync-extended-entrypoint"
-			}
-
-			env: {
-				CARDANO_NODE_SOCKET_PATH: "/alloc/node.socket"
-				PATH:                     "/bin"
-			}
+		let ref = {
+			dbSyncRev:     #dbSyncRev
+			dbSyncNetwork: #dbSyncNetwork
 		}
 
-		task: "postgres": {
-			driver: "exec"
-
-			resources: {
-				cpu:    13600
-				memory: 1000
-			}
-
-			volume_mount: "persist": {
-				destination: "/persist"
-			}
-
-			config: {
-				flake:   "github:input-output-hk/cardano-db-sync?rev=\(#dbSyncRev)#postgres"
-				command: "/bin/postgres-entrypoint"
-			}
-
-			env: {
-				PGDATA: "/persist/postgres"
-				PATH:   "/bin"
-			}
+		task: "db-sync": tasks.#DbSync & {
+			#dbSyncRev:     ref.dbSyncRev
+			#dbSyncNetwork: ref.dbSyncNetwork
 		}
 
-		task: "cardano-node": {
-			driver: "exec"
-
-			resources: {
-				cpu:    13600
-				memory: 8000
-			}
-
-			volume_mount: "persist": {
-				destination: "/persist"
-			}
-
-			config: {
-				flake:   "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-\(#dbSyncNetwork)-debug"
-				command: "/bin/cardano-node-entrypoint"
-			}
-
-			env: {
-				PATH: "/bin"
-			}
+		task: "postgres": tasks.#Postgres & {
+			#dbSyncRev: ref.dbSyncRev
 		}
 
-		task: "snapshot": {
-			driver: "exec"
-
-			vault: {
-				policies: ["nomad-cluster"]
-				change_mode: "noop"
-			}
-
-			resources: {
-				cpu:    6800
-				memory: 2 * 1024
-			}
-
-			volume_mount: "persist": {
-				destination: "/persist"
-			}
-
-			config: {
-				flake:   "github:input-output-hk/vit-testing/9dbb1c283372eb8e9cad9806a5b9b76f8077fb62#snapshot-trigger-service"
-				command: "/bin/snapshot-trigger-service"
-				args: ["--config", "/secrets/snapshot.config"]
-			}
-
-			template: "genesis-template.json": data: "{}"
-
-			template: "secrets/snapshot.config": {
-				change_mode:     "noop"
-				_magic:          string
-				if #dbSyncNetwork == "mainnet" {
-					_magic: "\"mainnet\""
-				}
-				if #dbSyncNetwork == "testnet" {
-				    _magic: "{ \"testnet\": 1097911063 }",
-				}
-				data: """
-        {
-          "port": {{ env "NOMAD_PORT_snapshot" }},
-          "result-dir": "/persist/snapshot",
-          "voting-tools": {
-            "bin": "voting-tools",
-            "network": \(_magic),
-            "db": "cexplorer",
-            "db-user": "cexplorer",
-            "db-host": "/alloc",
-            "scale": 1000000
-          },
-          "token": "{{with secret "kv/data/nomad-cluster/\(namespace)/\(#dbSyncNetwork)/snapshot"}}{{.Data.data.token}}{{end}}"
-        }
-        """
-			}
+		task: "cardano-node": tasks.#CardanoNode & {
+			#dbSyncNetwork: ref.dbSyncNetwork
 		}
 
-		task: "promtail": {
-			driver: "exec"
-
-			config: {
-				flake:   "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#grafana-loki"
-				command: "/bin/promtail"
-				args: [ "-config.file", "local/config.yaml"]
-			}
-
-			template: "local/config.yaml": {
-				data: """
-        server:
-          http_listen_port: {{ env "NOMAD_PORT_promtail" }}
-          grpc_listen_port: 0
-
-        positions:
-          filename: /local/positions.yaml # This location needs to be writeable by promtail.
-
-        client:
-          url: http://{{with node "monitoring" }}{{ .Node.Address }}{{ end }}:3100/loki/api/v1/push
-
-        scrape_configs:
-         - job_name: db-sync-\(#dbSyncNetwork)
-           pipeline_stages:
-           static_configs:
-           - labels:
-              syslog_identifier: db-sync-\(#dbSyncNetwork)
-              namespace: \(namespace)
-              dc: {{ env "NOMAD_DC" }}
-              host: {{ env "HOSTNAME" }}
-              __path__: /alloc/logs/*.std*.0
-        """
-			}
+		task: "snapshot": tasks.#Snapshot & {
+			#dbSyncNetwork: ref.dbSyncNetwork
+			#namespace:     namespace
 		}
+
+		task: "promtail": tasks.#Promtail
 	}
 }

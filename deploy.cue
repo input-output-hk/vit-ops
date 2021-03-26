@@ -16,6 +16,12 @@ _defaultJobs: {
 	"servicing-station": jobDef.#ServicingStation
 }
 
+#vitOpsRev: "55759981d7e693b0304ecf2d4bace0dc068caa6d"
+
+#flakes: {
+	devbox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+}
+
 artifacts: [string]: [string]: {url: string, checksum: string}
 
 Namespace: [Name=_]: {
@@ -26,11 +32,16 @@ Namespace: [Name=_]: {
 		namespace:   Name
 		#block0:     artifacts[Name].block0
 		#database:   artifacts[Name].database
-		namespace:   string
 		#domain:     string
+		#fqdn:       fqdn
 		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) | [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
+
+		#flakes: {
+			#jormungandr:      "github:input-output-hk/vit-ops?rev=c9251b4f3f0b34a22e3968bf28d5a049da120f8f#jormungandr-entrypoint"
+			#servicingStation: "github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
+		}
 	}
 	jobs: [string]: types.#stanza.job
 }
@@ -46,7 +57,9 @@ Namespace: [Name=_]: {
 	}
 
 	"catalyst-fund3": {
-		vars: #domain: "servicing-station.\(fqdn)"
+		vars: {
+			#domain: "servicing-station.\(fqdn)"
+		}
 		jobs: _defaultJobs
 	}
 
@@ -59,7 +72,10 @@ Namespace: [Name=_]: {
 
 	"catalyst-test": {
 		jobs: {
-			devbox: jobDef.#DevBox & {#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"}
+			devbox: jobDef.#DevBox & {
+				#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"
+				#flakes: devBox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+			}
 		}
 	}
 
@@ -86,6 +102,15 @@ for nsName, nsValue in #namespaces {
 				#jobName: jName
 				#job:     jValue & nsValue.vars
 			}
+		}
+	}
+}
+
+for nsName, nsValue in #namespaces {
+	// output is alphabetical, so better errors show at the end.
+	zchecks: "\(nsName)": {
+		for jName, jValue in nsValue.jobs {
+			"\(jName)": jValue & nsValue.vars
 		}
 	}
 }

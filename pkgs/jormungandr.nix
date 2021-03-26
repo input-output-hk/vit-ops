@@ -45,43 +45,22 @@ let
 
     convert
 
-    (
-      while true; do
-        while diff -u "$runConfig" "$nodeConfig" > /dev/stderr; do
-          sleep 300
-        done
-
-        if ! diff -u "$runConfig" "$nodeConfig" > /dev/stderr; then
-          convert
-          pkill "$name" || true
-        fi
-      done
-    ) &
-
-    starts=0
-    while true; do
-      starts="$((starts+1))"
-      echo "Start Number $starts" > /dev/stderr
-
-      if [ -n "$PRIVATE" ]; then
-        echo "Running with node with secrets..."
-        jormungandr \
-          --storage "$STORAGE_DIR" \
-          --config "$NOMAD_TASK_DIR/running.yaml" \
-          --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
-          --secret $NOMAD_SECRETS_DIR/bft-secret.yaml \
-          "$@" || true
-      else
-        echo "Running with follower node..."
-        jormungandr \
-          --storage "$STORAGE_DIR" \
-          --config "$NOMAD_TASK_DIR/running.yaml" \
-          --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
-          "$@" || true
-      fi
-
-      sleep 10
-    done
+    if [ -n "$PRIVATE" ]; then
+      echo "Running with node with secrets..."
+      exec jormungandr \
+        --storage "$STORAGE_DIR" \
+        --config "$NOMAD_TASK_DIR/running.yaml" \
+        --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
+        --secret $NOMAD_SECRETS_DIR/bft-secret.yaml \
+        "$@" || true
+    else
+      echo "Running with follower node..."
+      exec jormungandr \
+        --storage "$STORAGE_DIR" \
+        --config "$NOMAD_TASK_DIR/running.yaml" \
+        --genesis-block $NOMAD_TASK_DIR/block0.bin/block0.bin \
+        "$@" || true
+    fi
   '';
 in symlinkJoin {
   name = "entrypoint";

@@ -87,6 +87,7 @@ in {
       {
         region = "eu-central-1";
         desiredCapacity = 4;
+        instanceType = "t3a.2xlarge";
         modules = mkModules "catalyst-dryrun";
       }
       {

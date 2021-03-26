@@ -343,23 +343,25 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 
 		// only one network can be specified at group level, and we never use
 		// deprecated task level ones.
-		Networks: [{
-			Mode: tg.network.mode
-			ReservedPorts: [
-				for nName, nValue in tg.network.port if nValue.static != null {
-					Label:       nName
-					Value:       nValue.static
-					To:          nValue.to
-					HostNetwork: nValue.host_network
-				}]
-			DynamicPorts: [
-				for nName, nValue in tg.network.port if nValue.static == null {
-					Label:       nName
-					Value:       nValue.static
-					To:          nValue.to
-					HostNetwork: nValue.host_network
-				}]
-		}]
+		if tg.network != null {
+			Networks: [{
+				Mode: tg.network.mode
+				ReservedPorts: [
+					for nName, nValue in tg.network.port if nValue.static != null {
+						Label:       nName
+						Value:       nValue.static
+						To:          nValue.to
+						HostNetwork: nValue.host_network
+					}]
+				DynamicPorts: [
+					for nName, nValue in tg.network.port if nValue.static == null {
+						Label:       nName
+						Value:       nValue.static
+						To:          nValue.to
+						HostNetwork: nValue.host_network
+					}]
+			}]
+		}
 
 		Restart: {
 			Attempts: tg.restart.attempts
@@ -515,7 +517,7 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 	group: {
 		#type:          "service" | "batch" | "system"
 		ephemeral_disk: #stanza.ephemeral_disk
-		network:        #stanza.network
+		network:        *null | #stanza.network
 		service: [string]: #stanza.service
 		task: [string]:    #stanza.task
 		count: uint | *1
