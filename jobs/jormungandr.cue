@@ -63,6 +63,7 @@ import (
 
 		task: "telegraf": tasks.#Telegraf & {
 			#prometheusPort: "prometheus"
+			#clientId:       "{{ env \"NOMAD_JOB_NAME\" }}"
 		}
 
 		task: "promtail": tasks.#Promtail

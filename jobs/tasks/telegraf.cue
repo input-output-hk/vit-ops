@@ -6,6 +6,7 @@ import (
 
 #Telegraf: types.#stanza.task & {
 	#prometheusPort: string
+	#clientId:       string | *"{{ env \"NOMAD_JOB_NAME\" }}-{{ env \"NOMAD_ALLOC_INDEX\" }}"
 
 	driver: "exec"
 
@@ -33,7 +34,7 @@ import (
 		omit_hostname = false
 
 		[global_tags]
-		client_id = "{{ env "NOMAD_JOB_NAME" }}-{{ env "NOMAD_ALLOC_INDEX" }}"
+		client_id = "\(#clientId)"
 		namespace = "{{ env "NOMAD_NAMESPACE" }}"
 
 		[inputs.prometheus]
