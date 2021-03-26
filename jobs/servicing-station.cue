@@ -26,7 +26,7 @@ import (
 			address_mode: "host"
 			port:         "web"
 
-			#paths: "/api/v0/{x:(block0|fund|proposals|graphql|challenges)}"
+			#paths: "/api/v0/{x:(block0|fund|proposals|graphql|challenges).*}"
 
 			tags: [
 				namespace,

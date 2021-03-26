@@ -122,7 +122,7 @@ import (
 					}
 				}
 
-				#paths: "/api/{x:(v0|v1)}/{y:(account|message|settings|vote|fragments)}"
+				#paths: "/api/{x:(v0|v1)}/{y:(account|message|settings|vote|fragments).*}"
 
 				tags: [
 					#name,

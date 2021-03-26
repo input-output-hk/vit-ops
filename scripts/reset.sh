@@ -123,7 +123,7 @@ vault kv put "kv/nomad-cluster/$NOMAD_NAMESPACE/reset" value=true
 
 
 for job in leader-{0,1,2} follower-0 servicing-station; do
-  nomad job stop -purge "$job"
+  nomad job stop -purge "$job" || true
 done
 
 sleep 10
