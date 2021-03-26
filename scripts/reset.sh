@@ -59,7 +59,7 @@ echo "[x] CONSUL_HTTP_TOKEN"
 
 aws s3 ls &> /dev/null \
 || (
-  echo "AWS credentials are insufficient, setting them in $AWS_PROFILE"
+  echo "AWS credentials are insufficient, setting them in ${AWS_PROFILE:?}"
 
   if grep "\[$AWS_PROFILE\]" ~/.aws/credentials; then
     echo "AWS profile exists, updating credentials"
@@ -121,11 +121,17 @@ aws s3 cp ./block0.bin "s3://iohk-vit-artifacts/$NOMAD_NAMESPACE/block0.bin" --a
 aws s3 cp ./database.sqlite3 "s3://iohk-vit-artifacts/$NOMAD_NAMESPACE/database.sqlite3" --acl public-read
 vault kv put "kv/nomad-cluster/$NOMAD_NAMESPACE/reset" value=true
 
-./deploy.rb stop
+
+for job in leader-{0,1,2} follower-0 servicing-station; do
+  nomad job stop -purge "$job"
+done
 
 sleep 10
 
-./deploy.rb run
+for job in leader-{0,1,2} follower-0 servicing-station; do
+  iogo plan "$NOMAD_NAMESPACE" "$job"
+done
+
 
 echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 echo ""
