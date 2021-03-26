@@ -109,7 +109,7 @@ if ! git diff --exit-code ./artifacts.cue; then
   echo "Found difference in artifacts.cue, pushing for consistency"
   git add ./artifacts.cue
   git commit -m "update artifacts for $NOMAD_NAMESPACE"
-  git push origin nix-jobs-final
+  git push origin master
 fi
 
 echo "[x] Artifacts"
