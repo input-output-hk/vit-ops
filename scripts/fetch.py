@@ -1,4 +1,4 @@
-"""Usage: fetch.py [--network-magic=INT] [--state-dir=DIR] [--threshold=INT] [--db-user=STRING] [--db=STRING] [--db-host=STRING] [--extra-funds=FILE] [--slot=INT]
+"""Usage: fetch.py [--network-magic=INT] [--state-dir=DIR] [--threshold=INT] [--db-user=STRING] [--db=STRING] [--db-host=STRING] [--extra-funds=FILE] [--slot=INT] [--scale=INT]
 
 Options:
     --network-magic <magic>  network magic (specify 0 for mainnet) [default: 1097911063]
@@ -9,6 +9,7 @@ Options:
     --db-host <string>  socket file for database connection [default: /run/postgresql]
     --extra-funds <file>  extra-funds json file [ default: None ]
     --slot <int>  slot to snapshot from [ default: None ]
+    --scale <int> value to scale by [ default: 1 ]
 """
 
 
@@ -28,6 +29,7 @@ timestamp = int(datetime.timestamp(datetime.now().replace(microsecond=0, second=
 
 bridge = VITBridge(arguments['--network-magic'], arguments['--state-dir'], arguments['--db'], arguments['--db-user'], arguments['--db-host'] )
 slot = arguments["--slot"]
+scale = int(arguments["--scale"])
 
 with open("genesis-template.json") as f:
     genesis = json.load(f)
@@ -40,9 +42,22 @@ all_funds = {}
 vote_stake = {}
 initial_funds = []
 
-keys = bridge.fetch_voting_keys(slot)
+
+with open("finalRegs.json") as f:
+    yoroi_dump = json.load(f)
+
+valid_yoroi_keys = {}
+for entry in yoroi_dump:
+    badkey = entry["registration"]["meta"][0]["value"]["2"]
+    valid_yoroi_keys[badkey] = entry["vKey"]
+
+
+keys = bridge.fetch_yoroi_registrations(slot, valid_yoroi_keys)
+
+bridge.gen_snapshot(slot)
+
 for key,value in keys.items():
-    stake = bridge.get_stake(key, slot)
+    stake = bridge.get_stake(key)
     if value in vote_stake:
         vote_stake[value] += stake
     else:
@@ -51,7 +66,7 @@ for key,value in keys.items():
 
 for key, value in vote_stake.items():
     if value > int(arguments["--threshold"]):
-        all_funds[bridge.jcli_address(key)] = value
+        all_funds[bridge.jcli_address(key)] = value // scale
 
 if extra_funds:
     all_funds.update(extra_funds)
