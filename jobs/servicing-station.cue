@@ -35,8 +35,12 @@ import (
 				"traefik.http.routers.\(namespace)-servicing-station.rule=Host(`\(#domain)`) && Path(`\(#paths)`)",
 				"traefik.http.routers.\(namespace)-servicing-station.entrypoints=https",
 				"traefik.http.routers.\(namespace)-servicing-station.tls=true",
-				"traefik.http.routers.\(namespace)-servicing-station.middlewares=remove-origin@consulcatalog",
+				"traefik.http.routers.\(namespace)-servicing-station.middlewares=remove-origin@consulcatalog, cors-headers@consulcatalog",
 				"traefik.http.middlewares.remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
+				"traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT",
+				"traefik.http.middlewares.cors-headers.headers.accesscontrolalloworiginlist=*",
+				"traefik.http.middlewares.cors-headers.headers.accesscontrolmaxage=100",
+				"traefik.http.middlewares.cors-headers.headers.addvaryheader=true"
 			]
 
 			check: "health": {
