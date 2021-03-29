@@ -52,7 +52,10 @@ Namespace: [Name=_]: {
 #namespaces: {
 	"catalyst-dryrun": {
 		vars: {
-			#domain: "dryrun-servicing-station.\(fqdn)"
+			#domain: "dryrun-servicing-station.\(fqdn)",
+			#flakes: {
+			   #servicingStation: "github:input-output-hk/vit-servicing-station/cbbb79a3e8edcb74d59ed532eb961a4022605e65#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
