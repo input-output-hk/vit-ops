@@ -54,7 +54,7 @@ Namespace: [Name=_]: {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)",
 			#flakes: {
-			   #servicingStation: "github:input-output-hk/vit-servicing-station/cbbb79a3e8edcb74d59ed532eb961a4022605e65#vit-servicing-station-server"
+			   #servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
 			}
 		}
 		jobs: _defaultJobs
