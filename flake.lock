@@ -110,15 +110,16 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1614670717,
-        "narHash": "sha256-/4k+Evya3z8HPUc8SKpIy3LD018nCCtXAgTgaJ1pXww=",
+        "lastModified": 1617010408,
+        "narHash": "sha256-Jn6dOSSLjKjt6whW4UXRz23oGp3AZ67uaxbyV8Y6FnM=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "b978ca27a7a70c8171baf8e85250e55ab28fc180",
+        "rev": "a3bef290d3cce0f06c0239cdcede91473c67886c",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "v0.11.0-rc1",
         "repo": "jormungandr",
         "type": "github"
       }
