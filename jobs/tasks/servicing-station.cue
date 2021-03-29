@@ -21,7 +21,7 @@ import (
 
 	env: {
 		PATH: "/bin"
-		VIT_SERVICE_VERSION_ENV_VARIABLE: #version
+		SERVICE_VERSION: #version
 	}
 
 	resources: {
