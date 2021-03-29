@@ -9,6 +9,7 @@ import (
 	#block0: {url: string, checksum: string}
 	#database: {url: string, checksum: string}
 	#flake: types.#flake
+	#version: string
 
 	driver: "exec"
 
@@ -20,6 +21,7 @@ import (
 
 	env: {
 		PATH: "/bin"
+		VIT_SERVICE_VERSION_ENV_VARIABLE: #version
 	}
 
 	resources: {

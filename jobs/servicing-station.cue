@@ -11,6 +11,7 @@ import (
 	#vitOpsRev: string
 	#domain:    string
 	#flakes: #servicingStation: types.#flake
+	#version: string
 
 	namespace: string
 	type:      "service"
@@ -52,13 +53,14 @@ import (
 			}
 		}
 
-		let ref = {block0: #block0, database: #database, domain: #domain}
+		let ref = {block0: #block0, database: #database, domain: #domain, version: #version}
 
 		task: "servicing-station": tasks.#ServicingStation & {
 			#block0:   ref.block0
 			#database: ref.database
 			#domain:   ref.domain
 			#flake:    #flakes.#servicingStation
+			#version:  ref.version
 		}
 
 		task: "promtail": tasks.#Promtail
