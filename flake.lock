@@ -581,16 +581,17 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1617031641,
-        "narHash": "sha256-HESE/MtI4KpBmRteKHP98aQn/CptaFv78SZ0brjXxZw=",
+        "lastModified": 1617051468,
+        "narHash": "sha256-FqhCpNLnOWYLPYCb/wBoHwW06T68nruEHCConHQjgvU=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "cbbb79a3e8edcb74d59ed532eb961a4022605e65",
+        "rev": "9b207ab7b4428d2dddb38b045bdf3e7a8eacd548",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
+        "rev": "9b207ab7b4428d2dddb38b045bdf3e7a8eacd548",
         "type": "github"
       }
     }
