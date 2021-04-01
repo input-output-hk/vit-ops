@@ -34,6 +34,7 @@ in {
     catalyst-sync = { description = "Catalyst (sync) "; };
     catalyst-perf = { description = "Catalyst (perf)"; };
     catalyst-test = { description = "Catalyst (test)"; };
+    catalyst-signoff = { description = "Catalyst (signoff)"; };
   };
 
   nix = {
