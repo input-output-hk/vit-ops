@@ -61,13 +61,6 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-signoff": {
-		vars: {
-			#domain: "dryrun-servicing-station.\(fqdn)"
-		}
-		jobs: _defaultJobs
-	}
-
 	"catalyst-fund3": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
