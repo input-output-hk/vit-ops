@@ -133,6 +133,10 @@ import (
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.rule=Host(`\(#domain)`) && Path(`\(#paths)`)",
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.entrypoints=https",
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.tls=true",
+					"traefik.http.routers.\(namespace)-jormungandr-rpc.middlewares=rpc-ratelimit@consulcatalog",
+					"traefik.http.middlewares.rpc-ratelimit.ratelimit.average=10",
+					"traefik.http.middlewares.rpc-ratelimit.ratelimit.burst=20",
+					"traefik.http.middlewares.rpc-ratelimit.ratelimit.period=1m",
 				]
 			}
 		}
