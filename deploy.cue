@@ -88,6 +88,17 @@ Namespace: [Name=_]: {
 		}
 	}
 
+	"catalyst-signoff": {
+		vars: {
+			#domain: "signoff-servicing-station.\(fqdn)",
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+			}
+		}
+		jobs: _defaultJobs
+	}
+
 	"catalyst-sync": {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
