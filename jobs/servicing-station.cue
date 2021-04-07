@@ -11,6 +11,7 @@ import (
 	#vitOpsRev: string
 	#domain:    string
 	#flakes: #servicingStation: types.#flake
+	#version: string
 
 	namespace: string
 	type:      "service"
@@ -26,7 +27,7 @@ import (
 			address_mode: "host"
 			port:         "web"
 
-			#paths: "/api/v0/{x:(block0|fund|proposals|graphql|challenges).*}"
+			#paths: "/api/{x:(vit-version|v0/(block0|fund|proposals|challenges).*)}"
 
 			tags: [
 				namespace,
@@ -35,12 +36,15 @@ import (
 				"traefik.http.routers.\(namespace)-servicing-station.rule=Host(`\(#domain)`) && Path(`\(#paths)`)",
 				"traefik.http.routers.\(namespace)-servicing-station.entrypoints=https",
 				"traefik.http.routers.\(namespace)-servicing-station.tls=true",
-				"traefik.http.routers.\(namespace)-servicing-station.middlewares=remove-origin@consulcatalog, cors-headers@consulcatalog",
+				"traefik.http.routers.\(namespace)-servicing-station.middlewares=vss-ratelimit@consulcatalog, remove-origin@consulcatalog, cors-headers@consulcatalog",
 				"traefik.http.middlewares.remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
 				"traefik.http.middlewares.cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT",
 				"traefik.http.middlewares.cors-headers.headers.accesscontrolalloworiginlist=*",
 				"traefik.http.middlewares.cors-headers.headers.accesscontrolmaxage=100",
-				"traefik.http.middlewares.cors-headers.headers.addvaryheader=true"
+				"traefik.http.middlewares.cors-headers.headers.addvaryheader=true",
+				"traefik.http.middlewares.vss-ratelimit.ratelimit.average=10",
+				"traefik.http.middlewares.vss-ratelimit.ratelimit.burst=20",
+				"traefik.http.middlewares.vss-ratelimit.ratelimit.period=1m",
 			]
 
 			check: "health": {
@@ -52,13 +56,14 @@ import (
 			}
 		}
 
-		let ref = {block0: #block0, database: #database, domain: #domain}
+		let ref = {block0: #block0, database: #database, domain: #domain, version: #version}
 
 		task: "servicing-station": tasks.#ServicingStation & {
 			#block0:   ref.block0
 			#database: ref.database
 			#domain:   ref.domain
 			#flake:    #flakes.#servicingStation
+			#version:  ref.version
 		}
 
 		task: "promtail": tasks.#Promtail

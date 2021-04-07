@@ -37,10 +37,11 @@ Namespace: [Name=_]: {
 		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) | [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
+		#version:    string | *"2.0"
 
 		#flakes: {
-			#jormungandr:      "github:input-output-hk/vit-ops?rev=c9251b4f3f0b34a22e3968bf28d5a049da120f8f#jormungandr-entrypoint"
-			#servicingStation: "github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/vit-ops?rev=c9251b4f3f0b34a22e3968bf28d5a049da120f8f#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
 		}
 	}
 	jobs: [string]: types.#stanza.job
@@ -52,6 +53,10 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
@@ -66,6 +71,10 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
