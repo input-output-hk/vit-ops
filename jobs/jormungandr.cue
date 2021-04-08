@@ -137,6 +137,7 @@ import (
 					"traefik.http.middlewares.rpc-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
 					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST",
 					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolalloworiginlist=*",
+					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolallowheaders=*",
 					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolmaxage=100",
 					"traefik.http.middlewares.rpc-cors-headers.headers.addvaryheader=true",
 					"traefik.http.middlewares.rpc-ratelimit.ratelimit.average=10",
