@@ -71,18 +71,19 @@ in {
     };
 
     staticConfigOptions = {
-      accesslog = {
-        format = "json";
-        fields = {
-          defaultMode = "keep";
-          headers = {
-            defaultMode = "keep";
-            names = {
-              Authorization = "drop";
-            };
-          };
-        };
-      };
+      accesslog = true;
+      # accesslog = {
+      #   format = "json";
+      #   fields = {
+      #     defaultMode = "keep";
+      #     headers = {
+      #       defaultMode = "keep";
+      #       names = {
+      #         Authorization = "drop";
+      #       };
+      #     };
+      #   };
+      # };
       log.level = "info";
 
       api = { dashboard = true; };
