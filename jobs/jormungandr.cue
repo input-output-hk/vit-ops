@@ -140,8 +140,8 @@ import (
 					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolallowheaders=*",
 					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolmaxage=100",
 					"traefik.http.middlewares.rpc-cors-headers.headers.addvaryheader=true",
-					"traefik.http.middlewares.rpc-ratelimit.ratelimit.average=10",
-					"traefik.http.middlewares.rpc-ratelimit.ratelimit.burst=20",
+					"traefik.http.middlewares.rpc-ratelimit.ratelimit.average=100",
+					"traefik.http.middlewares.rpc-ratelimit.ratelimit.burst=250",
 					"traefik.http.middlewares.rpc-ratelimit.ratelimit.period=1m",
 					"traefik.http.middlewares.rpc-ratelimit.ratelimit.sourcecriterion.ipstrategy.excludedips=31.186.220.152, 52.28.99.69",
 				]
