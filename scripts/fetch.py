@@ -51,6 +51,12 @@ for entry in yoroi_dump:
     badkey = entry["registration"]["meta"][0]["value"]["2"]
     valid_yoroi_keys[badkey] = entry["vKey"]
 
+with open("recoverableNewFinal.json") as f:
+    yoroi_dump = json.load(f)
+for entry in yoroi_dump:
+    badkey = entry["registration"]["meta"][0]["value"]["2"]
+    valid_yoroi_keys[badkey] = entry["vKey"]
+
 
 keys = bridge.fetch_yoroi_registrations(slot, valid_yoroi_keys)
 
