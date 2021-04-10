@@ -16,6 +16,8 @@ in {
 
   print-env = final.callPackage ./pkgs/print-env.nix { };
 
+  zipkin-server = final.callPackage ./pkgs/zipkin-server.nix {};
+
   jormungandr-monitor-entrypoint =
     final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
