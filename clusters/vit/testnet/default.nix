@@ -193,6 +193,7 @@ in {
           "monitoring.${cluster.domain}"
           "nomad.${cluster.domain}"
           "vault.${cluster.domain}"
+          "zipkin.${cluster.domain}"
         ];
 
         modules = [ ./monitoring-server.nix ];

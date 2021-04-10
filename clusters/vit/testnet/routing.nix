@@ -71,18 +71,24 @@ in {
     };
 
     staticConfigOptions = {
-      accesslog = {
-        format = "json";
-        fields = {
-          defaultMode = "keep";
-          headers = {
-            defaultMode = "keep";
-            names = {
-              Authorization = "drop";
-            };
-          };
-        };
-      };
+      accesslog = true;
+
+      tracing.zipkin.httpEndpoint =
+        "http://${config.cluster.instances.monitoring.privateIP}:9411/api/v2/spans";
+
+      # accesslog = {
+      #   format = "json";
+      #   fields = {
+      #     defaultMode = "keep";
+      #     headers = {
+      #       defaultMode = "keep";
+      #       names = {
+      #         Authorization = "drop";
+      #       };
+      #     };
+      #   };
+      # };
+
       log.level = "info";
 
       api = { dashboard = true; };
