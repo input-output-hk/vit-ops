@@ -45,7 +45,6 @@ import (
 				"traefik.http.middlewares.vss-ratelimit.ratelimit.average=100",
 				"traefik.http.middlewares.vss-ratelimit.ratelimit.burst=250",
 				"traefik.http.middlewares.vss-ratelimit.ratelimit.period=1m",
-				"traefik.http.middlewares.vss-ratelimit.ratelimit.sourcecriterion.ipstrategy.excludedips=31.186.220.152, 52.28.99.69",
 			]
 
 			check: "health": {
