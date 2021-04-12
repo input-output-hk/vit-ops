@@ -6,8 +6,6 @@ import tempfile
 import os
 import psycopg2
 
-from cardanolib import CardanoCLIWrapper
-
 class VITBridge:
     """VIT tools to bridge Cardano mainnet and jormungandr"""
 

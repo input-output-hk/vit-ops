@@ -16,7 +16,7 @@ in pkgs.stdenv.mkDerivation {
   name = "vit-meta-shell";
   buildInputs = [
     repl.legacyPackages.x86_64-linux.jormungandr
-    cardano-cli
+    repl.legacyPackages.x86_64-linux.cardano-cli
     bech32
     pkgs.python3Packages.ipython
     pkgs.python3Packages.cbor2
@@ -25,7 +25,7 @@ in pkgs.stdenv.mkDerivation {
     pkgs.python3Packages.cryptography
     pkgs.python3Packages.opencv4
 
-    cardanolib-py
+    #cardanolib-py
   ];
   shellHook = ''
     source <(cardano-cli --bash-completion-script cardano-cli)
