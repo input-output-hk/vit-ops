@@ -257,8 +257,7 @@ import (
 	}
 }
 
-let durationType = string & =~"^[1-9]\\d*[hms]$"
-
+#duration:    =~"^[1-9]\\d*[hms]$"
 #gitRevision: =~"^[a-f0-9]{40}$"
 #flake:       =~"^(github|git\\+ssh|git):[0-9a-zA-Z_-]+/[0-9a-zA-Z_-]+"
 
@@ -533,18 +532,18 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 
 		if #type == "batch" {
 			attempts:       uint | *1
-			delay:          durationType | *"5s"
+			delay:          #duration | *"5s"
 			delay_function: *"constant" | "exponential" | "fibonacci"
-			interval:       durationType | *"24h"
+			interval:       #duration | *"24h"
 			unlimited:      bool | *false
 		}
 
 		if #type == "service" || #type == "system" {
-			interval:       durationType | *"0m"
+			interval:       #duration | *"0m"
 			attempts:       uint | *0
-			delay:          durationType | *"30s"
+			delay:          #duration | *"30s"
 			delay_function: "constant" | *"exponential" | "fibonacci"
-			max_delay:      durationType | *"1h"
+			max_delay:      #duration | *"1h"
 			// if unlimited is true, interval and attempts are ignored
 			unlimited: bool | *true
 		}
@@ -571,13 +570,13 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		// Specifies the duration to wait before restarting a task. This is
 		// specified using a label suffix like "30s" or "1h". A random jitter of up
 		// to 25% is added to the delay.
-		delay: durationType | *"15s"
+		delay: #duration | *"15s"
 
 		// Specifies the duration which begins when the first task starts and
 		// ensures that only attempts number of restarts happens within it. If more
 		// than attempts number of failures happen, behavior is controlled by mode.
 		// This is specified using a label suffix like "30s" or "1h".
-		interval: durationType
+		interval: #duration
 
 		// Controls the behavior when the task fails more than attempts times in an
 		// interval.
@@ -585,18 +584,18 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 
 		if #type == "batch" {
 			attempts: uint | *3
-			interval: durationType | *"24h"
+			interval: #duration | *"24h"
 		}
 
 		if #type == "service" || #type == "system" {
 			attempts: uint | *2
-			interval: durationType | *"30m"
+			interval: #duration | *"30m"
 		}
 	}
 
 	check_restart: *null | {
 		limit:           uint
-		grace:           durationType
+		grace:           #duration
 		ignore_warnings: bool | *false
 	}
 
@@ -614,8 +613,8 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		address_mode:  "alloc" | "driver" | *"host"
 		type:          "http" | "tcp" | "script" | "grpc"
 		port:          string
-		interval:      durationType
-		timeout:       durationType
+		interval:      #duration
+		timeout:       #duration
 		check_restart: #stanza.check_restart | *null
 		header: [string]: [...string]
 		body: string | *null
@@ -700,7 +699,7 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 			change_signal:   *"" | string
 			left_delimiter:  string | *"{{"
 			right_delimiter: string | *"}}"
-			splay:           durationType | *"3s"
+			splay:           #duration | *"3s"
 		}
 
 		vault: *null | #stanza.vault
@@ -709,9 +708,9 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 	}
 
 	restart_policy: {
-		interval: durationType
+		interval: #duration
 		attempts: uint
-		delay:    durationType
+		delay:    #duration
 		mode:     "delay" | "fail"
 	}
 
@@ -720,11 +719,11 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		auto_revert:       bool | *false
 		canary:            uint | *0
 		health_check:      *"checks" | "task_states" | "manual"
-		healthy_deadline:  durationType | *"5m"
+		healthy_deadline:  #duration | *"5m"
 		max_parallel:      uint | *1
-		min_healthy_time:  durationType | *"10s"
-		progress_deadline: durationType | *"10m"
-		stagger:           durationType | *"30s"
+		min_healthy_time:  #duration | *"10s"
+		progress_deadline: #duration | *"10m"
+		stagger:           #duration | *"30s"
 	}
 
 	vault: {

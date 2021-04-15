@@ -43,6 +43,12 @@ Namespace: [Name=_]: {
 			#jormungandr:      string | *"github:input-output-hk/vit-ops?rev=c9251b4f3f0b34a22e3968bf28d5a049da120f8f#jormungandr-entrypoint"
 			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
 		}
+
+		#rateLimit: {
+			average: uint | *100
+			burst:   uint | *250
+			period:  types.#duration | *"1m"
+		}
 	}
 	jobs: [string]: types.#stanza.job
 }
@@ -74,6 +80,11 @@ Namespace: [Name=_]: {
 			#flakes: {
 				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
 				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+			}
+			#rateLimit: {
+				average: 100000
+				burst:   200000
+				period:  "1m"
 			}
 		}
 		jobs: _defaultJobs

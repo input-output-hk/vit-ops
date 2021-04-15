@@ -12,6 +12,11 @@ import (
 	#domain:    string
 	#flakes: #servicingStation: types.#flake
 	#version: string
+	#rateLimit: {
+		average: uint
+		burst:   uint
+		period:  types.#duration
+	}
 
 	namespace: string
 	type:      "service"
@@ -36,15 +41,15 @@ import (
 				"traefik.http.routers.\(namespace)-servicing-station.rule=Host(`\(#domain)`) && Path(`\(#paths)`)",
 				"traefik.http.routers.\(namespace)-servicing-station.entrypoints=https",
 				"traefik.http.routers.\(namespace)-servicing-station.tls=true",
-				"traefik.http.routers.\(namespace)-servicing-station.middlewares=vss-ratelimit@consulcatalog, vss-remove-origin@consulcatalog, vss-cors-headers@consulcatalog",
-				"traefik.http.middlewares.vss-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
-				"traefik.http.middlewares.vss-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT",
-				"traefik.http.middlewares.vss-cors-headers.headers.accesscontrolalloworiginlist=*",
-				"traefik.http.middlewares.vss-cors-headers.headers.accesscontrolmaxage=100",
-				"traefik.http.middlewares.vss-cors-headers.headers.addvaryheader=true",
-				"traefik.http.middlewares.vss-ratelimit.ratelimit.average=100",
-				"traefik.http.middlewares.vss-ratelimit.ratelimit.burst=250",
-				"traefik.http.middlewares.vss-ratelimit.ratelimit.period=1m",
+				"traefik.http.routers.\(namespace)-servicing-station.middlewares=\(namespace)-vss-ratelimit@consulcatalog, \(namespace)-vss-remove-origin@consulcatalog, \(namespace)-vss-cors-headers@consulcatalog",
+				"traefik.http.middlewares.\(namespace)-vss-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
+				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT",
+				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolalloworiginlist=*",
+				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolmaxage=100",
+				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.addvaryheader=true",
+				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.average=\(#rateLimit.average)",
+				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.burst=\(#rateLimit.burst)",
+				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.period=\(#rateLimit.period)",
 			]
 
 			check: "health": {

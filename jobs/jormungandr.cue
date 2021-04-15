@@ -14,7 +14,12 @@ import (
 	#id:         "\(namespace)-\(#name)"
 	#publicPort: 7200 + #index
 	#flakes: #jormungandr: types.#flake
-	#domain:            string
+	#domain: string
+	#rateLimit: {
+		average: uint
+		burst:   uint
+		period:  types.#duration
+	}
 	#requiredPeerCount: uint
 	if #role == "leader" {
 		#requiredPeerCount: #index
@@ -133,16 +138,16 @@ import (
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.rule=Host(`\(#domain)`) && Path(`\(#paths)`)",
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.entrypoints=https",
 					"traefik.http.routers.\(namespace)-jormungandr-rpc.tls=true",
-					"traefik.http.routers.\(namespace)-jormungandr-rpc.middlewares=rpc-ratelimit@consulcatalog, rpc-remove-origin@consulcatalog, rpc-cors-headers@consulcatalog",
-					"traefik.http.middlewares.rpc-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
-					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST",
-					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolalloworiginlist=*",
-					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolallowheaders=*",
-					"traefik.http.middlewares.rpc-cors-headers.headers.accesscontrolmaxage=100",
-					"traefik.http.middlewares.rpc-cors-headers.headers.addvaryheader=true",
-					"traefik.http.middlewares.rpc-ratelimit.ratelimit.average=100",
-					"traefik.http.middlewares.rpc-ratelimit.ratelimit.burst=250",
-					"traefik.http.middlewares.rpc-ratelimit.ratelimit.period=1m",
+					"traefik.http.routers.\(namespace)-jormungandr-rpc.middlewares=\(namespace)-rpc-ratelimit@consulcatalog, \(namespace)-rpc-remove-origin@consulcatalog, \(namespace)-rpc-cors-headers@consulcatalog",
+					"traefik.http.middlewares.\(namespace)-rpc-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
+					"traefik.http.middlewares.\(namespace)-rpc-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST",
+					"traefik.http.middlewares.\(namespace)-rpc-cors-headers.headers.accesscontrolalloworiginlist=*",
+					"traefik.http.middlewares.\(namespace)-rpc-cors-headers.headers.accesscontrolallowheaders=*",
+					"traefik.http.middlewares.\(namespace)-rpc-cors-headers.headers.accesscontrolmaxage=100",
+					"traefik.http.middlewares.\(namespace)-rpc-cors-headers.headers.addvaryheader=true",
+					"traefik.http.middlewares.\(namespace)-rpc-ratelimit.ratelimit.average=\(#rateLimit.average)",
+					"traefik.http.middlewares.\(namespace)-rpc-ratelimit.ratelimit.burst=\(#rateLimit.burst)",
+					"traefik.http.middlewares.\(namespace)-rpc-ratelimit.ratelimit.period=\(#rateLimit.period)",
 				]
 			}
 		}
