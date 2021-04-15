@@ -35,13 +35,14 @@ class VITBridge:
             return binascii.hexlify(cbor2.loads(binascii.unhexlify(data))).decode("ascii")
 
     def get_cardano_vkey(self, skey_file):
-        (tf, vkey_file) = tempfile.mkstemp()
+        (tf1, vkey_file) = tempfile.mkstemp()
         cli_args = [ "cardano-cli", "shelley", "key", "verification-key", "--signing-key-file", skey_file, "--verification-key-file", vkey_file ]
         p = subprocess.run(cli_args, capture_output=True, text=True)
         if p.returncode != 0:
             print(p.stderr)
             raise Exception("Unknown error deriving cardano vkey from skey")
         vkey = self.read_cardano_key(vkey_file)
+        os.close(tf1)
         os.unlink(vkey_file)
         return vkey
 
@@ -57,8 +58,8 @@ class VITBridge:
         return p.stdout.rstrip()
 
     def jcli_sign(self, key, contents, text=False):
-        (tf, key_file) = tempfile.mkstemp()
-        (tf, contents_file) = tempfile.mkstemp(suffix=b'', text=text)
+        (tf1, key_file) = tempfile.mkstemp()
+        (tf2, contents_file) = tempfile.mkstemp(suffix=b'', text=text)
         self.write_text(key_file, key)
         if text:
             self.write_text(contents_file, contents)
@@ -68,6 +69,8 @@ class VITBridge:
         p = subprocess.run(cli_args, capture_output=True, text=True)
         os.unlink(key_file)
         os.unlink(contents_file)
+        os.close(tf1)
+        os.close(tf2)
         if p.returncode != 0:
             raise Exception("Unknown error signing")
         return p.stdout.rstrip()
@@ -117,9 +120,9 @@ class VITBridge:
         return p.stdout.rstrip()
 
     def validate_sig(self, pub_key, sig, data, text=False):
-        (tf, pub_key_file) = tempfile.mkstemp()
-        (tf, data_file) = tempfile.mkstemp(suffix=b'', text=text)
-        (tf, sig_file) = tempfile.mkstemp()
+        (tf1, pub_key_file) = tempfile.mkstemp()
+        (tf2, data_file) = tempfile.mkstemp(suffix=b'', text=text)
+        (tf3, sig_file) = tempfile.mkstemp()
         self.write_text(pub_key_file, pub_key)
         self.write_text(sig_file, sig)
         if text:
@@ -131,6 +134,9 @@ class VITBridge:
         os.unlink(pub_key_file)
         os.unlink(data_file)
         os.unlink(sig_file)
+        os.close(tf1)
+        os.close(tf2)
+        os.close(tf3)
         if p.returncode != 0:
             return False
         else:
@@ -188,7 +194,7 @@ class VITBridge:
         else:
             return None
 
-    def fetch_voting_keys(self, slot=None):
+    def fetch_voting_keys(self, slot=None, rewards=False):
         cursor = self.db.cursor()
         # TODO: maybe add psycopg2.extra for parsing the json
         #cursor.execute('''SELECT json ->> 'purpose' AS purpose, json ->> 'stake_pub' AS stake_pub, json ->> 'voting_key' AS voting_key, json ->> 'signature' AS signature FROM tx INNER JOIN tx_metadata ON tx.id = tx_metadata.tx_id WHERE json ->> 'purpose' = 'voting_registration';''')
@@ -204,17 +210,26 @@ SELECT tx.hash,tx_id,metadata,signature FROM meta_table INNER JOIN tx ON tx.id =
         rows = cursor.fetchall()
         keys = {}
         for row in rows:
-            if (type(row[2]) is dict) and (type(row[3]) is dict) and ("1" in row[2]) and ("2" in row[2]) and "1" in row[3]:
+            if (type(row[2]) is dict) and (type(row[3]) is dict) and ("1" in row[2]) and ("2" in row[2]) and ("3" in row[2]) and "1" in row[3]:
                 meta = {
                         1: row[2]["1"],
-                        2: row[2]["2"]
+                        2: row[2]["2"],
+                        3: row[2]["3"]
                        }
                 stake_pub = self.strip_hex_prefix(meta[2])
                 voting_key = self.strip_hex_prefix(meta[1])
+                if self.network_magic == 0:
+                    prefix = "addr"
+                else:
+                    prefix = "addr_test"
+                rewards_addr = self.prefix_bech32(prefix, self.strip_hex_prefix(meta[3]))
                 signature = row[3]["1"]
                 if stake_pub and voting_key and signature and self.validate_meta_data(meta, signature):
-                    stake_hash = self.bech32_to_hex(self.get_stake_hash(stake_pub))[2:]
-                    keys[stake_hash] = voting_key
+                    stake_hash = self.get_stake_hash(stake_pub)
+                    if rewards:
+                        keys[stake_hash] = rewards_addr
+                    else:
+                        keys[stake_hash] = voting_key
         return keys
 
     def debug_single_tx(self, txhash):
@@ -266,7 +281,7 @@ debug files written in current directory
         else:
             return None
 
-    def fetch_yoroi_registrations(self, slot, valid_keys ):
+    def fetch_yoroi_registrations(self, slot, valid_keys, rewards=False ):
         cursor = self.db.cursor()
         cursor.execute(f'''SELECT DISTINCT (json ->> '1'), (json ->> '2'), (json ->> '3') FROM tx_metadata INNER JOIN tx ON tx.id = tx_metadata.tx_id INNER JOIN block ON block.id = tx.block_id WHERE key = 61284 AND block.slot_no <= {slot};''')
         rows = cursor.fetchall()
@@ -279,18 +294,21 @@ debug files written in current directory
                 valid_key = self.valid_yoroi_key(bad_key, valid_keys)
                 if valid_key:
                     stake_hash = self.get_stake_hash(valid_key)
-                    registrations[stake_hash] = vote_pub
+                    if rewards:
+                        registrations[stake_hash] = address
+                    else:
+                        registrations[stake_hash] = vote_pub
         return registrations
 
     def gen_snapshot(self, slot=None):
         cursor = self.db.cursor()
         if slot:
-            cursor.execute(f'''CREATE TEMPORARY TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id WHERE block.slot_no <= {slot});''')
-            cursor.execute(f'''CREATE TEMPORARY TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.view AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id WHERE block.slot_no <= {slot});''')
+            cursor.execute(f'''CREATE TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id WHERE block.slot_no <= {slot});''')
+            cursor.execute(f'''CREATE TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.view AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id WHERE block.slot_no <= {slot});''')
         else:
-            cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id);''')
-            cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.view AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id);''')
-        cursor.execute('''CREATE TEMPORARY TABLE IF NOT EXISTS utxo_snapshot AS (SELECT tx_out_snapshot.* FROM tx_out_snapshot LEFT OUTER JOIN tx_in_snapshot ON tx_out_snapshot.tx_id = tx_in_snapshot.tx_out_id AND tx_out_snapshot.index = tx_in_snapshot.tx_out_index WHERE tx_in_snapshot.tx_in_id IS NULL);''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS tx_in_snapshot AS (SELECT tx_in.* FROM tx_in INNER JOIN tx ON tx_in.tx_in_id = tx.id INNER JOIN block ON tx.block_id = block.id);''')
+            cursor.execute('''CREATE TABLE IF NOT EXISTS tx_out_snapshot AS (SELECT tx_out.*, stake_address.view AS stake_credential FROM tx_out INNER JOIN tx ON tx_out.tx_id = tx.id INNER JOIN block ON tx.block_id = block.id INNER JOIN stake_address ON stake_address.id = tx_out.stake_address_id);''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS utxo_snapshot AS (SELECT tx_out_snapshot.* FROM tx_out_snapshot LEFT OUTER JOIN tx_in_snapshot ON tx_out_snapshot.tx_id = tx_in_snapshot.tx_out_id AND tx_out_snapshot.index = tx_in_snapshot.tx_out_index WHERE tx_in_snapshot.tx_in_id IS NULL);''')
 
     def get_stake(self, stake_hash):
         cursor = self.db.cursor()
