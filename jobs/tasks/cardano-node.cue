@@ -10,8 +10,8 @@ import (
 	driver: "exec"
 
 	resources: {
-		cpu:    13600
-		memory: 8000
+		cpu:    3000
+		memory: 1024 * 6
 	}
 
 	volume_mount: "persist": {

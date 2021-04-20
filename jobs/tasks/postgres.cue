@@ -9,7 +9,7 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 
 	resources: {
 		cpu:    13600
-		memory: 1000
+		memory: 512
 	}
 
 	volume_mount: "persist": {
