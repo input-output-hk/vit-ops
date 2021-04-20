@@ -65,6 +65,22 @@ import (
 			]
 		}
 
+		service: "\(namespace)-registration-\(#dbSyncNetwork)": {
+			address_mode: "host"
+			port:         "registration"
+			task:         "registration"
+			tags: [
+				"ingress",
+				"registration",
+				#dbSyncNetwork,
+				namespace,
+				"traefik.enable=true",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).rule=Host(`\(#domain)`)",
+				"traefik.http.routers.\(namespace)-faucet-rpc.entrypoints=https",
+				"traefik.http.routers.\(namespace)-faucet-rpc.tls=true",
+			]
+		}
+
 		let ref = {
 			dbSyncRev:     #dbSyncRev
 			dbSyncNetwork: #dbSyncNetwork
@@ -84,6 +100,11 @@ import (
 		}
 
 		task: "snapshot": tasks.#Snapshot & {
+			#dbSyncNetwork: ref.dbSyncNetwork
+			#namespace:     namespace
+		}
+
+		task: "registration": tasks.#Registration & {
 			#dbSyncNetwork: ref.dbSyncNetwork
 			#namespace:     namespace
 		}
