@@ -4,7 +4,7 @@ import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 )
 
-#Snapshot: types.#stanza.task & {
+#Registration: types.#stanza.task & {
 	#dbSyncNetwork: string
 	#namespace:     string
 
