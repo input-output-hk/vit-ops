@@ -39,7 +39,7 @@ import (
 		network: {
 			mode: "host"
 			port: snapshot: {}
-			port: registration: {}
+                        port: registration: {}
 		}
 
 		count: 1
