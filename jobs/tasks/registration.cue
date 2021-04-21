@@ -40,14 +40,14 @@ import (
 			_magic: "{ \"testnet\": 1097911063 }"
 		}
 		data: """
-        {
-   	      "port": {{ env "NOMAD_PORT_registration" }},
-          "jcli": "jcli.exe",
-          "result-dir": "/persist/registration",
-          "cardano-cli": "cardano-cli",
-          "voter-registration": "voter-registration",
-          "vit-kedqr": "vit-kedqr",
-          "network": \(_magic),
+		{
+		  "port": {{ env "NOMAD_PORT_registration" }},
+		  "jcli": "jcli.exe",
+		  "result-dir": "/persist/registration",
+		  "cardano-cli": "cardano-cli",
+		  "voter-registration": "voter-registration",
+		  "vit-kedqr": "vit-kedqr",
+		  "network": \(_magic),
 		  "token": "{{with secret "kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/registration"}}{{.Data.data.token}}{{end}}"
 		}
 		"""
