@@ -102,14 +102,16 @@ Namespace: [Name=_]: {
 	"catalyst-sync": {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
-				#dbSyncNetwork:  "mainnet"
-				#dbSyncInstance: "i-0425dd53d4b0f8939"
-				#domain:         "snapshot-mainnet.\(fqdn)"
+				#dbSyncNetwork:      "mainnet"
+				#dbSyncInstance:     "i-0425dd53d4b0f8939"
+				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
+				#registrationDomain: "registration-mainnet.\(fqdn)"
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
-				#dbSyncNetwork:  "testnet"
-				#dbSyncInstance: "i-0ce9a9084a83348e6"
-				#domain:         "snapshot-testnet.\(fqdn)"
+				#dbSyncNetwork:      "testnet"
+				#dbSyncInstance:     "i-0ce9a9084a83348e6"
+				#snapshotDomain:     "snapshot-testnet.\(fqdn)"
+				#registrationDomain: "registration-testnet.\(fqdn)"
 			}
 		}
 	}
