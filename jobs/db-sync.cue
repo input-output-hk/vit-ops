@@ -63,8 +63,8 @@ import (
 				namespace,
 				"traefik.enable=true",
 				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).rule=Host(`\(#snapshotDomain)`)",
-				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork)-faucet-rpc.entrypoints=https",
-				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork)-faucet-rpc.tls=true",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).tls=true",
 			]
 		}
 
@@ -79,8 +79,8 @@ import (
 				namespace,
 				"traefik.enable=true",
 				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).rule=Host(`\(#registrationDomain)`)",
-				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork)-faucet-rpc.entrypoints=https",
-				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork)-faucet-rpc.tls=true",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).tls=true",
 			]
 		}
 
