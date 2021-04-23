@@ -28,6 +28,16 @@ in {
     };
   };
 
+  systemd.services.nomad.environment = {
+    # Try to work around Nix crashing.
+    GC_DONT_GC = "1";
+    CONSUL_HTTP_ADDR = "http://127.0.0.1:8500";
+    # certificates get rotated often, we got no way to update them while
+    # the jobs are running...
+    VAULT_SKIP_VERIFY = "true";
+    HOME = "/var/lib/nomad";
+  };
+
   services.nomad.namespaces = {
     catalyst-dryrun = { description = "Catalyst (dryrun)"; };
     catalyst-fund3 = { description = "Catalyst (fund3) "; };
