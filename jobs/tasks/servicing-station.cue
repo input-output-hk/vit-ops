@@ -46,7 +46,8 @@ import (
 			  "log": {
 			    "log_level": "debug"
 			  },
-			  "address": "0.0.0.0:{{ env "NOMAD_PORT_web" }}"
+			  "address": "0.0.0.0:{{ env "NOMAD_PORT_web" }}",
+			  "service_version": ""  
 			}
 			"""
 	}
