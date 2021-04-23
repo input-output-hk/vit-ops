@@ -42,7 +42,7 @@ import (
 		data: """
 		{
 		  "port": {{ env "NOMAD_PORT_registration" }},
-		  "jcli": "jcli.exe",
+		  "jcli": "jcli",
 		  "result-dir": "/persist/registration",
 		  "cardano-cli": "cardano-cli",
 		  "voter-registration": "voter-registration",
