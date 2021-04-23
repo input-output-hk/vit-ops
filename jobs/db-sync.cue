@@ -7,12 +7,14 @@ import (
 )
 
 #DbSync: types.#stanza.job & {
-	_hex:            "[0-9a-f]"
-	#dbSyncInstance: =~"^i-\(_hex){17}$"
-	#dbSyncNetwork:  "testnet" | "mainnet"
-	#dbSyncRev:      =~"^\(_hex){40}$"
-	#vitOpsRev:      string
-	#domain:         string
+	_hex:               "[0-9a-f]"
+	#dbSyncInstance:     =~"^i-\(_hex){17}$"
+	#dbSyncNetwork:      "testnet" | "mainnet"
+	#dbSyncRev:          =~"^\(_hex){40}$"
+	#vitOpsRev:          string
+	#snapshotDomain:     string
+        #registrationDomain: string
+
 
 	namespace:   string
 	datacenters: list.MinItems(1)
@@ -39,6 +41,7 @@ import (
 		network: {
 			mode: "host"
 			port: snapshot: {}
+                        port: registration: {}
 		}
 
 		count: 1
@@ -59,9 +62,25 @@ import (
 				#dbSyncNetwork,
 				namespace,
 				"traefik.enable=true",
-				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).rule=Host(`\(#domain)`)",
-				"traefik.http.routers.\(namespace)-faucet-rpc.entrypoints=https",
-				"traefik.http.routers.\(namespace)-faucet-rpc.tls=true",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).rule=Host(`\(#snapshotDomain)`)",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-snapshot-\(#dbSyncNetwork).tls=true",
+			]
+		}
+
+		service: "\(namespace)-registration-\(#dbSyncNetwork)": {
+			address_mode: "host"
+			port:         "registration"
+			task:         "registration"
+			tags: [
+				"ingress",
+				"registration",
+				#dbSyncNetwork,
+				namespace,
+				"traefik.enable=true",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).rule=Host(`\(#registrationDomain)`)",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).tls=true",
 			]
 		}
 
@@ -84,6 +103,11 @@ import (
 		}
 
 		task: "snapshot": tasks.#Snapshot & {
+			#dbSyncNetwork: ref.dbSyncNetwork
+			#namespace:     namespace
+		}
+
+		task: "registration": tasks.#Registration & {
 			#dbSyncNetwork: ref.dbSyncNetwork
 			#namespace:     namespace
 		}
