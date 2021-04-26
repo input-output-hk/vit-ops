@@ -90,6 +90,17 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
+	"catalyst-signoff": {
+		vars: {
+			#domain: "signoff-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62#vit-servicing-station-server"
+			}
+		}
+		jobs: _defaultJobs
+	}
+
 	"catalyst-test": {
 		jobs: {
 			devbox: jobDef.#DevBox & {
