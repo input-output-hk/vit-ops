@@ -33,12 +33,12 @@ artifacts: {
 	}
 	"catalyst-signoff": {
 		block0: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:a324b4188c36f97afaf4cbb1a5d8be09f8acddb6591085259c06537071baf6e5"
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
+			checksum: "sha256:98365499aba9350c85724135ea844be18fd971dd7aa82a17c82e46fb3ad71ddd"
 		}
 		database: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:01aee82446feb0b27417658c3d46b8fcd60a24b8df21bc7966723b12fdfbefcf"
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
+			checksum: "sha256:ed885e69d8dbb64030beec5191730c71de1c5ba74480dc29835a7105a89eadf8"
 		}
 	}
 	"catalyst-test": {
