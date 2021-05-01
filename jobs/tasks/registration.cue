@@ -25,9 +25,13 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/07f1eeaaf880f9fc192c7df5f1ce33ad537e3404#registration-service"
+		flake:   "github:input-output-hk/vit-testing/59253bd9d527f0695dbff36781347c4bb95fbea8#registration-service"
 		command: "/bin/registration-service"
 		args: ["--config", "/secrets/registration.config"]
+	}
+
+	env: {
+		CARDANO_NODE_SOCKET_PATH: "/alloc/node.socket"
 	}
 
 	template: "secrets/registration.config": {
