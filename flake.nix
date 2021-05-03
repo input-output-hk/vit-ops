@@ -2,7 +2,7 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/token-shuffling";
+    bitte.url = "github:input-output-hk/bitte/glusterfs";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
@@ -25,7 +25,6 @@
   outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
     let
       vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
-      bitteOverlay = bitte.overlay.x86_64-linux;
 
       hashiStack = bitte.mkHashiStack {
         flake = self;
@@ -38,7 +37,7 @@
         system = "x86_64-linux";
         overlays = [
           (final: prev: { inherit (hashiStack) clusters dockerImages; })
-          bitteOverlay
+          bitte.overlay
           vitOpsOverlay
         ];
       };

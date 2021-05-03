@@ -1,4 +1,6 @@
-{ config, lib, ... }: {
+{ config, self, lib, ... }: {
+  imports = [ (self.inputs.bitte + /profiles/glusterfs/client.nix) ];
+
   services.nomad.client = {
     chroot_env = {
       "/etc/passwd" = "/etc/passwd";
@@ -7,30 +9,35 @@
     };
 
     host_volume = [{
-      catalyst-dryrun-db-sync = {
-        path = "/var/lib/nomad-volumes/catalyst-dryrun-db-sync";
+      catalyst-fund4 = {
+        path = "/mnt/gv0/nomad/catalyst-fund4";
         read_only = false;
       };
 
-      catalyst-fund3-db-sync = {
-        path = "/var/lib/nomad-volumes/catalyst-fund3-db-sync";
+      catalyst-sync = {
+        path = "/mnt/gv0/nomad/catalyst-sync";
         read_only = false;
       };
 
-      catalyst-sync-db-sync = {
-        path = "/var/lib/nomad-volumes/catalyst-sync-db-sync";
+      catalyst-sync-testnet = {
+        path = "/mnt/gv0/nomad/catalyst-sync-testnet";
+        read_only = false;
+      };
+
+      catalyst-sync-mainnet = {
+        path = "/mnt/gv0/nomad/catalyst-sync-mainnet";
         read_only = false;
       };
     }];
   };
 
-  system.activationScripts.nomad-host-volumes =
+  system.activationScripts.nomad-host-volumes-new =
     lib.pipe config.services.nomad.client.host_volume [
       (map builtins.attrNames)
       builtins.concatLists
       (map (d: ''
-        mkdir -p /var/lib/nomad-volumes/${d}
-        chown -R nobody:nogroup /var/lib/nomad-volumes/${d}
+        mkdir -p /mnt/gv0/nomad/${d}
+        chown -R nobody:nogroup /mnt/gv0/nomad/${d}
       ''))
       (builtins.concatStringsSep "\n")
     ];

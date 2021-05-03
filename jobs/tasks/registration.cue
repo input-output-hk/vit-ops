@@ -25,9 +25,13 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/334d5549868d266b5c4e2386f145cf15d070b1c9#registration-service"
+		flake:   "github:input-output-hk/vit-testing/59253bd9d527f0695dbff36781347c4bb95fbea8#registration-service"
 		command: "/bin/registration-service"
 		args: ["--config", "/secrets/registration.config"]
+	}
+
+	env: {
+		CARDANO_NODE_SOCKET_PATH: "/alloc/node.socket"
 	}
 
 	template: "secrets/registration.config": {
@@ -42,7 +46,7 @@ import (
 		data: """
 		{
 		  "port": {{ env "NOMAD_PORT_registration" }},
-		  "jcli": "jcli.exe",
+		  "jcli": "jcli",
 		  "result-dir": "/persist/registration",
 		  "cardano-cli": "cardano-cli",
 		  "voter-registration": "voter-registration",

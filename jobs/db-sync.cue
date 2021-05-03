@@ -7,14 +7,13 @@ import (
 )
 
 #DbSync: types.#stanza.job & {
-	_hex:               "[0-9a-f]"
+	_hex:                "[0-9a-f]"
 	#dbSyncInstance:     =~"^i-\(_hex){17}$"
 	#dbSyncNetwork:      "testnet" | "mainnet"
 	#dbSyncRev:          =~"^\(_hex){40}$"
 	#vitOpsRev:          string
 	#snapshotDomain:     string
-        #registrationDomain: string
-
+	#registrationDomain: string
 
 	namespace:   string
 	datacenters: list.MinItems(1)
@@ -41,7 +40,7 @@ import (
 		network: {
 			mode: "host"
 			port: snapshot: {}
-                        port: registration: {}
+			port: registration: {}
 		}
 
 		count: 1
@@ -49,7 +48,7 @@ import (
 		volume: "persist": {
 			type:      "host"
 			read_only: false
-			source:    "\(namespace)-db-sync"
+			source:    "\(namespace)-\(#dbSyncNetwork)"
 		}
 
 		service: "\(namespace)-snapshot-\(#dbSyncNetwork)": {

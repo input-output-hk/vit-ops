@@ -5,7 +5,7 @@ let
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 in {
-  imports = [ ./iam.nix ];
+  imports = [ ./iam.nix ./terraform-storage.nix ./secrets.nix ];
 
   services.consul.policies.developer.servicePrefix."catalyst-" = {
     policy = "write";
@@ -39,23 +39,22 @@ in {
   };
 
   services.nomad.namespaces = {
-    catalyst-dryrun = { description = "Catalyst (dryrun)"; };
-    catalyst-fund3 = { description = "Catalyst (fund3) "; };
-    catalyst-sync = { description = "Catalyst (sync) "; };
-    catalyst-perf = { description = "Catalyst (perf)"; };
-    catalyst-test = { description = "Catalyst (test)"; };
-    catalyst-signoff = { description = "Catalyst (signoff)"; };
+    catalyst-dryrun.description = "Dryrun";
+    catalyst-fund3.description = "Fund3 ";
+    catalyst-fund4.description = "Fund4 ";
+    catalyst-perf.description = "Perf";
+    catalyst-signoff.description = "Signoff";
+    catalyst-sync.description = "Sync ";
+    catalyst-test.description = "Test";
   };
 
   nix = {
     binaryCaches = [
-      "https://vit-ops.cachix.org"
       "https://hydra.iohk.io"
       "https://hydra.mantis.ist"
     ];
 
     binaryCachePublicKeys = [
-      "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho="
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
       "hydra.mantis.ist-1:4LTe7Q+5pm8+HawKxvmn2Hx0E3NbkYjtf1oWv+eAmTo="
     ];
@@ -82,7 +81,6 @@ in {
         self.inputs.ops-lib.nixosModules.zfs-runtime
         "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-        ./secrets.nix
         ./docker-auth.nix
         ./host-volumes.nix
         ./nspawn.nix
@@ -142,7 +140,6 @@ in {
         modules = [
           (bitte + /profiles/core.nix)
           (bitte + /profiles/bootstrapper.nix)
-          ./secrets.nix
         ];
 
         securityGroupRules = {
@@ -172,7 +169,7 @@ in {
         subnet = cluster.vpc.subnets.core-2;
         volumeSize = 100;
 
-        modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
+        modules = [ (bitte + /profiles/core.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -185,7 +182,7 @@ in {
         subnet = cluster.vpc.subnets.core-3;
         volumeSize = 100;
 
-        modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
+        modules = [ (bitte + /profiles/core.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -225,6 +222,42 @@ in {
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh http routing;
+        };
+      };
+
+      storage-0 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.0.50";
+        subnet = cluster.vpc.subnets.core-1;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
+        };
+      };
+
+      storage-1 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.1.50";
+        subnet = cluster.vpc.subnets.core-2;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
+        };
+      };
+
+      storage-2 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.2.50";
+        subnet = cluster.vpc.subnets.core-3;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
         };
       };
     };
