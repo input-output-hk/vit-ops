@@ -75,7 +75,10 @@ import (
 		  ],
 		  "mempool": {
 		    "log_max_entries": 100000,
-		    "pool_max_entries": 100000
+		    "pool_max_entries": 100000,
+		    "persistent_log": {
+		      dir: "/persist/persistent_log"
+		    }
 		  },
 		  "p2p": {
 		    "allow_private_addresses": true,
@@ -93,7 +96,11 @@ import (
 		          {{ end -}}
 		        ],
 		        "view_max": 20
-		      }
+		      },
+		      "topics_of_interest": {
+		        "blocks": "high",
+		        "messages": "high"
+		      },
 		    },
 		    "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
 		    "max_bootstrap_attempts": 3,
@@ -115,10 +122,6 @@ import (
 		      ]
 		    },
 		    "public_address": "/ip4/{{ env "NOMAD_HOST_IP_rpc" }}/tcp/{{ env "NOMAD_HOST_PORT_rpc" }}",
-		    "topics_of_interest": {
-		      "blocks": "high",
-		      "messages": "high"
-		    },
 		    "trusted_peers": [
 		      {{ range service "\(#namespace)-jormungandr-internal|any" }}
 		        {{ if (not (.ID | regexMatch (env "NOMAD_ALLOC_ID"))) }}
