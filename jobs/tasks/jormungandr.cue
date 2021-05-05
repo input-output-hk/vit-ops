@@ -29,6 +29,10 @@ import (
 		mode:     "delay"
 	}
 
+	volume_mount: "persist": {
+		destination: "/persist"
+	}
+
 	resources: {
 		cpu:    3300
 		memory: 4 * 1024
