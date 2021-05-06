@@ -61,7 +61,25 @@ import (
 
 	template: "local/node-config.json": {
 		change_mode: "noop"
-		data:        """
+
+		#mempool: string
+		if #role == "follower" {
+			#mempool: """
+				"log_max_entries": 100000,
+				"pool_max_entries": 100000,
+				"persistent_log": {
+				  "dir": "/persist/fragments"
+				}
+				"""
+		}
+		if #role != "follower" {
+			#mempool: """
+				"log_max_entries": 100000,
+				"pool_max_entries": 100000
+				"""
+		}
+
+		data: """
 		{
 		  "bootstrap_from_trusted_peers": true,
 		  "explorer": {
@@ -78,11 +96,7 @@ import (
 		    }
 		  ],
 		  "mempool": {
-		    "log_max_entries": 100000,
-		    "pool_max_entries": 100000,
-		    "persistent_log": {
-		      "dir": "/persist/persistent_log"
-		    }
+		    \(#mempool)
 		  },
 		  "p2p": {
 		    "allow_private_addresses": true,
