@@ -55,7 +55,6 @@ import (
 		}
 		REQUIRED_PEER_COUNT: "0"
 		RUST_BACKTRACE:      "full"
-		STORAGE_DIR:         "/local/storage"
 		AWS_DEFAULT_REGION:  "us-east-1"
 	}
 
@@ -81,6 +80,7 @@ import (
 
 		data: """
 		{
+		  "storage": "/persist/\(#role)-\(#index)",
 		  "bootstrap_from_trusted_peers": true,
 		  "explorer": {
 		    "enabled": false
@@ -169,6 +169,7 @@ import (
 		RESTIC_PASSWORD="{{with secret "kv/data/nomad-cluster/restic"}}{{.Data.data.password}}{{end}}"
 		RESTIC_REPOSITORY="s3:http://172.16.0.20:9000/restic"
 		RESET="{{with secret "kv/data/nomad-cluster/\(#namespace)/reset"}}{{.Data.data.value}}{{end}}"
+		STORAGE_DIR="/persist/\(#role)-\(#index)"
 		"""
 	}
 
