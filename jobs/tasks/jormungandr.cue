@@ -86,6 +86,10 @@ import (
 		  },
 		  "p2p": {
 		    "allow_private_addresses": true,
+		    "topics_of_interest": {
+		        "blocks": "high",
+		        "messages": "high"
+		    },
 		    "layers": {
 		      "preferred_list": {
 		        "peers": [
@@ -100,11 +104,7 @@ import (
 		          {{ end -}}
 		        ],
 		        "view_max": 20
-		      },
-		      "topics_of_interest": {
-		        "blocks": "high",
-		        "messages": "high"
-		      },
+		      }
 		    },
 		    "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
 		    "max_bootstrap_attempts": 3,
