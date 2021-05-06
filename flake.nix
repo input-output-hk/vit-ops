@@ -17,7 +17,7 @@
     jormungandr.url =
       "github:input-output-hk/jormungandr/35aa671f4d69be442ea5c2a1a0519c7ca3e27843";
     vit-servicing-station.url =
-      "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548";
+      "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62";
     cardano-node.url =
       "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26";
   };
