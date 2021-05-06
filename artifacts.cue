@@ -14,11 +14,11 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:b8ad3e895001b14dfc5de282788cb1a0b5cce931b5ea1b5f91be8c152d3632c5"
+			checksum: "sha256:4402979aefce4ef7e6f6ebc739cdc90c8806d4609c3c03a63162f35f8201b156"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:2507084be0c65e4474820beadddc0c2b5dea3f7cf7e2b37f31eb5546f2dcc46b"
+			checksum: "sha256:df01b5600d25062d1c7b541ef744ca5eb23a67f9a8570d6e5e48c751a8201867"
 		}
 	}
 	"catalyst-fund3": {
@@ -29,6 +29,16 @@ artifacts: {
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund3/database.sqlite3"
 			checksum: "sha256:17d1efdf88c7d0036e81ea4374b914c7f9bb760659fbf5cd3bc4843527330c5e"
+		}
+	}
+	"catalyst-signoff": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
+			checksum: "sha256:dc4653bcd943a772b42b961b035887d3fceb70f33d1cbfaf3f699a1bbb410ae8"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
+			checksum: "sha256:733414346cf330bf7fc8143fa198d9e1c310c73c217e9d4ebeac547295c2b352"
 		}
 	}
 	"catalyst-test": {
