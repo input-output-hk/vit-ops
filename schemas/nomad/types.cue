@@ -114,7 +114,7 @@ import (
 			Size:    uint
 			Sticky:  bool
 		}
-		Migrate: #json.Migrate
+		Migrate: *null | #json.Migrate
 		Update:  *null | #json.Update
 		Networks: [...#json.Network]
 		StopAfterClientDisconnect: *null | uint

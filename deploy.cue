@@ -107,6 +107,7 @@ Namespace: [Name=_]: {
 				#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"
 				#flakes: devBox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
 			}
+			wormhole: jobDef.#Wormhole
 		}
 	}
 
