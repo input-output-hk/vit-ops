@@ -42,6 +42,12 @@ import (
 			}
 		}
 
+		volume: "persist": {
+			type:      "host"
+			read_only: false
+			source:    "\(namespace)"
+		}
+
 		ephemeral_disk: {
 			size:    1024
 			migrate: true

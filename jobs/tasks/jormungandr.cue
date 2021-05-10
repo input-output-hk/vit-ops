@@ -29,6 +29,10 @@ import (
 		mode:     "delay"
 	}
 
+	volume_mount: "persist": {
+		destination: "/persist"
+	}
+
 	resources: {
 		cpu:    3300
 		memory: 4 * 1024
@@ -51,14 +55,32 @@ import (
 		}
 		REQUIRED_PEER_COUNT: "0"
 		RUST_BACKTRACE:      "full"
-		STORAGE_DIR:         "/local/storage"
 		AWS_DEFAULT_REGION:  "us-east-1"
 	}
 
 	template: "local/node-config.json": {
 		change_mode: "noop"
-		data:        """
+
+		#mempool: string
+		if #role == "follower" {
+			#mempool: """
+				"log_max_entries": 100000,
+				"pool_max_entries": 100000,
+				"persistent_log": {
+				  "dir": "/persist/fragments"
+				}
+				"""
+		}
+		if #role != "follower" {
+			#mempool: """
+				"log_max_entries": 100000,
+				"pool_max_entries": 100000
+				"""
+		}
+
+		data: """
 		{
+		  "storage": "/persist/\(#role)-\(#index)",
 		  "bootstrap_from_trusted_peers": true,
 		  "explorer": {
 		    "enabled": false
@@ -74,11 +96,14 @@ import (
 		    }
 		  ],
 		  "mempool": {
-		    "log_max_entries": 100000,
-		    "pool_max_entries": 100000
+		    \(#mempool)
 		  },
 		  "p2p": {
 		    "allow_private_addresses": true,
+		    "topics_of_interest": {
+		        "blocks": "high",
+		        "messages": "high"
+		    },
 		    "layers": {
 		      "preferred_list": {
 		        "peers": [
@@ -115,10 +140,6 @@ import (
 		      ]
 		    },
 		    "public_address": "/ip4/{{ env "NOMAD_HOST_IP_rpc" }}/tcp/{{ env "NOMAD_HOST_PORT_rpc" }}",
-		    "topics_of_interest": {
-		      "blocks": "high",
-		      "messages": "high"
-		    },
 		    "trusted_peers": [
 		      {{ range service "\(#namespace)-jormungandr-internal|any" }}
 		        {{ if (not (.ID | regexMatch (env "NOMAD_ALLOC_ID"))) }}
@@ -148,6 +169,7 @@ import (
 		RESTIC_PASSWORD="{{with secret "kv/data/nomad-cluster/restic"}}{{.Data.data.password}}{{end}}"
 		RESTIC_REPOSITORY="s3:http://172.16.0.20:9000/restic"
 		RESET="{{with secret "kv/data/nomad-cluster/\(#namespace)/reset"}}{{.Data.data.value}}{{end}}"
+		STORAGE_DIR="/persist/\(#role)-\(#index)"
 		"""
 	}
 
