@@ -3,26 +3,18 @@ package jobs
 import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	"github.com/input-output-hk/vit-ops/pkg/jobs/tasks:tasks"
-	"list"
 )
 
 #DbSync: types.#stanza.job & {
 	_hex:                "[0-9a-f]"
-	#dbSyncInstance:     =~"^i-\(_hex){17}$"
 	#dbSyncNetwork:      "testnet" | "mainnet"
 	#dbSyncRev:          =~"^\(_hex){40}$"
 	#vitOpsRev:          string
 	#snapshotDomain:     string
 	#registrationDomain: string
 
-	namespace:   string
-	datacenters: list.MinItems(1)
-	type:        "service"
-
-	constraints: [{
-		attribute: "${attr.unique.platform.aws.instance-id}"
-		value:     #dbSyncInstance
-	}]
+	namespace: string
+	type:      "service"
 
 	update: {
 		max_parallel:      1

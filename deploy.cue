@@ -36,7 +36,7 @@ Namespace: [Name=_]: {
 		#fqdn:       fqdn
 		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
-		datacenters: list.MinItems(1) | [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
+		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
 		#version:    string | *"2.0"
 
 		#flakes: {
@@ -112,6 +112,9 @@ Namespace: [Name=_]: {
 	}
 
 	"catalyst-sync": {
+		vars: {
+			datacenters: ["eu-central-1"]
+		}
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "mainnet"

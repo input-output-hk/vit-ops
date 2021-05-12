@@ -10,7 +10,7 @@ import (
 
 	resources: {
 		cpu:    100
-		memory: 64
+		memory: 100
 	}
 
 	config: {

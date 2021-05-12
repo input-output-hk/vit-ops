@@ -15,8 +15,10 @@ import (
 		change_mode: "noop"
 	}
 
+	kill_signal: "SIGINT"
+
 	resources: {
-		cpu:    6800
+		cpu:    1500
 		memory: 2 * 1024
 	}
 
@@ -25,7 +27,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/59253bd9d527f0695dbff36781347c4bb95fbea8#snapshot-trigger-service"
+		flake:   "github:input-output-hk/vit-testing/6c6369276411e1b1a7d044d6644544c869041159#snapshot-trigger-service"
 		command: "/bin/snapshot-trigger-service"
 		args: ["--config", "/secrets/snapshot.config"]
 	}
