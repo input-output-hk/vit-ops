@@ -10,11 +10,17 @@ import (
 	#dbSyncNetwork:      "testnet" | "mainnet"
 	#dbSyncRev:          =~"^\(_hex){40}$"
 	#vitOpsRev:          string
+	#dbSyncInstance:     =~"^i-\(_hex){17}$"
 	#snapshotDomain:     string
 	#registrationDomain: string
 
 	namespace: string
 	type:      "service"
+
+	constraints: [{
+		attribute: "${attr.unique.platform.aws.instance-id}"
+		value:     #dbSyncInstance
+	}]
 
 	update: {
 		max_parallel:      1
