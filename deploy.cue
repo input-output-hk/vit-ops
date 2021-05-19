@@ -61,7 +61,7 @@ Namespace: [Name=_]: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
 			#flakes: {
 				#jormungandr:      "github:input-output-hk/vit-ops?rev=cb809856fc2b5cccb747748491703d5060176feb#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62#vit-servicing-station-server"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 		}
 		jobs: _defaultJobs
@@ -79,7 +79,7 @@ Namespace: [Name=_]: {
 			#domain: "perf-servicing-station.\(fqdn)"
 			#flakes: {
 				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 			#rateLimit: {
 				average: 100000
@@ -95,7 +95,7 @@ Namespace: [Name=_]: {
 			#domain: "signoff-servicing-station.\(fqdn)"
 			#flakes: {
 				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62#vit-servicing-station-server"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 		}
 		jobs: _defaultJobs
