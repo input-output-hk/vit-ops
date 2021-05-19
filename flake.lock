@@ -91,17 +91,17 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1620227309,
-        "narHash": "sha256-wsh01NzDvoQ23lf+PSYLTSyDOc1aov+kbPLHqVxQ1TQ=",
+        "lastModified": 1621422630,
+        "narHash": "sha256-IjZsPbLizNhzpMYf6KCs7WeGDRI6XDSBtTfN+iWJM+4=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "35aa671f4d69be442ea5c2a1a0519c7ca3e27843",
+        "rev": "01605438ed6d2e44d81729532103b836347183b3",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "35aa671f4d69be442ea5c2a1a0519c7ca3e27843",
+        "rev": "01605438ed6d2e44d81729532103b836347183b3",
         "type": "github"
       }
     },
