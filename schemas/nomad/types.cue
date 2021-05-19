@@ -362,6 +362,15 @@ import (
 			}]
 		}
 
+		if tg.migrate != null {
+			Migrate: {
+				HealthCheck:     tg.migrate.health_check
+				HealthyDeadline: time.ParseDuration(tg.migrate.healthy_deadline)
+				MaxParallel:     tg.migrate.max_parellel
+				MinHealthyTime:  time.ParseDuration(tg.migrate.min_healthy_time)
+			}
+		}
+
 		Restart: {
 			Attempts: tg.restart.attempts
 			Delay:    time.ParseDuration(tg.restart.delay)
@@ -525,6 +534,7 @@ import (
 		vault:          *null | #stanza.vault
 		restart_policy: *null | #stanza.restart_policy
 		reschedule:     #stanza.reschedule & {#type: #type}
+		migrate:        *null | #stanza.migrate
 	}
 
 	reschedule: {
@@ -755,5 +765,12 @@ import (
 		// When a group volume is writeable, you may specify that it is read_only
 		// on a per mount level using the read_only option here.
 		read_only: bool | *false
+	}
+
+	migrate: {
+		health_check:     *"checks" | "task_states"
+		healthy_deadline: #duration | *"5m"
+		max_parallel:     uint | *1
+		min_healthy_time: #duration | *"10s"
 	}
 }

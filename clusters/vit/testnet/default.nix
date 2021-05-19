@@ -96,7 +96,7 @@ in {
       {
         region = "eu-central-1";
         desiredCapacity = 4;
-        instanceType = "t3a.2xlarge";
+        instanceType = "r5a.2xlarge";
         modules = mkModules "catalyst-dryrun";
       }
       {
@@ -106,7 +106,7 @@ in {
       }
       {
         region = "eu-west-1";
-        desiredCapacity = 3;
+        desiredCapacity = 5;
         instanceType = "c5.4xlarge";
         volumeSize = 200;
         modules = mkModules "catalyst-sync";

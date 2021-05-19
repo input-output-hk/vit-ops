@@ -10,7 +10,7 @@ import (
 	driver: "exec"
 
 	resources: {
-		cpu:    3000
+		cpu:    2500
 		memory: 1024 * 6
 	}
 

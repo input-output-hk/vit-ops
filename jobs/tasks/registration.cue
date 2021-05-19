@@ -15,8 +15,10 @@ import (
 		change_mode: "noop"
 	}
 
+	kill_signal: "SIGINT"
+
 	resources: {
-		cpu:    6800
+		cpu:    1500
 		memory: 2 * 1024
 	}
 
@@ -25,7 +27,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/59253bd9d527f0695dbff36781347c4bb95fbea8#registration-service"
+		flake:   "github:input-output-hk/vit-testing/7c4a2f1b13ffefb76b0e588e8f1f19df882bc182#registration-service"
 		command: "/bin/registration-service"
 		args: ["--config", "/secrets/registration.config"]
 	}
