@@ -40,11 +40,11 @@ in {
 
   services.nomad.namespaces = {
     catalyst-dryrun.description = "Dryrun";
-    catalyst-fund3.description = "Fund3 ";
-    catalyst-fund4.description = "Fund4 ";
+    catalyst-fund3.description = "Fund3";
+    catalyst-fund4.description = "Fund4";
     catalyst-perf.description = "Perf";
     catalyst-signoff.description = "Signoff";
-    catalyst-sync.description = "Sync ";
+    catalyst-sync.description = "Sync";
     catalyst-test.description = "Test";
   };
 
