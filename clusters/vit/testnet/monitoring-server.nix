@@ -28,6 +28,7 @@
 
     extraHttpsBackends = ''
       use_backend zipkin if is_zipkin authenticated
+      use_backend oauth_proxy if is_zipkin ! authenticated
     '';
   };
 
