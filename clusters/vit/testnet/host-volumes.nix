@@ -2,7 +2,13 @@
 let
   volumes = {
     local = [ "catalyst-sync-testnet" "catalyst-sync-mainnet" ];
-    gluster = [ "catalyst-fund4" "catalyst-dryrun" ];
+    gluster = [
+      "catalyst-dryrun"
+      "catalyst-fund4"
+      "catalyst-perf"
+      "catalyst-signoff"
+      "catalyst-test"
+    ];
   };
 
   mkVolumes = names: pathFun:
