@@ -14,11 +14,11 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:41d15e03402aa50b3d1a4d84f3a1397030f9f72beeb31a5a09ea888d0977deda"
+			checksum: "sha256:32c5ee8521c09fd6509de9f094cd4a1c90f78ab3d3f1b468d432c4e65f883a67"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:a7bbb14bbf312e61a319a7679d36bd0f05a4f323cce50c40e133cd8cacdba3df"
+			checksum: "sha256:b116869deddefdf6434e980a7707fec0d9378f52a0dc0846cb68e24dba8ae6be"
 		}
 	}
 	"catalyst-fund3": {
