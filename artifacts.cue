@@ -64,11 +64,11 @@ artifacts: {
 	"catalyst-fund4": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund4/block0.bin"
-			checksum: "sha256:7098ff1fe4ac4827223628e417ea1977c66093206b6a87e6d01848a45dd0e215"
+			checksum: "sha256:b481cb4c3a6d37a53926ac07c9ffe690d40e841fe8375c337d7609be5ee16292"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund4/database.sqlite3"
-			checksum: "sha256:d6903126cd3e42abd9df32903997c7bf2f9bbffcad9586ab19e9eb2092f04ebd"
+			checksum: "sha256:12a7dfd1cb62eb3dc4c4577e30695ba5bebb4d00e1b3549bf67b9e0c03ed80ca"
 		}
 	}
 }
