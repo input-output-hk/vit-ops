@@ -67,9 +67,13 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund3": {
+	"catalyst-fund4": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
