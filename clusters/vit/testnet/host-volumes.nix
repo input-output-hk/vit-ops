@@ -36,7 +36,7 @@ in {
   };
 
   system.activationScripts.nomad-host-volumes-local = ''
-    set -exuo pipefail
+    set -xu
     export PATH="${lib.makeBinPath (with pkgs; [ fd coreutils ])}:$PATH"
   '' + (lib.pipe volumes.local [
     (map (d: ''
@@ -47,7 +47,7 @@ in {
   ]);
 
   system.activationScripts.nomad-host-volumes-gluster = ''
-    set -exuo pipefail
+    set -xu
     export PATH="${lib.makeBinPath (with pkgs; [ fd coreutils ])}:$PATH"
   '' + (lib.pipe volumes.gluster [
     (map (d: ''
