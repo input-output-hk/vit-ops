@@ -122,7 +122,7 @@ Namespace: [Name=_]: {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "mainnet"
-				#dbSyncInstance:     "i-0425dd53d4b0f8939"
+				#dbSyncInstance:     "i-0ba0564889ae9094c"
 				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
 				#registrationDomain: "registration-mainnet.\(fqdn)"
 			}
