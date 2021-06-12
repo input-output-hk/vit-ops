@@ -116,9 +116,6 @@ Namespace: [Name=_]: {
 	}
 
 	"catalyst-sync": {
-		vars: {
-			datacenters: ["eu-central-1"]
-		}
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "mainnet"
