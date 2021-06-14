@@ -60,16 +60,20 @@ Namespace: [Name=_]: {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
 			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=cb809856fc2b5cccb747748491703d5060176feb#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62#vit-servicing-station-server"
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 		}
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund3": {
+	"catalyst-fund4": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
@@ -78,8 +82,8 @@ Namespace: [Name=_]: {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
 			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/9b207ab7b4428d2dddb38b045bdf3e7a8eacd548#vit-servicing-station-server"
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 			#rateLimit: {
 				average: 100000
@@ -94,8 +98,8 @@ Namespace: [Name=_]: {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
 			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=3e2ba5f733e5a30d402d457998f145c9b0426637#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/bf939460497bf947ebe1ad332174a9cd36115c62#vit-servicing-station-server"
+				#jormungandr:      "github:input-output-hk/vit-ops?rev=43525e606ca74a5b7cfa1c7f1f0ee3c24865ca30#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
 			}
 		}
 		jobs: _defaultJobs
@@ -112,13 +116,10 @@ Namespace: [Name=_]: {
 	}
 
 	"catalyst-sync": {
-		vars: {
-			datacenters: ["eu-central-1"]
-		}
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "mainnet"
-				#dbSyncInstance:     "i-0425dd53d4b0f8939"
+				#dbSyncInstance:     "i-0ba0564889ae9094c"
 				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
 				#registrationDomain: "registration-mainnet.\(fqdn)"
 			}

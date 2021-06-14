@@ -14,11 +14,11 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:41d15e03402aa50b3d1a4d84f3a1397030f9f72beeb31a5a09ea888d0977deda"
+			checksum: "sha256:c498c81583bc50c75577464ab968c8da4dd85e2c5fb9e487e8aef09128881c7a"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:a7bbb14bbf312e61a319a7679d36bd0f05a4f323cce50c40e133cd8cacdba3df"
+			checksum: "sha256:769f9073ed3862102cb34dde516c3a1eb723da5c204023cb534a69353eecc0ab"
 		}
 	}
 	"catalyst-fund3": {
@@ -34,11 +34,11 @@ artifacts: {
 	"catalyst-signoff": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
-			checksum: "sha256:dc4653bcd943a772b42b961b035887d3fceb70f33d1cbfaf3f699a1bbb410ae8"
+			checksum: "sha256:bed8c3813b39c832a2ac243e5b5549da0b4a5465fa82fcac437cbe4b932d5f41"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
-			checksum: "sha256:733414346cf330bf7fc8143fa198d9e1c310c73c217e9d4ebeac547295c2b352"
+			checksum: "sha256:8c493c7e64d6595532b9fa427fabacac66f0f4f760312d56f4c57d493f6b2725"
 		}
 	}
 	"catalyst-test": {
@@ -59,6 +59,16 @@ artifacts: {
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-sync/database.sqlite3"
 			checksum: "sha256:d4e6b39ad1e367fc89ba38738b5bcc25c37afe2ca49b378753066abb78843c00"
+		}
+	}
+	"catalyst-fund4": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund4/block0.bin"
+			checksum: "sha256:ab858715bfe52000870388011a0683284e7242a5a74e788d5f0838b8cadc05e5"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund4/database.sqlite3"
+			checksum: "sha256:cfcddf18cc7a24c3f8887e38dc62398e1985e5cec082ff5a4e8bef7ae175312f"
 		}
 	}
 }

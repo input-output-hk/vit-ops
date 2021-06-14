@@ -91,17 +91,17 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1620227309,
-        "narHash": "sha256-wsh01NzDvoQ23lf+PSYLTSyDOc1aov+kbPLHqVxQ1TQ=",
+        "lastModified": 1621588696,
+        "narHash": "sha256-ERgU21iCQazqFi2pAN3OiQ2CYVlW7d+i7NXKq9DgxKY=",
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "35aa671f4d69be442ea5c2a1a0519c7ca3e27843",
+        "rev": "8178bc9149ea4629c8ae6f87bdd5be4a154db322",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "jormungandr",
-        "rev": "35aa671f4d69be442ea5c2a1a0519c7ca3e27843",
+        "rev": "8178bc9149ea4629c8ae6f87bdd5be4a154db322",
         "type": "github"
       }
     },
@@ -547,17 +547,17 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1618946224,
-        "narHash": "sha256-VYTNzpI3BqhJjf7bVhg9ViNaXTIWndlvTjmRNTwbazE=",
+        "lastModified": 1621442916,
+        "narHash": "sha256-lIiIMxI/VcgZQ5LmXlAPua/AfsJgRKxHxOovqWicKys=",
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "bf939460497bf947ebe1ad332174a9cd36115c62",
+        "rev": "a0d61cbb69608a834cfe30b60d526822fb69b47e",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "vit-servicing-station",
-        "rev": "bf939460497bf947ebe1ad332174a9cd36115c62",
+        "rev": "a0d61cbb69608a834cfe30b60d526822fb69b47e",
         "type": "github"
       }
     }
