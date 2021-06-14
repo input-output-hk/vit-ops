@@ -8,11 +8,13 @@ import (
 #Wormhole: types.#stanza.job & {
 	type: "batch"
 
+	namespace: string
+
 	group: wormhole: {
 		volume: "persist": {
 			type:      "host"
 			read_only: false
-			source:    "catalyst-dryrun"
+			source:    namespace
 		}
 
 		task: wormhole: tasks.#Wormhole

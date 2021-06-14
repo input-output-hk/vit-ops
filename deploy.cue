@@ -14,6 +14,7 @@ _defaultJobs: {
 	"leader-2":          jobDef.#Jormungandr & {#role: "leader", #index:   2}
 	"follower-0":        jobDef.#Jormungandr & {#role: "follower", #index: 0}
 	"servicing-station": jobDef.#ServicingStation
+	wormhole:            jobDef.#Wormhole
 }
 
 #vitOpsRev: "55759981d7e693b0304ecf2d4bace0dc068caa6d"
