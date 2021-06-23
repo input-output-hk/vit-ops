@@ -27,7 +27,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/bd1fb00e8fb3bb73394f232d21617f91a79c4167#registration-service"
+		flake:   "github:input-output-hk/vit-testing/3bd2033f3e742691623ae4681c454db361d4eb80#registration-service"
 		command: "/bin/registration-service"
 		args: ["--config", "/secrets/registration.config"]
 	}
