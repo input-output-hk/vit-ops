@@ -71,4 +71,14 @@ artifacts: {
 			checksum: "sha256:cfcddf18cc7a24c3f8887e38dc62398e1985e5cec082ff5a4e8bef7ae175312f"
 		}
 	}
+	"calatyst-signoff": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-signoff/block0.bin"
+			checksum: "sha256:ca3aedd9c687712b466052bdfa71b2eddb9470d8513627c7d3c3b802fb88cc9a"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-signoff/database.sqlite3"
+			checksum: "sha256:07d6f8e5e02a62179e868f36aa4937e8e15c5603a684523bc7be16043083608c"
+		}
+	}
 }
