@@ -2,7 +2,7 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/nomad-1.1.0";
+    bitte.url = "github:input-output-hk/bitte";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
@@ -26,7 +26,7 @@
     let
       vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
 
-      hashiStack = bitte.mkHashiStack {
+      hashiStack = bitte.lib.mkHashiStack {
         flake = self;
         rootDir = ./.;
         inherit pkgs;
