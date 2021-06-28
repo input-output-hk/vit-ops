@@ -48,7 +48,7 @@ Namespace: [Name=_]: {
 		#rateLimit: {
 			average: uint | *100
 			burst:   uint | *250
-			period:  types.#duration | *"1m"
+			period:  types.#durationType | *"1m"
 		}
 	}
 	jobs: [string]: types.#stanza.job

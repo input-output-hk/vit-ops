@@ -15,7 +15,7 @@ import (
 	#rateLimit: {
 		average: uint
 		burst:   uint
-		period:  types.#duration | *"1m"
+		period:  types.#durationType | *"1m"
 	}
 
 	namespace: string

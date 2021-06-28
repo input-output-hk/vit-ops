@@ -18,7 +18,7 @@ import (
 	#rateLimit: {
 		average: uint
 		burst:   uint
-		period:  types.#duration | *"1m"
+		period:  types.#durationType | *"1m"
 	}
 	#requiredPeerCount: uint
 	if #role == "leader" {
