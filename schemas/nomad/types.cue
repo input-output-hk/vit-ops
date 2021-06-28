@@ -1,3 +1,16 @@
+// INFORMATION:
+//
+// This file acts as a CUE type schema for nomad JSON job submission in bitte end use repos.
+// This ensures that JSON jobs created by CUE conform to Nomads JSON job spec found at:
+//
+//   https://www.nomadproject.io/api-docs/json-jobs
+//
+// Not all valid Nomad JSON job options may be included here yet; this file can be extended as needed.
+//
+// In bitte end use repos, this file normally lives at:
+//
+//   schemas/nomad/types.cue
+//
 package types
 
 import (
@@ -5,6 +18,7 @@ import (
 	"list"
 )
 
+// The #json block defines the final JSON structure and values types.
 #json: {
 	Job: {
 		Namespace:   string
@@ -13,18 +27,14 @@ import (
 		Type:        "service" | "system" | "batch"
 		Priority:    uint
 		Datacenters: list.MinItems(1)
-		TaskGroups: [...TaskGroup]
+		TaskGroups:  [...TaskGroup]
+		Affinities:  [...Affinity]
 		Constraints: [...Constraint]
+		Spreads:     [...Spread]
 		ConsulToken: *null | string
 		VaultToken:  *null | string
 		Vault:       *null | #json.Vault
 		Update:      *null | #json.Update
-	}
-
-	Constraint: {
-		LTarget: string | *null
-		RTarget: string
-		Operand: "regexp" | "set_contains" | "distinct_hosts" | "distinct_property" | "=" | "==" | "is" | "!=" | "not" | ">" | ">=" | "<" | "<="
 	}
 
 	Affinity: {
@@ -34,19 +44,28 @@ import (
 		Weight:  uint & !=0 & >=-100 & <=100
 	}
 
+	Constraint: {
+		LTarget: string | *null
+		RTarget: string
+		Operand: "regexp" | "set_contains" | "distinct_hosts" | "distinct_property" | "=" | "==" | "is" | "!=" | "not" | ">" | ">=" | "<" | "<="
+	}
+
+	Spread: {
+		Attribute:    string
+		Weight:       uint & >=-100 & <=100 | *null
+		SpreadTarget: [...SpreadTargetElem]
+	}
+
+	SpreadTargetElem: {
+		Value:   string
+		Percent: uint & >=0 & <=100 | *null
+	}
+
 	RestartPolicy: {
 		Attempts: uint
 		Interval: uint
 		Delay:    uint
 		Mode:     "delay" | "fail"
-	}
-
-	Spread: {
-		Attribute:    string
-		SpreadTarget: null | {
-			Value:   string | *""
-			Percent: uint | *0
-		}
 	}
 
 	Volume: {
@@ -96,27 +115,27 @@ import (
 	}
 
 	TaskGroup: {
-		Affinities: [...Affinity]
-		Constraints: [...Constraint]
-		Count: int & >0 | *1
-		Meta: [string]: string
-		Name:          string
-		RestartPolicy: *null | #json.RestartPolicy
-		Restart:       #json.Restart
-		Services: [...Service]
-		ShutdownDelay: uint | *0
-		Spreads: [...#json.Spread]
-		Tasks: [...Task]
-		Volumes: [string]: #json.Volume
-		ReschedulePolicy: #json.ReschedulePolicy
-		EphemeralDisk:    *null | {
+		Affinities:                [...Affinity]
+		Constraints:               [...Constraint]
+		Spreads:                   [...Spread]
+		Count:                     int & >0 | *1
+		Meta:                      [string]: string
+		Name:                      string
+		RestartPolicy:             *null | #json.RestartPolicy
+		Restart:                   #json.Restart
+		Services:                  [...Service]
+		ShutdownDelay:             uint | *0
+		Tasks:                     [...Task]
+		Volumes:                   [string]: #json.Volume
+		ReschedulePolicy:          #json.ReschedulePolicy
+		EphemeralDisk:             *null | {
 			Migrate: bool
 			Size:    uint
 			Sticky:  bool
 		}
-		Migrate: *null | #json.Migrate
-		Update:  *null | #json.Update
-		Networks: [...#json.Network]
+		Migrate:                   #json.Migrate
+		Update:                    *null | #json.Update
+		Networks:                  [...#json.Network]
 		StopAfterClientDisconnect: *null | uint
 		Scaling:                   null
 		Vault:                     *null | #json.Vault
@@ -155,7 +174,7 @@ import (
 		Path:                   string | *""
 		PortLabel:              string
 		Protocol:               string | *""
-		SuccessBeforePassing:   0
+		SuccessBeforePassing:   uint | *0
 		TaskName:               string | *""
 		Timeout:                uint
 		TLSSkipVerify:          bool | *false
@@ -170,50 +189,55 @@ import (
 		IgnoreWarnings: bool | *false
 	}
 
+	Lifecycle: {
+		Hook:    "prestart" | "poststart" | "poststop"
+		Sidecar: bool | *null
+	}
+
 	LogConfig: *null | {
 		MaxFiles:      uint & >0
 		MaxFileSizeMB: uint & >0
 	}
 
 	Service: {
-		Id:   string | *""
-		Name: string
-		Tags: [...string]
+		Id:                string | *""
+		Name:              string
+		Tags:              [...string]
 		CanaryTags:        [...string] | *[]
 		EnableTagOverride: bool | *false
 		PortLabel:         string
 		AddressMode:       "alloc" | "auto" | "driver" | "host"
-		Checks: [...ServiceCheck]
-		CheckRestart: #json.CheckRestart
-		Connect:      null
-		Meta: [string]: string
-		TaskName: string | *""
+		Checks:            [...ServiceCheck]
+		CheckRestart:      #json.CheckRestart
+		Connect:           null
+		Meta:              [string]: string
+		TaskName:          string | *""
 	}
 
 	Task: {
-		Name:   string
-		Driver: "exec" | "docker" | "nspawn"
-		Config: #stanza.taskConfig & {#driver: Driver}
-		Constraints: [...Constraint]
-		Affinities: [...Affinity]
-		Env: [string]: string
-		Services: [...Service]
+		Name:            string
+		Driver:          "exec" | "docker" | "nspawn"
+		Config:          #stanza.taskConfig & {#driver: Driver}
+		Constraints:     [...Constraint]
+		Affinities:      [...Affinity]
+		Env:             [string]: string
+		Services:        [...Service]
 		Resources: {
 			CPU:      uint & >=100 | *100
 			MemoryMB: uint & >=32 | *300
 			DiskMB:   *null | uint
 		}
-		Meta: {}
-		RestartPolicy: *null | #json.RestartPolicy
-		ShutdownDelay: uint | *0
-		User:          string | *""
-		Lifecycle:     null
-		KillTimeout:   null
-		LogConfig:     #json.LogConfig
-		Artifacts: [...#json.Artifact]
-		Templates: [...#json.Template]
+		Meta:            {}
+		RestartPolicy:   *null | #json.RestartPolicy
+		ShutdownDelay:   uint | *0
+		User:            string | *""
+		Lifecycle:       *null | #json.Lifecycle
+		KillTimeout:     *null | uint
+		LogConfig:       #json.LogConfig
+		Artifacts:       [...#json.Artifact]
+		Templates:       [...#json.Template]
 		DispatchPayload: null
-		VolumeMounts: [...#json.VolumeMount]
+		VolumeMounts:    [...#json.VolumeMount]
 		Leader:          bool | *false
 		KillSignal:      string
 		ScalingPolicies: null
@@ -242,7 +266,7 @@ import (
 		ChangeMode:   *"restart" | "noop" | "signal"
 		ChangeSignal: string | *""
 		Splay:        uint | *5000000000
-		Perms:        *"0644" | =~"^[0-7]{3}$"
+		Perms:        *"0644" | =~"^[0-7]{4}$"
 		LeftDelim:    string
 		RightDelim:   string
 		Envvars:      bool
@@ -257,10 +281,15 @@ import (
 	}
 }
 
-#duration:    =~"^[1-9]\\d*[hms]$"
+let durationType = string & =~"^[1-9]\\d*[hms]$"
+
 #gitRevision: =~"^[a-f0-9]{40}$"
 #flake:       =~"^(github|git\\+ssh|git):[0-9a-zA-Z_-]+/[0-9a-zA-Z_-]+"
 
+
+// The #toJson block is evaluated from deploy.cue during rendering of the namespace jobs.
+// #job and #jobName are passed to #toJson during this evaluation.
+// #toJson evaluation is constrained by the #json.Job block defined at the start of this file.
 #toJson: #json.Job & {
 	#job:        #stanza.job
 	#jobName:    string
@@ -295,16 +324,54 @@ import (
 		}
 	}
 
+	Affinities: [ for a in #job.affinities {
+		LTarget: a.attribute
+		RTarget: a.value
+		Operand: a.operator
+		Weight:  a.weight
+	}]
+
 	Constraints: [ for c in #job.constraints {
 		LTarget: c.attribute
 		RTarget: c.value
 		Operand: c.operator
 	}]
 
+	Spreads: [ for s in #job.spreads {
+		Attribute:    s.attribute
+		Weight:       s.weight
+		SpreadTarget: [ for t in s.target {
+			Value:   t.value
+			Percent: t.percent
+		}]
+	}]
+
 	TaskGroups: [ for tgName, tg in #job.group {
 		Name: tgName
 
 		Count: tg.count
+
+		Affinities: [ for a in tg.affinities {
+			LTarget: a.attribute
+			RTarget: a.value
+			Operand: a.operator
+			Weight:  a.weight
+		}]
+
+		Constraints: [ for c in tg.constraints {
+			LTarget: c.attribute
+			RTarget: c.value
+			Operand: c.operator
+		}]
+
+		Spreads: [ for s in tg.spreads {
+			Attribute:    s.attribute
+			Weight:       s.weight
+			SpreadTarget: [ for t in s.target {
+				Value:   t.value
+				Percent: t.percent
+			}]
+		}]
 
 		if tg.reschedule != null {
 			ReschedulePolicy: {
@@ -362,15 +429,6 @@ import (
 			}]
 		}
 
-		if tg.migrate != null {
-			Migrate: {
-				HealthCheck:     tg.migrate.health_check
-				HealthyDeadline: time.ParseDuration(tg.migrate.healthy_deadline)
-				MaxParallel:     tg.migrate.max_parellel
-				MinHealthyTime:  time.ParseDuration(tg.migrate.min_healthy_time)
-			}
-		}
-
 		Restart: {
 			Attempts: tg.restart.attempts
 			Delay:    time.ParseDuration(tg.restart.delay)
@@ -392,16 +450,22 @@ import (
 			}
 			Checks: [ for cName, c in s.check {
 				{
-					AddressMode: c.address_mode
-					Type:        c.type
-					PortLabel:   c.port
-					Interval:    time.ParseDuration(c.interval)
+					AddressMode:            c.address_mode
+					Type:                   c.type
+					PortLabel:              c.port
+					Interval:               time.ParseDuration(c.interval)
 					if c.type == "http" {
-						Path: c.path
+						Path:     c.path
+						Method:   c.method
+						Protocol: c.protocol
 					}
-					Timeout: time.ParseDuration(c.timeout)
-					Header:  c.header
-					Body:    c.body
+					Timeout:                time.ParseDuration(c.timeout)
+					SuccessBeforePassing:   c.success_before_passing
+					FailuresBeforeCritical: c.failures_before_critical
+					TLSSkipVerify:          c.tls_skip_verify
+					InitialStatus:          c.initial_status
+					Header:                 c.header
+					Body:                   c.body
 					if c.check_restart != null {
 						CheckRestart: {
 							Limit:          c.check_restart.limit
@@ -421,6 +485,22 @@ import (
 			Config:     t.config
 			Env:        t.env
 			KillSignal: t.kill_signal
+			if t.kill_timeout != null {
+				KillTimeout: time.ParseDuration(t.kill_timeout)
+			}
+
+			Affinities: [ for a in t.affinities {
+				LTarget: a.attribute
+				RTarget: a.value
+				Operand: a.operator
+				Weight:  a.weight
+			}]
+
+			Constraints: [ for c in t.constraints {
+				LTarget: c.attribute
+				RTarget: c.value
+				Operand: c.operator
+			}]
 
 			if t.restart_policy != null {
 				RestartPolicy: {
@@ -428,6 +508,13 @@ import (
 					Attempts: t.restart_policy.attempts
 					Delay:    time.ParseDuration(t.restart_policy.delay)
 					Mode:     t.restart_policy.mode
+				}
+			}
+
+			if t.lifecycle != null {
+				Lifecycle: {
+					Hook:    t.lifecycle.hook
+					Sidecar: t.lifecycle.sidecar
 				}
 			}
 
@@ -443,6 +530,7 @@ import (
 				Envvars:      tpl.env
 				ChangeMode:   tpl.change_mode
 				ChangeSignal: tpl.change_signal
+				Perms:        tpl.perms
 				LeftDelim:    tpl.left_delimiter
 				RightDelim:   tpl.right_delimiter
 			}]
@@ -498,22 +586,44 @@ import (
 	}]
 }
 
+
+// Definitions for stanzas referenced throughout this file
 #stanza: {
 	job: {
 		datacenters: list.MinItems(1)
 		namespace:   string
 		type:        "batch" | *"service" | "system"
+		affinities:  [...#stanza.affinity]
 		constraints: [...#stanza.constraint]
-		group: [string]: #stanza.group & {#type: type}
-		update:   #stanza.update | *null
-		vault:    #stanza.vault | *null
-		priority: uint | *50
+		spreads:     [...#stanza.spread]
+		group:       [string]: #stanza.group & {#type: type}
+		update:      #stanza.update | *null
+		vault:       #stanza.vault | *null
+		priority:    uint | *50
+	}
+
+	affinity: {
+		LTarget: string | *null
+		RTarget: string
+		Operand: "regexp" | "set_contains_all" | "set_contains" | "set_contains_any" | *"=" | "==" | "is" | "!=" | "not" | ">" | ">=" | "<" | "<=" | "version"
+		Weight:  uint & !=0 & >=-100 & <=100
 	}
 
 	constraint: {
 		attribute: string | *null
 		value:     string
 		operator:  *"=" | "!=" | ">" | ">=" | "<" | "<=" | "distinct_hosts" | "distinct_property" | "regexp" | "set_contains" | "version" | "semver" | "is_set" | "is_not_set"
+	}
+
+	spread: {
+		attribute: string | *null
+		weight:    uint & >=-100 & <=100 | *null
+		target:    [...#stanza.targetElem]
+	}
+
+	targetElem: {
+		value:   string | *null
+		percent: uint & >=0 & <=100 | *null
 	}
 
 	ephemeral_disk: *null | {
@@ -524,17 +634,19 @@ import (
 
 	group: {
 		#type:          "service" | "batch" | "system"
+		affinities:     [...#stanza.affinity]
+		constraints:    [...#stanza.constraint]
+		spreads:        [...#stanza.spread]
 		ephemeral_disk: #stanza.ephemeral_disk
 		network:        *null | #stanza.network
-		service: [string]: #stanza.service
-		task: [string]:    #stanza.task
-		count: uint | *1
-		volume: [string]: #stanza.volume
+		service:        [string]: #stanza.service
+		task:           [string]: #stanza.task
+		count:          uint | *1
+		volume:         [string]: #stanza.volume
 		restart:        #stanza.restart & {#type: #type}
 		vault:          *null | #stanza.vault
 		restart_policy: *null | #stanza.restart_policy
 		reschedule:     #stanza.reschedule & {#type: #type}
-		migrate:        *null | #stanza.migrate
 	}
 
 	reschedule: {
@@ -542,20 +654,20 @@ import (
 
 		if #type == "batch" {
 			attempts:       uint | *1
-			delay:          #duration | *"5s"
+			delay:          durationType | *"5s"
 			delay_function: *"constant" | "exponential" | "fibonacci"
-			interval:       #duration | *"24h"
+			interval:       durationType | *"24h"
 			unlimited:      bool | *false
 		}
 
 		if #type == "service" || #type == "system" {
-			interval:       #duration | *"0m"
+			interval:       durationType | *"0m"
 			attempts:       uint | *0
-			delay:          #duration | *"30s"
+			delay:          durationType | *"30s"
 			delay_function: "constant" | *"exponential" | "fibonacci"
-			max_delay:      #duration | *"1h"
+			max_delay:      durationType | *"1h"
 			// if unlimited is true, interval and attempts are ignored
-			unlimited: bool | *true
+			unlimited:      bool | *true
 		}
 	}
 
@@ -580,13 +692,13 @@ import (
 		// Specifies the duration to wait before restarting a task. This is
 		// specified using a label suffix like "30s" or "1h". A random jitter of up
 		// to 25% is added to the delay.
-		delay: #duration | *"15s"
+		delay: durationType | *"15s"
 
 		// Specifies the duration which begins when the first task starts and
 		// ensures that only attempts number of restarts happens within it. If more
 		// than attempts number of failures happen, behavior is controlled by mode.
 		// This is specified using a label suffix like "30s" or "1h".
-		interval: #duration
+		interval: durationType
 
 		// Controls the behavior when the task fails more than attempts times in an
 		// interval.
@@ -594,18 +706,18 @@ import (
 
 		if #type == "batch" {
 			attempts: uint | *3
-			interval: #duration | *"24h"
+			interval: durationType | *"24h"
 		}
 
 		if #type == "service" || #type == "system" {
 			attempts: uint | *2
-			interval: #duration | *"30m"
+			interval: durationType | *"30m"
 		}
 	}
 
 	check_restart: *null | {
 		limit:           uint
-		grace:           #duration
+		grace:           durationType
 		ignore_warnings: bool | *false
 	}
 
@@ -613,28 +725,36 @@ import (
 		check_restart: #stanza.check_restart | *null
 		port:          string
 		address_mode:  "alloc" | "driver" | *"auto" | "host"
-		tags: [...string]
-		task: string | *""
-		check: [string]: #stanza.check
-		meta: [string]:  string
+		tags:          [...string]
+		task:          string | *""
+		check:         [string]: #stanza.check
+		meta:          [string]:  string
 	}
 
 	check: {
-		address_mode:  "alloc" | "driver" | *"host"
-		type:          "http" | "tcp" | "script" | "grpc"
-		port:          string
-		interval:      #duration
-		timeout:       #duration
-		check_restart: #stanza.check_restart | *null
-		header: [string]: [...string]
-		body: string | *null
+		address_mode:             "alloc" | "driver" | *"host"
+		type:                     "http" | "tcp" | "script" | "grpc"
+		port:                     string
+		interval:                 durationType
+		timeout:                  durationType
+		check_restart:            #stanza.check_restart | *null
+		header:                   [string]: [...string]
+		body:                     string | *null
+		initial_status:           "passing" | "warning" | "critical" | *""
+		success_before_passing:   uint | *0
+		failures_before_critical: uint | *0
+		tls_skip_verify:          bool | *false
 
 		if type == "http" {
-			path: string
+			method:          *"GET" | "POST"
+			path:            string
+			protocol:        *"http" | "https"
 		}
 
 		if type != "http" {
-			path: ""
+			method:          ""
+			path:            ""
+			protocol:        ""
 		}
 	}
 
@@ -643,7 +763,7 @@ import (
 	execConfig: {
 		flake:   string
 		command: string
-		args: [...string]
+		args:    [...string]
 	}
 
 	#label: [string]: string
@@ -651,14 +771,14 @@ import (
 	dockerConfig: {
 		image:   string
 		command: *null | string
-		args: [...string]
-		ports: [...string]
-		labels: [...#label]
+		args:    [...string]
+		ports:   [...string]
+		labels:  [...#label]
 		logging: dockerConfigLogging
 	}
 
 	dockerConfigLogging: {
-		type: "journald"
+		type:   "journald"
 		config: [...dockerConfigLoggingConfig]
 	}
 
@@ -667,7 +787,15 @@ import (
 		labels: string
 	}
 
+	lifecycle: {
+		hook:    "prestart" | "poststart" | "poststop"
+		sidecar: *null | bool
+	}
+
 	task: {
+		affinities:  [...#stanza.affinity]
+		constraints: [...#stanza.constraint]
+
 		artifact: [Destination=_]: {
 			destination: Destination
 			headers: [string]: string
@@ -693,6 +821,10 @@ import (
 			kill_signal: "SIGTERM"
 		}
 
+		kill_timeout: *null | durationType
+
+		lifecycle: *null | #stanza.lifecycle
+
 		resources: {
 			cpu:    uint & >=100
 			memory: uint & >=32
@@ -707,9 +839,10 @@ import (
 			env:             bool | *false
 			change_mode:     *"restart" | "noop" | "signal"
 			change_signal:   *"" | string
+			perms:           *"0644" | =~"^[0-7]{4}$"
 			left_delimiter:  string | *"{{"
 			right_delimiter: string | *"}}"
-			splay:           #duration | *"3s"
+			splay:           durationType | *"3s"
 		}
 
 		vault: *null | #stanza.vault
@@ -718,9 +851,9 @@ import (
 	}
 
 	restart_policy: {
-		interval: #duration
+		interval: durationType
 		attempts: uint
-		delay:    #duration
+		delay:    durationType
 		mode:     "delay" | "fail"
 	}
 
@@ -729,11 +862,11 @@ import (
 		auto_revert:       bool | *false
 		canary:            uint | *0
 		health_check:      *"checks" | "task_states" | "manual"
-		healthy_deadline:  #duration | *"5m"
+		healthy_deadline:  durationType | *"5m"
 		max_parallel:      uint | *1
-		min_healthy_time:  #duration | *"10s"
-		progress_deadline: #duration | *"10m"
-		stagger:           #duration | *"30s"
+		min_healthy_time:  durationType | *"10s"
+		progress_deadline: durationType | *"10m"
+		stagger:           durationType | *"30s"
 	}
 
 	vault: {
@@ -741,7 +874,7 @@ import (
 		change_signal: string | *""
 		env:           bool | *true
 		namespace:     string | *""
-		policies: [...string]
+		policies:      [...string]
 	}
 
 	volume: {
@@ -765,12 +898,5 @@ import (
 		// When a group volume is writeable, you may specify that it is read_only
 		// on a per mount level using the read_only option here.
 		read_only: bool | *false
-	}
-
-	migrate: {
-		health_check:     *"checks" | "task_states"
-		healthy_deadline: #duration | *"5m"
-		max_parallel:     uint | *1
-		min_healthy_time: #duration | *"10s"
 	}
 }
