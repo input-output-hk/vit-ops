@@ -6,6 +6,8 @@
 //   https://www.nomadproject.io/api-docs/json-jobs
 //
 // Not all valid Nomad JSON job options may be included here yet; this file can be extended as needed.
+// If expected Nomad job properties are still not appearing in deployed jobs, check that bitte-cli
+// is allowing the expected JSON through the [de]serialization parsing.
 //
 // In bitte end use repos, this file normally lives at:
 //
@@ -35,6 +37,8 @@ import (
 		VaultToken:  *null | string
 		Vault:       *null | #json.Vault
 		Update:      *null | #json.Update
+		Migrate:     *null | #json.Migrate
+		Periodic:    *null | #json.Periodic
 	}
 
 	Affinity: {
@@ -88,18 +92,19 @@ import (
 		Unlimited:     *null | bool
 	}
 
-	Restart: {
-		Attempts: uint
-		Delay:    uint
-		Interval: uint
-		Mode:     "fail" | "delay"
-	}
-
 	Migrate: {
 		HealthCheck:     *"checks" | "task_states"
 		HealthyDeadline: uint | *500000000000
 		MaxParallel:     uint | *1
 		MinHealthyTime:  uint | *10000000000
+	}
+
+	Periodic: {
+		Enabled:         bool | *false
+		TimeZone:        string | *"UTC"
+		SpecType:        "cron"
+		Spec:            string
+		ProhibitOverlap: bool | *false
 	}
 
 	Update: {
@@ -118,11 +123,10 @@ import (
 		Affinities: [...Affinity]
 		Constraints: [...Constraint]
 		Spreads: [...Spread]
-		Count: int & >0 | *1
+		Count: uint & >0
 		Meta: [string]: string
 		Name:          string
 		RestartPolicy: *null | #json.RestartPolicy
-		Restart:       #json.Restart
 		Services: [...Service]
 		ShutdownDelay: uint | *0
 		Tasks: [...Task]
@@ -130,10 +134,10 @@ import (
 		ReschedulePolicy: #json.ReschedulePolicy
 		EphemeralDisk:    *null | {
 			Migrate: bool
-			Size:    uint
+			SizeMB:  uint
 			Sticky:  bool
 		}
-		Migrate: #json.Migrate
+		Migrate: *null | #json.Migrate
 		Update:  *null | #json.Update
 		Networks: [...#json.Network]
 		StopAfterClientDisconnect: *null | uint
@@ -281,8 +285,7 @@ import (
 	}
 }
 
-let durationType = string & =~"^[1-9]\\d*[hms]$"
-
+#duration:    =~"^[1-9]\\d*[hms]$"
 #gitRevision: =~"^[a-f0-9]{40}$"
 #flake:       =~"^(github|git\\+ssh|git):[0-9a-zA-Z_-]+/[0-9a-zA-Z_-]+"
 
@@ -310,6 +313,26 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 			MinHealthyTime:   time.ParseDuration(u.min_healthy_time)
 			ProgressDeadline: time.ParseDuration(u.progress_deadline)
 			Stagger:          time.ParseDuration(u.stagger)
+		}
+	}
+
+	if #job.migrate != null {
+		let m = #job.migrate
+		Migrate: {
+			HealthCheck:     m.health_check
+			HealthyDeadline: m.healthy_deadline
+			MaxParallel:     m.max_parallel
+			MinHealthyTime:  m.min_healthy_time
+		}
+	}
+
+	if #job.periodic != null {
+		let p = #job.periodic
+		Periodic: {
+			Enabled:         true
+			TimeZone:        p.time_zone
+			Spec:            p.cron
+			ProhibitOverlap: p.prohibit_overlap
 		}
 	}
 
@@ -391,18 +414,18 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 
 		if tg.ephemeral_disk != null {
 			EphemeralDisk: {
-				Size:    tg.ephemeral_disk.size
+				SizeMB:  tg.ephemeral_disk.size
 				Migrate: tg.ephemeral_disk.migrate
 				Sticky:  tg.ephemeral_disk.sticky
 			}
 		}
 
-		if tg.restart_policy != null {
+		if tg.restart != null {
 			RestartPolicy: {
-				Interval: time.ParseDuration(tg.restart_policy.interval)
-				Attempts: tg.restart_policy.attempts
-				Delay:    time.ParseDuration(tg.restart_policy.delay)
-				Mode:     tg.restart_policy.mode
+				Interval: time.ParseDuration(tg.restart.interval)
+				Attempts: tg.restart.attempts
+				Delay:    time.ParseDuration(tg.restart.delay)
+				Mode:     tg.restart.mode
 			}
 		}
 
@@ -426,13 +449,6 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 						HostNetwork: nValue.host_network
 					}]
 			}]
-		}
-
-		Restart: {
-			Attempts: tg.restart.attempts
-			Delay:    time.ParseDuration(tg.restart.delay)
-			Interval: time.ParseDuration(tg.restart.interval)
-			Mode:     tg.restart.mode
 		}
 
 		Services: [ for sName, s in tg.service {
@@ -501,12 +517,19 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 				Operand: c.operator
 			}]
 
-			if t.restart_policy != null {
+			if t.logs != null {
+				LogConfig: {
+					MaxFiles:      t.logs.max_files
+					MaxFileSizeMB: t.logs.max_file_size
+				}
+			}
+
+			if t.restart != null {
 				RestartPolicy: {
-					Interval: time.ParseDuration(t.restart_policy.interval)
-					Attempts: t.restart_policy.attempts
-					Delay:    time.ParseDuration(t.restart_policy.delay)
-					Mode:     t.restart_policy.mode
+					Interval: time.ParseDuration(t.restart.interval)
+					Attempts: t.restart.attempts
+					Delay:    time.ParseDuration(t.restart.delay)
+					Mode:     t.restart.mode
 				}
 			}
 
@@ -521,6 +544,8 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 				CPU:      t.resources.cpu
 				MemoryMB: t.resources.memory
 			}
+
+			Leader: t.leader
 
 			Templates: [ for tplName, tpl in t.template {
 				DestPath:     tplName
@@ -576,7 +601,7 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 				Type:     vol.type
 				Source:   vol.source
 				ReadOnly: vol.read_only
-				if vol.mount_options != null {
+				if vol.type == "csi" {
 					MountOptions: {
 						FsType:     vol.mount_options.fs_type
 						mountFlags: vol.mount_options.mount_flags
@@ -600,6 +625,21 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		update:   #stanza.update | *null
 		vault:    #stanza.vault | *null
 		priority: uint | *50
+		periodic: #stanza.periodic | *null
+		migrate:  #stanza.migrate | *null
+	}
+
+	migrate: {
+		health_check:     *"checks" | "task_states"
+		healthy_deadline: uint | *500000000000
+		max_parallel:     uint | *1
+		min_healthy_time: uint | *10000000000
+	}
+
+	periodic: {
+		time_zone:        string | *"UTC"
+		prohibit_overlap: bool | *false
+		cron:             string
 	}
 
 	affinity: {
@@ -641,11 +681,11 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		network:        *null | #stanza.network
 		service: [string]: #stanza.service
 		task: [string]:    #stanza.task
-		count: uint | *1
+		count: uint
 		volume: [string]: #stanza.volume
-		restart:        #stanza.restart & {#type: #type}
 		vault:          *null | #stanza.vault
-		restart_policy: *null | #stanza.restart_policy
+		restart:        *null | #stanza.restart
+		restart_policy: *null | #stanza.restart
 		reschedule:     #stanza.reschedule & {#type: #type}
 	}
 
@@ -654,18 +694,18 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 
 		if #type == "batch" {
 			attempts:       uint | *1
-			delay:          durationType | *"5s"
+			delay:          #duration | *"5s"
 			delay_function: *"constant" | "exponential" | "fibonacci"
-			interval:       durationType | *"24h"
+			interval:       #duration | *"24h"
 			unlimited:      bool | *false
 		}
 
 		if #type == "service" || #type == "system" {
-			interval:       durationType | *"0m"
+			interval:       #duration | *"0m"
 			attempts:       uint | *0
-			delay:          durationType | *"30s"
+			delay:          #duration | *"30s"
 			delay_function: "constant" | *"exponential" | "fibonacci"
-			max_delay:      durationType | *"1h"
+			max_delay:      #duration | *"1h"
 			// if unlimited is true, interval and attempts are ignored
 			unlimited: bool | *true
 		}
@@ -683,41 +723,9 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		}
 	}
 
-	restart: {
-		#type: "batch" | *"service" | "system"
-
-		// Specifies the number of restarts allowed in the configured interval.
-		attempts: uint
-
-		// Specifies the duration to wait before restarting a task. This is
-		// specified using a label suffix like "30s" or "1h". A random jitter of up
-		// to 25% is added to the delay.
-		delay: durationType | *"15s"
-
-		// Specifies the duration which begins when the first task starts and
-		// ensures that only attempts number of restarts happens within it. If more
-		// than attempts number of failures happen, behavior is controlled by mode.
-		// This is specified using a label suffix like "30s" or "1h".
-		interval: durationType
-
-		// Controls the behavior when the task fails more than attempts times in an
-		// interval.
-		mode: *"fail" | "delay"
-
-		if #type == "batch" {
-			attempts: uint | *3
-			interval: durationType | *"24h"
-		}
-
-		if #type == "service" || #type == "system" {
-			attempts: uint | *2
-			interval: durationType | *"30m"
-		}
-	}
-
 	check_restart: *null | {
 		limit:           uint
-		grace:           durationType
+		grace:           #duration
 		ignore_warnings: bool | *false
 	}
 
@@ -735,8 +743,8 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		address_mode:  "alloc" | "driver" | *"host"
 		type:          "http" | "tcp" | "script" | "grpc"
 		port:          string
-		interval:      durationType
-		timeout:       durationType
+		interval:      #duration
+		timeout:       #duration
 		check_restart: #stanza.check_restart | *null
 		header: [string]: [...string]
 		body:                     string | *null
@@ -792,6 +800,11 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		sidecar: *null | bool
 	}
 
+	logs: {
+		max_files:     uint & >0
+		max_file_size: uint & >0
+	}
+
 	task: {
 		affinities: [...#stanza.affinity]
 		constraints: [...#stanza.constraint]
@@ -821,16 +834,16 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 			kill_signal: "SIGTERM"
 		}
 
-		kill_timeout: *null | durationType
+		kill_timeout: *null | #duration
 
 		lifecycle: *null | #stanza.lifecycle
+
+		logs: *null | #stanza.logs
 
 		resources: {
 			cpu:    uint & >=100
 			memory: uint & >=32
 		}
-
-		restart: #stanza.restart & {#type: #type}
 
 		template: [Destination=_]: {
 			destination:     Destination
@@ -842,18 +855,20 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 			perms:           *"0644" | =~"^[0-7]{4}$"
 			left_delimiter:  string | *"{{"
 			right_delimiter: string | *"}}"
-			splay:           durationType | *"3s"
+			splay:           #duration | *"3s"
 		}
 
 		vault: *null | #stanza.vault
 		volume_mount: [string]: #stanza.volume_mount
-		restart_policy: *null | #stanza.restart_policy
+		restart:        *null | #stanza.restart
+		restart_policy: *null | #stanza.restart
+		leader:         bool | *false
 	}
 
-	restart_policy: {
-		interval: durationType
+	restart: {
+		interval: #duration
 		attempts: uint
-		delay:    durationType
+		delay:    #duration
 		mode:     "delay" | "fail"
 	}
 
@@ -862,11 +877,11 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 		auto_revert:       bool | *false
 		canary:            uint | *0
 		health_check:      *"checks" | "task_states" | "manual"
-		healthy_deadline:  durationType | *"5m"
+		healthy_deadline:  #duration | *"5m"
 		max_parallel:      uint | *1
-		min_healthy_time:  durationType | *"10s"
-		progress_deadline: durationType | *"10m"
-		stagger:           durationType | *"30s"
+		min_healthy_time:  #duration | *"10s"
+		progress_deadline: #duration | *"10m"
+		stagger:           #duration | *"30s"
 	}
 
 	vault: {
@@ -878,12 +893,14 @@ let durationType = string & =~"^[1-9]\\d*[hms]$"
 	}
 
 	volume: {
-		type:          "host" | "csi"
-		source:        string
-		read_only:     bool | *false
-		mount_options: *null | {
-			fs_type:     *null | string
-			mount_flags: *null | string
+		type:      "host" | "csi"
+		source:    string
+		read_only: bool | *false
+		if type == "csi" {
+			mount_options: {
+				fs_type:     *null | string
+				mount_flags: *null | string
+			}
 		}
 	}
 
