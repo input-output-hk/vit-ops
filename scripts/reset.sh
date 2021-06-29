@@ -129,7 +129,7 @@ done
 sleep 10
 
 for job in leader-{0,1,2} follower-0 servicing-station; do
-  iogo plan "$NOMAD_NAMESPACE" "$job"
+  yes yes | iogo plan "$NOMAD_NAMESPACE" "$job" || true
 done
 
 
