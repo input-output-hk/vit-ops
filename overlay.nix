@@ -89,7 +89,6 @@ in {
       consul
       consul-template
       direnv
-      jormungandr
       jq
       nixfmt
       nomad

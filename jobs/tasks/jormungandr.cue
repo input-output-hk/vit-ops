@@ -88,23 +88,21 @@ import (
 		  "leadership": {
 		    "logs_capacity": 1024
 		  },
-		  "log": [
-		    {
-		      "format": "plain",
-		      "level": "debug",
-		      "output": "stdout"
-		    }
-		  ],
+		  "log": {
+		    "format": "plain",
+		    "level": "debug",
+		    "output": "stdout"
+		  },
 		  "mempool": {
 		    \(#mempool)
 		  },
 		  "p2p": {
 		    "allow_private_addresses": true,
-		    "topics_of_interest": {
+		    "layers": {
+		      "topics_of_interest": {
 		        "blocks": "high",
 		        "messages": "high"
-		    },
-		    "layers": {
+		      },
 		      "preferred_list": {
 		        "peers": [
 		          {{ range service "\(#namespace)-jormungandr-internal|any" }}
@@ -120,7 +118,7 @@ import (
 		        "view_max": 20
 		      }
 		    },
-		    "listen_address": "/ip4/0.0.0.0/tcp/{{ env "NOMAD_PORT_rpc" }}",
+		    "listen": "0.0.0.0:{{ env "NOMAD_PORT_rpc" }}",
 		    "max_bootstrap_attempts": 3,
 		    "max_client_connections": 192,
 		    "max_connections": 256,
