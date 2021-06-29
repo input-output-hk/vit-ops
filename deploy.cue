@@ -41,8 +41,8 @@ Namespace: [Name=_]: {
 		#version:    string | *"2.0"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/vit-ops?rev=c9251b4f3f0b34a22e3968bf28d5a049da120f8f#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/160f09c7a26fe31628b7573e8c326e3d90f1ab47#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/70c54048d18835cdd34aedcbd3a9365c38eb7304#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -60,10 +60,6 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
-			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
-			}
 		}
 		jobs: _defaultJobs
 	}
@@ -82,10 +78,6 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
-			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
-			}
 			#rateLimit: {
 				average: 100000
 				burst:   200000
@@ -98,10 +90,6 @@ Namespace: [Name=_]: {
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
-			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=43525e606ca74a5b7cfa1c7f1f0ee3c24865ca30#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
-			}
 		}
 		jobs: _defaultJobs
 	}
