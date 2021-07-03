@@ -12,6 +12,8 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 		memory: 1024
 	}
 
+	kill_timeout: "60s"
+
 	volume_mount: "persist": {
 		destination: "/persist"
 	}

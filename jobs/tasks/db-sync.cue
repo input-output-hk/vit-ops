@@ -8,8 +8,8 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	driver:         "exec"
 
 	resources: {
-		cpu:    2500
-		memory: 1024 * 10
+		cpu:    3600
+		memory: 1024 * 12
 	}
 
 	volume_mount: "persist": {
