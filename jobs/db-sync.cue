@@ -13,7 +13,8 @@ import (
 	#dbSyncInstance:     =~"^i-\(_hex){17}$"
 	#snapshotDomain:     string
 	#registrationDomain: string
-
+	#registrationVerifyDomain: string
+	
 	namespace: string
 	type:      "service"
 
@@ -78,6 +79,22 @@ import (
 				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).rule=Host(`\(#registrationDomain)`)",
 				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).entrypoints=https",
 				"traefik.http.routers.\(namespace)-registration-\(#dbSyncNetwork).tls=true",
+			]
+		}
+
+		service: "\(namespace)-registration-verify-\(#dbSyncNetwork)": {
+			address_mode: "host"
+			port:         "registration-verify"
+			task:         "registration-verify"
+			tags: [
+				"ingress",
+				"registration-verify",
+				#dbSyncNetwork,
+				namespace,
+				"traefik.enable=true",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).rule=Host(`\(#registrationVerifyDomain)`)",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).tls=true",
 			]
 		}
 

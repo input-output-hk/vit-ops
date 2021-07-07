@@ -111,12 +111,14 @@ Namespace: [Name=_]: {
 				#dbSyncInstance:     "i-0ba0564889ae9094c"
 				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
 				#registrationDomain: "registration-mainnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-mainnet.\(fqdn)"
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "testnet"
 				#dbSyncInstance:     "i-002a3025e13ed07ca"
 				#snapshotDomain:     "snapshot-testnet.\(fqdn)"
 				#registrationDomain: "registration-testnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-testnet.\(fqdn)"
 			}
 		}
 	}
