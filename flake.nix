@@ -2,14 +2,14 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte";
+    bitte.url = "github:input-output-hk/bitte/custom-admin-teams";
     # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
-    utils.follows = "bitte/utils";
+    utils.url = "github:kreisys/flake-utils";
     jormungandr-nix = {
       url = "github:input-output-hk/jormungandr-nix";
       flake = false;
@@ -23,43 +23,34 @@
   };
 
   outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
-    let
-      vitOpsOverlay = import ./overlay.nix { inherit inputs self; };
+    utils.lib.simpleFlake {
+      inherit nixpkgs;
+      systems = [ "x86_64-linux" ];
 
-      hashiStack = bitte.lib.mkHashiStack {
-        flake = self;
-        rootDir = ./.;
-        inherit pkgs;
-        domain = "vit.iohk.io";
+      preOverlays = [ bitte ];
+      overlay = import ./overlay.nix { inherit inputs self; };
+
+      extraOutputs = let
+        hashiStack = bitte.lib.mkHashiStack {
+          flake = self // {
+            inputs = self.inputs // { inherit (bitte.inputs) terranix; };
+          };
+          domain = "vit.iohk.io";
+        };
+      in {
+        inherit self inputs;
+        inherit (hashiStack)
+          clusters nomadJobs nixosConfigurations consulTemplates;
       };
 
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-        overlays = [
-          (final: prev: { inherit (hashiStack) clusters dockerImages; })
-          bitte.overlay
-          vitOpsOverlay
-        ];
-      };
+      packages = { }: { };
 
-      nixosConfigurations = hashiStack.nixosConfigurations // {
-        nspawn-test = import ./nspawn/test.nix { inherit nixpkgs; };
-      };
-    in {
-      inherit self nixosConfigurations;
-      inherit (hashiStack) nomadJobs dockerImages consulTemplates;
-      inherit (pkgs) sources;
-      clusters.x86_64-linux = hashiStack.clusters;
-      legacyPackages.x86_64-linux = pkgs;
-      devShell.x86_64-linux = pkgs.devShell;
-      hydraJobs.x86_64-linux = {
-        inherit (pkgs)
-          devShellPath bitte nixFlakes sops terraform-with-plugins cfssl consul
-          nomad vault-bin cue grafana haproxy grafana-loki victoriametrics
-          jormungandr-entrypoint jormungandr-monitor-entrypoint restic-backup
-          nomad-driver-nspawn devbox-entrypoint cardano-cli jormungandr-monitor
-          jormungandr vit-servicing-station-server vit-servicing-station-cli;
-      } // (pkgs.lib.mapAttrs (_: v: v.config.system.build.toplevel)
-        nixosConfigurations);
+      devShell = { bitteShell }:
+        (bitteShell {
+          cluster = "vit-testnet";
+          profile = "vit";
+          region = "eu-central-1";
+          domain = "vit.iohk.io";
+        });
     };
 }
