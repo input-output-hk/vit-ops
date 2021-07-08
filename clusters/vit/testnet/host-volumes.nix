@@ -5,6 +5,11 @@ let
     gluster = [
       "catalyst-dryrun"
       "catalyst-fund4"
+      "catalyst-fund5"
+      "catalyst-fund6"
+      "catalyst-fund7"
+      "catalyst-fund8"
+      "catalyst-fund9"
       "catalyst-perf"
       "catalyst-signoff"
       "catalyst-test"

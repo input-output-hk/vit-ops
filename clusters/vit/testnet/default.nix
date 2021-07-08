@@ -42,6 +42,11 @@ in {
     catalyst-dryrun.description = "Dryrun";
     catalyst-fund3.description = "Fund3";
     catalyst-fund4.description = "Fund4";
+    catalyst-fund5.description = "Fund5";
+    catalyst-fund6.description = "Fund6";
+    catalyst-fund7.description = "Fund7";
+    catalyst-fund8.description = "Fund8";
+    catalyst-fund9.description = "Fund9";
     catalyst-perf.description = "Perf";
     catalyst-signoff.description = "Signoff";
     catalyst-sync.description = "Sync";
@@ -49,10 +54,7 @@ in {
   };
 
   nix = {
-    binaryCaches = [
-      "https://hydra.iohk.io"
-      "https://hydra.mantis.ist"
-    ];
+    binaryCaches = [ "https://hydra.iohk.io" "https://hydra.mantis.ist" ];
 
     binaryCachePublicKeys = [
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
@@ -66,6 +68,7 @@ in {
     adminNames = [ "michael.fellinger" "michael.bishop" "samuel.leathers" ];
     developerGithubNames = [ ];
     developerGithubTeamNames = [ "jormungandr" ];
+    adminGithubTeamNames = [ "devops" "jormungandr-devops" ];
     domain = "vit.iohk.io";
     kms =
       "arn:aws:kms:eu-central-1:432820653916:key/c24899f3-2371-4492-bf9e-2d1e53bde6ec";
@@ -137,10 +140,8 @@ in {
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 100;
 
-        modules = [
-          (bitte + /profiles/core.nix)
-          (bitte + /profiles/bootstrapper.nix)
-        ];
+        modules =
+          [ (bitte + /profiles/core.nix) (bitte + /profiles/bootstrapper.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
