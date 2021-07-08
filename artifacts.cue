@@ -91,4 +91,14 @@ artifacts: {
 			checksum: "sha256:07d6f8e5e02a62179e868f36aa4937e8e15c5603a684523bc7be16043083608c"
 		}
 	}
+	"catalyst-fund5": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/block0.bin"
+			checksum: "sha256:d851936945aad9858400728394bb74a6dda43d3e67556de03d20e93a3034e998"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/database.sqlite3"
+			checksum: "sha256:8583663a32e57396e8e36376a7b54b13e932c09f550524884f7f874a477ea84f"
+		}
+	}
 }
