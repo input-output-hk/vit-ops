@@ -2,9 +2,7 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/custom-admin-teams";
-    # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
-    # bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
+    bitte.url = "github:input-output-hk/bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -45,8 +43,9 @@
 
       packages = { }: { };
 
-      devShell = { bitteShell }:
+      devShell = { bitteShell, cue }:
         (bitteShell {
+          extraPackages = [ cue ];
           cluster = "vit-testnet";
           profile = "vit";
           region = "eu-central-1";

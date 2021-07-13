@@ -13,16 +13,15 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1625759176,
-        "narHash": "sha256-kPe4vDyJHqikCU92bfZC9a/sEryLrHMQqasOojP5D2Q=",
+        "lastModified": 1626128485,
+        "narHash": "sha256-7qSCUWjWcd2jH1hEjQ9JFKTfjp9QgeYff91e2PI0T7Q=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "c124c7892498d6a56848238bfc04a5722b9bb1c6",
+        "rev": "9db6cf11131ad49f225fffd44bb6c51583c56718",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "custom-admin-teams",
         "repo": "bitte",
         "type": "github"
       }

@@ -21,7 +21,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-ops#telegraf"
+		flake:   "github:NixOS/nixpkgs/nixos-21.05#telegraf"
 		command: "/bin/telegraf"
 		args: ["-config", "/local/telegraf.config"]
 	}

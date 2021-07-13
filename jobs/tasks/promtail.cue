@@ -14,7 +14,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-ops#grafana-loki"
+		flake:   "github:NixOS/nixpkgs/nixos-21.05#grafana-loki"
 		command: "/bin/promtail"
 		args: ["-config.file", "local/config.yaml"]
 	}
