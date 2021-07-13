@@ -41,7 +41,7 @@
           clusters nomadJobs nixosConfigurations consulTemplates;
       };
 
-      packages = { }: { };
+      packages = { checkFmt, checkCue }@pkgs: pkgs;
 
       devShell = { bitteShell, cue }:
         (bitteShell {
