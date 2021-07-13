@@ -4,9 +4,10 @@ import (
 	"github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 )
 
-#Registration: types.#stanza.task & {
+#RegistrationVerify: types.#stanza.task & {
 	#dbSyncNetwork: string
 	#namespace:     string
+	#domain:        string
 
 	driver: "exec"
 
@@ -37,16 +38,16 @@ import (
 	}
 
 	template: "secrets/registration.config": {
-		change_mode: "noop"
-		_snapshot_address:      string
-		_snapshot_token:      string
+		change_mode:       "noop"
+		_snapshot_address: string
+		_snapshot_token:   string
 		if #dbSyncNetwork == "mainnet" {
-			_snapshot_address: "\"https://snapshot-\(#dbSyncNetwork).\(#domain)\""
-			_snapshot_token: "\"{{with secret "kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot"}}{{.Data.data.token}}{{end}}\""
+			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).\(#domain)"
+			_snapshot_token:   "{{with secret \"kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot\"}}{{.Data.data.token}}{{end}}"
 		}
 		if #dbSyncNetwork == "testnet" {
-			_snapshot_address: "\"https://snapshot-\(#dbSyncNetwork).\(#domain)\""
-			_snapshot_token: "\"{{with secret "kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot"}}{{.Data.data.token}}{{end}}\""
+			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).\(#domain)"
+			_snapshot_token:   "{{with secret \"kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot\"}}{{.Data.data.token}}{{end}}"
 		}
 		data: """
 		{
@@ -56,8 +57,8 @@ import (
 		  "cardano-cli": "cardano-cli",
 		  "voter-registration": "voter-registration",
 		  "vit-kedqr": "vit-kedqr",
-		  "network": \(_magic),
-		  "token": "{{with secret "kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/registration-verify"}}{{.Data.data.token}}{{end}}"
+		  "network": "\(_snapshot_address)",
+		  "token": "\(_snapshot_token)"
 		}
 		"""
 	}
