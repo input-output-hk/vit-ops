@@ -28,8 +28,8 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/5d7f68d5680bd723a7498f74b9e2cd64b8bd9859#registration-verify-service"
-		command: "/bin/registration-service"
+		flake:   "github:input-output-hk/vit-testing/32d849099791a014902d4ff7dd8eb192afd868d8#registration-verify-service"
+		command: "/bin/registration-verify-service"
 		args: ["--config", "/secrets/registration.config"]
 	}
 
@@ -42,23 +42,19 @@ import (
 		_snapshot_address: string
 		_snapshot_token:   string
 		if #dbSyncNetwork == "mainnet" {
-			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).\(#domain)"
+			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).vit.iohk.io"
 			_snapshot_token:   "{{with secret \"kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot\"}}{{.Data.data.token}}{{end}}"
 		}
 		if #dbSyncNetwork == "testnet" {
-			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).\(#domain)"
+			_snapshot_address: "https://snapshot-\(#dbSyncNetwork).vit.iohk.io"
 			_snapshot_token:   "{{with secret \"kv/data/nomad-cluster/\(#namespace)/\(#dbSyncNetwork)/snapshot\"}}{{.Data.data.token}}{{end}}"
 		}
 		data: """
 		{
 		  "port": {{ env "NOMAD_PORT_registration_verify" }},
 		  "jcli": "jcli",
-		  "result-dir": "/persist/registration",
-		  "cardano-cli": "cardano-cli",
-		  "voter-registration": "voter-registration",
-		  "vit-kedqr": "vit-kedqr",
-		  "network": "\(_snapshot_address)",
-		  "token": "\(_snapshot_token)"
+		  "snapshot-address": "\(_snapshot_address)",
+		  "snapshot-token": "\(_snapshot_token)"
 		}
 		"""
 	}
