@@ -40,6 +40,7 @@ import (
 			mode: "host"
 			port: snapshot: {}
 			port: registration: {}
+			port: registration_verify: {}
 		}
 
 		count: 1
@@ -84,7 +85,7 @@ import (
 
 		service: "\(namespace)-registration-verify-\(#dbSyncNetwork)": {
 			address_mode: "host"
-			port:         "registration-verify"
+			port:         "registration_verify"
 			task:         "registration-verify"
 			tags: [
 				"ingress",
@@ -124,6 +125,13 @@ import (
 		task: "registration": tasks.#Registration & {
 			#dbSyncNetwork: ref.dbSyncNetwork
 			#namespace:     namespace
+		}
+
+
+		task: "registration-verify": tasks.#RegistrationVerify & {
+			#dbSyncNetwork: ref.dbSyncNetwork
+			#namespace:     namespace
+			#domain:        ref.registrationVerifyDomain
 		}
 
 		task: "promtail": tasks.#Promtail

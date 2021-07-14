@@ -103,18 +103,18 @@ Namespace: [Name=_]: {
 	"catalyst-sync": {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
-				#dbSyncNetwork:      "mainnet"
-				#dbSyncInstance:     "i-0ba0564889ae9094c"
-				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
-				#registrationDomain: "registration-mainnet.\(fqdn)"
-				#registrationVerifyDomain: "registration-mainnet.\(fqdn)"
+				#dbSyncNetwork:            "mainnet"
+				#dbSyncInstance:           "i-0ba0564889ae9094c"
+				#snapshotDomain:           "snapshot-mainnet.\(fqdn)"
+				#registrationDomain:       "registration-mainnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-verify-mainnet.\(fqdn)"
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
-				#dbSyncNetwork:      "testnet"
-				#dbSyncInstance:     "i-002a3025e13ed07ca"
-				#snapshotDomain:     "snapshot-testnet.\(fqdn)"
-				#registrationDomain: "registration-testnet.\(fqdn)"
-				#registrationVerifyDomain: "registration-testnet.\(fqdn)"
+				#dbSyncNetwork:            "testnet"
+				#dbSyncInstance:           "i-002a3025e13ed07ca"
+				#snapshotDomain:           "snapshot-testnet.\(fqdn)"
+				#registrationDomain:       "registration-testnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-verify-testnet.\(fqdn)"
 			}
 		}
 	}
