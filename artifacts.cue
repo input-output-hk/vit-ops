@@ -14,11 +14,11 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:8727792d56e05caa6e12ddd4192b36e2a478e12f8674d65d39f6f9436e32336a"
+			checksum: "sha256:1069ac46f4b7597bce6af57fbc61b4db489ba8ee8f5097b23107fa86f8dddf2d"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:3b6384ed4a86cf1b326a4997f10f598c53676b9721709f6c12469ae00c8235c2"
+			checksum: "sha256:6472e0b32b8b5a5161e67b6c0232feab4fb69cd0c6cf77cbcf1d2b4238186be4"
 		}
 	}
 	"catalyst-fund3": {
@@ -34,11 +34,11 @@ artifacts: {
 	"catalyst-signoff": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
-			checksum: "sha256:bed8c3813b39c832a2ac243e5b5549da0b4a5465fa82fcac437cbe4b932d5f41"
+			checksum: "sha256:ca3aedd9c687712b466052bdfa71b2eddb9470d8513627c7d3c3b802fb88cc9a"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
-			checksum: "sha256:8c493c7e64d6595532b9fa427fabacac66f0f4f760312d56f4c57d493f6b2725"
+			checksum: "sha256:07d6f8e5e02a62179e868f36aa4937e8e15c5603a684523bc7be16043083608c"
 		}
 	}
 	"catalyst-test": {
@@ -69,6 +69,36 @@ artifacts: {
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund4/database.sqlite3"
 			checksum: "sha256:cfcddf18cc7a24c3f8887e38dc62398e1985e5cec082ff5a4e8bef7ae175312f"
+		}
+	}
+	"calatyst-signoff": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-signoff/block0.bin"
+			checksum: "sha256:ca3aedd9c687712b466052bdfa71b2eddb9470d8513627c7d3c3b802fb88cc9a"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-signoff/database.sqlite3"
+			checksum: "sha256:07d6f8e5e02a62179e868f36aa4937e8e15c5603a684523bc7be16043083608c"
+		}
+	}
+	"calatyst-perf": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-perf/block0.bin"
+			checksum: "sha256:ca3aedd9c687712b466052bdfa71b2eddb9470d8513627c7d3c3b802fb88cc9a"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/calatyst-perf/database.sqlite3"
+			checksum: "sha256:07d6f8e5e02a62179e868f36aa4937e8e15c5603a684523bc7be16043083608c"
+		}
+	}
+	"catalyst-fund5": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/block0.bin"
+			checksum: "sha256:d851936945aad9858400728394bb74a6dda43d3e67556de03d20e93a3034e998"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/database.sqlite3"
+			checksum: "sha256:8583663a32e57396e8e36376a7b54b13e932c09f550524884f7f874a477ea84f"
 		}
 	}
 }

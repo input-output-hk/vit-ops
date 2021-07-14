@@ -38,7 +38,7 @@ Namespace: [Name=_]: {
 		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"2.0"
+		#version:    string | *"3.1"
 
 		#flakes: {
 			#jormungandr:      string | *"github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
@@ -64,13 +64,9 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund4": {
+	"catalyst-fund5": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
-			#flakes: {
-				#jormungandr:      "github:input-output-hk/vit-ops?rev=e81a05cc61beef935fb4bb8b9ec9407df44f2c68#jormungandr-entrypoint"
-				#servicingStation: "github:input-output-hk/vit-servicing-station/aab56840504e05920b8dd530c2ddc3dbdf9cde03#vit-servicing-station-server"
-			}
 		}
 		jobs: _defaultJobs
 	}
@@ -111,12 +107,14 @@ Namespace: [Name=_]: {
 				#dbSyncInstance:     "i-0ba0564889ae9094c"
 				#snapshotDomain:     "snapshot-mainnet.\(fqdn)"
 				#registrationDomain: "registration-mainnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-mainnet.\(fqdn)"
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:      "testnet"
 				#dbSyncInstance:     "i-002a3025e13ed07ca"
 				#snapshotDomain:     "snapshot-testnet.\(fqdn)"
 				#registrationDomain: "registration-testnet.\(fqdn)"
+				#registrationVerifyDomain: "registration-testnet.\(fqdn)"
 			}
 		}
 	}
