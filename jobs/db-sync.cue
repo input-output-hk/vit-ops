@@ -13,7 +13,8 @@ import (
 	#dbSyncInstance:     =~"^i-\(_hex){17}$"
 	#snapshotDomain:     string
 	#registrationDomain: string
-
+	#registrationVerifyDomain: string
+	
 	namespace: string
 	type:      "service"
 
@@ -39,6 +40,7 @@ import (
 			mode: "host"
 			port: snapshot: {}
 			port: registration: {}
+			port: registration_verify: {}
 		}
 
 		count: 1
@@ -81,6 +83,22 @@ import (
 			]
 		}
 
+		service: "\(namespace)-registration-verify-\(#dbSyncNetwork)": {
+			address_mode: "host"
+			port:         "registration_verify"
+			task:         "registration-verify"
+			tags: [
+				"ingress",
+				"registration-verify",
+				#dbSyncNetwork,
+				namespace,
+				"traefik.enable=true",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).rule=Host(`\(#registrationVerifyDomain)`)",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).entrypoints=https",
+				"traefik.http.routers.\(namespace)-registration-verify-\(#dbSyncNetwork).tls=true",
+			]
+		}
+
 		let ref = {
 			dbSyncRev:     #dbSyncRev
 			dbSyncNetwork: #dbSyncNetwork
@@ -107,6 +125,13 @@ import (
 		task: "registration": tasks.#Registration & {
 			#dbSyncNetwork: ref.dbSyncNetwork
 			#namespace:     namespace
+		}
+
+
+		task: "registration-verify": tasks.#RegistrationVerify & {
+			#dbSyncNetwork: ref.dbSyncNetwork
+			#namespace:     namespace
+			#domain:        ref.registrationVerifyDomain
 		}
 
 		task: "promtail": tasks.#Promtail
