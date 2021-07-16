@@ -53,7 +53,9 @@ import (
 		{
 		  "port": {{ env "NOMAD_PORT_registration_verify" }},
 		  "jcli": "jcli",
+		  "network": "\(#dbSyncNetwork)",
 		  "snapshot-address": "\(_snapshot_address)",
+		  "initial-snapshot-job-id":"e1eee0fe-9962-4c3a-b0af-e627e5517b18",
 		  "snapshot-token": "\(_snapshot_token)"
 		}
 		"""
