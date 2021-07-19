@@ -101,4 +101,14 @@ artifacts: {
 			checksum: "sha256:8583663a32e57396e8e36376a7b54b13e932c09f550524884f7f874a477ea84f"
 		}
 	}
+	"vit-testnet": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/block0.bin"
+			checksum: "sha256:13e96ac7f34011d0a544095fe3fefbff639173720ea2021f1d5fb4ed13db31f3"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/database.sqlite3"
+			checksum: "sha256:2721ca5ba32ecf73552c1d0238454fd72626f47e4fdd67cf2e9d448880b95b71"
+		}
+	}
 }
