@@ -231,7 +231,7 @@ in {
         privateIP = "172.16.2.20";
         subnet = cluster.vpc.subnets.core-3;
         volumeSize = 30;
-        route53.domains = [ "bench.${cluster.domain}" ];
+        route53.domains = [ "perf-servicing-station.${cluster.domain}" ];
 
         modules = [ ./routing.nix ];
 
