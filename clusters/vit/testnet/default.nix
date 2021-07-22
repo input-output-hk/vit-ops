@@ -226,6 +226,20 @@ in {
         };
       };
 
+      routing-bench = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.2.20";
+        subnet = cluster.vpc.subnets.core-3;
+        volumeSize = 30;
+        route53.domains = [ "bench.${cluster.domain}" ];
+
+        modules = [ ./routing.nix ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internet internal ssh http routing;
+        };
+      };
+
       storage-0 = {
         instanceType = "t3a.small";
         privateIP = "172.16.0.50";
