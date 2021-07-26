@@ -28,6 +28,8 @@ import (
 			port: "promtail": {}
 		}
 
+		count: 2
+
 		service: "\(namespace)-servicing-station": {
 			address_mode: "host"
 			port:         "web"
