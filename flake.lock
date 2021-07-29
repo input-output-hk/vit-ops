@@ -13,11 +13,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1626128485,
-        "narHash": "sha256-7qSCUWjWcd2jH1hEjQ9JFKTfjp9QgeYff91e2PI0T7Q=",
+        "lastModified": 1627604903,
+        "narHash": "sha256-rEPXW6AKgHlLMSnawC1pDHyZ6/TmUScds4VrjigXZ6Q=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "9db6cf11131ad49f225fffd44bb6c51583c56718",
+        "rev": "b3db5de41175a3a44ffb93ac82861f831ebf168a",
         "type": "github"
       },
       "original": {
@@ -138,22 +138,6 @@
         "owner": "input-output-hk",
         "repo": "jormungandr",
         "rev": "8178bc9149ea4629c8ae6f87bdd5be4a154db322",
-        "type": "github"
-      }
-    },
-    "jormungandr-nix": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1593011183,
-        "narHash": "sha256-1pWYThx+etgPaEQj1xs2M3mwOi4kx6fx3sE84m4L2WU=",
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
-        "rev": "fddf5dfe7716b3dc5bf17f5d483f957c38eb205d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
         "type": "github"
       }
     },
@@ -451,7 +435,6 @@
         "bitte": "bitte",
         "cardano-node": "cardano-node",
         "jormungandr": "jormungandr",
-        "jormungandr-nix": "jormungandr-nix",
         "nixpkgs": [
           "bitte",
           "nixpkgs"

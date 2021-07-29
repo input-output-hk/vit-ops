@@ -4,11 +4,6 @@ let lib = final.lib;
 in {
   jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
 
-  jormungandr-monitor =
-    final.callPackage (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
-      jormungandr-cli = final.jormungandr;
-    };
-
   inherit (inputs.vit-servicing-station.packages.${final.system})
     vit-servicing-station-server vit-servicing-station-cli;
 
@@ -17,9 +12,6 @@ in {
   print-env = final.callPackage ./pkgs/print-env.nix { };
 
   zipkin-server = final.callPackage ./pkgs/zipkin-server.nix {};
-
-  jormungandr-monitor-entrypoint =
-    final.callPackage ./pkgs/jormungandr-monitor.nix { };
 
   restic-backup = final.callPackage ./pkgs/restic-backup { };
 
