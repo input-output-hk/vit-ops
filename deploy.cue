@@ -60,6 +60,12 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
+			#version: "0.2"
+			#rateLimit: {
+				average: 100000
+				burst:   200000
+				period:  "1m"
+			}
 		}
 		jobs: _defaultJobs
 	}
@@ -90,6 +96,11 @@ Namespace: [Name=_]: {
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
+			#rateLimit: {
+				average: 100000
+				burst:   200000
+				period:  "1m"
+			}
 		}
 		jobs: _defaultJobs
 	}
