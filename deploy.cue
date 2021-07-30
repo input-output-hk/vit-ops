@@ -17,6 +17,12 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
+_singleNodeJob: {
+	"leader-0":          jobDef.#Jormungandr & {#role: "single", #index:   0, #name: "leader-0"}
+	"servicing-station": jobDef.#ServicingStation
+	wormhole:            jobDef.#Wormhole
+}
+
 #vitOpsRev: "55759981d7e693b0304ecf2d4bace0dc068caa6d"
 
 #flakes: {
@@ -60,6 +66,11 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
+			#rateLimit: {
+				average: 100000
+				burst:   200000
+				period:  "1m"
+			}
 		}
 		jobs: _defaultJobs
 	}
@@ -80,12 +91,17 @@ Namespace: [Name=_]: {
 				period:  "1m"
 			}
 		}
-		jobs: _defaultJobs
+		jobs: _singleNodeJob
 	}
 
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
+			#rateLimit: {
+				average: 100000
+				burst:   200000
+				period:  "1m"
+			}
 		}
 		jobs: _defaultJobs
 	}

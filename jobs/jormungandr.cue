@@ -7,7 +7,7 @@ import (
 
 #Jormungandr: types.#stanza.job & {
 	#block0: {url: string, checksum: string}
-	#role:       "leader" | "follower"
+	#role:       "leader" | "follower" | "single"
 	#index:      uint
 	#name:       "\(#role)-\(#index)"
 	#fqdn:       string
@@ -26,6 +26,9 @@ import (
 	}
 	if #role == "follower" {
 		#requiredPeerCount: 3
+	}
+	if #role == "single" {
+		#requiredPeerCount: 0
 	}
 
 	namespace: string
@@ -86,7 +89,7 @@ import (
 			if #role == "leader" {
 				tags: [#name, #role]
 			}
-			if #role == "follower" {
+			if #role == "follower" || #role == "single" {
 				tags: [
 					#name,
 					#role,
@@ -113,7 +116,7 @@ import (
 			}
 		}
 
-		if #role == "follower" {
+		if #role == "follower" || #role == "single" {
 			service: "\(#id)-jormungandr-rest": {
 				address_mode: "host"
 				port:         "rest"
