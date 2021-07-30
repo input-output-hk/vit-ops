@@ -18,7 +18,7 @@ _defaultJobs: {
 }
 
 _singleNodeJob: {
-	"leader-0":          jobDef.#Jormungandr & {#role: "single", #index:   0, #name: "leader-0"}
+	"leader-0":          jobDef.#Jormungandr & {#role: "single", #index:   0}
 	"servicing-station": jobDef.#ServicingStation
 	wormhole:            jobDef.#Wormhole
 }

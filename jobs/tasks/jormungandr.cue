@@ -7,7 +7,7 @@ import (
 
 #Jormungandr: types.#stanza.task & {
 	#namespace:         string
-	#role:              "leader" | "follower"
+	#role:              "leader" | "follower" | "single"
 	#requiredPeerCount: uint
 	#index:             uint
 	#block0: {url: string, checksum: string}
@@ -50,8 +50,11 @@ import (
 		if #role == "leader" {
 			PRIVATE: "true"
 		}
-		if #role != "leader" {
+		if #role == "follower" {
 			PRIVATE: ""
+		}
+		if #role == "single" {
+			PRIVATE: "true"
 		}
 		REQUIRED_PEER_COUNT: "0"
 		RUST_BACKTRACE:      "full"
