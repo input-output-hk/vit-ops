@@ -83,7 +83,7 @@ import (
 
 		data: """
 		{
-		  "storage": "/persist/\(#role)-\(#index)",
+		  "storage": "/persist/leader-0",
 		  "bootstrap_from_trusted_peers": true,
 		  "explorer": {
 		    "enabled": false
@@ -170,11 +170,11 @@ import (
 		RESTIC_PASSWORD="{{with secret "kv/data/nomad-cluster/restic"}}{{.Data.data.password}}{{end}}"
 		RESTIC_REPOSITORY="s3:http://172.16.0.20:9000/restic"
 		RESET="{{with secret "kv/data/nomad-cluster/\(#namespace)/reset"}}{{.Data.data.value}}{{end}}"
-		STORAGE_DIR="/persist/\(#role)-\(#index)"
+		STORAGE_DIR="/persist/leader-0"
 		"""
 	}
 
-	if #role == "leader" {
+	if #role == "leader" || #role == "single" {
 		template: "secrets/bft-secret.yaml": {
 			data: """
 			genesis:

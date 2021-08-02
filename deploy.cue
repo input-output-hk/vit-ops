@@ -85,6 +85,9 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr: "github:input-output-hk/jormungandr/76924376fe71c3eb2af0b10788463b5573020420#jormungandr-entrypoint"				
+			}
 			#rateLimit: {
 				average: 100000
 				burst:   200000
