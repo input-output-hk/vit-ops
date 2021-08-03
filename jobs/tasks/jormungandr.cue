@@ -77,7 +77,10 @@ import (
 		if #role != "follower" {
 			#mempool: """
 				"log_max_entries": 100000,
-				"pool_max_entries": 100000
+				"pool_max_entries": 100000,
+				"persistent_log": {
+				  "dir": "/persist/fragments"
+				}
 				"""
 		}
 
