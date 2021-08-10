@@ -122,7 +122,6 @@ import (
 		    "max_bootstrap_attempts": 3,
 		    "max_client_connections": 192,
 		    "max_connections": 256,
-		    "max_unreachable_nodes_to_connect_per_event": 20,
 		    "policy": {
 		      "quarantine_duration": "5s",
 		      "quarantine_whitelist": [

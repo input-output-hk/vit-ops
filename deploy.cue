@@ -41,7 +41,7 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.1"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/07ff20e009dc7ab354651f419b279db30641158e#jormungandr-entrypoint"
 			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/70c54048d18835cdd34aedcbd3a9365c38eb7304#vit-servicing-station-server"
 		}
 
