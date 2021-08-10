@@ -14,7 +14,7 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:e030ebf9ded07d3dedbf016e6774bebf2f2e96ed930ba20dc8c3778c16117a14"
+			checksum: "sha256:27df2da8cb051b0ecaf2645949dae352999b73588c1bafd810811193b2b049cf"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
