@@ -4,16 +4,25 @@ set -exuo pipefail
 
 export JORMUNGANDR_RESTAPI_URL=https://dryrun-servicing-station.vit.iohk.io/api
 
-VOTE_PLAN_ID="$(jcli rest v0 vote active plans get --output-format json|jq -r '.[0].id')"
+if [ "$#" -ne 1 ]; then
+    echo "Script is expecting voteplan index: "
+	echo "./private.sh 0 "
+	exit -1
+fi
+
+VOTE_PLAN_INDEX=$1
+
+VOTE_PLAN_ID=$(jcli rest v0 vote active plans get --output-format json|jq -r --arg VOTE_PLAN_INDEX "$VOTE_PLAN_INDEX" '.[$VOTE_PLAN_INDEX|tonumber].id')
+
+COMMITTEE_KEY=committee_1
+COMMITTEE_PK=$(jcli key to-public < "$COMMITTEE_KEY")
+COMMITTEE_ADDR=$(jcli address account "$(jcli key to-public < "$COMMITTEE_KEY")")
+COMMITTEE_ADDR_COUNTER=$(jcli rest v0 account get "$COMMITTEE_ADDR" --output-format json|jq -r .counter)
+MEMBER_SECRET_KEY=$(printf "./%s_committees/%s/member_secret_key.sk" $VOTE_PLAN_ID $COMMITTEE_PK)
 
 curl $JORMUNGANDR_RESTAPI_URL/v0/block0 > block0.bin
 
 BLOCK0_HASH=$(jcli genesis hash --input block0.bin)
-COMMITTEE_KEY=committee_1
-MEMBER_SECRET_KEY=member_secret_key.sk
-
-COMMITTEE_ADDR=$(jcli address account "$(jcli key to-public < "$COMMITTEE_KEY")")
-COMMITTEE_ADDR_COUNTER=$(jcli rest v0 account get "$COMMITTEE_ADDR" --output-format json|jq -r .counter)
 
 jcli "certificate" "new" "encrypted-vote-tally" "--vote-plan-id" "$VOTE_PLAN_ID" "--output" "encrypted-vote-tally.certificate"
 jcli "transaction" "new" "--staging" "transaction.tx"
@@ -29,7 +38,7 @@ jcli "transaction" "auth" "--staging" "transaction.tx" "--key" "$COMMITTEE_KEY"
 jcli "transaction" "to-message" "--staging" "transaction.tx" > encrypted-vote-tally.fragment
 jcli rest v0 message post --file encrypted-vote-tally.fragment
 
-sleep 20
+sleep 30
 
 jcli rest v0 vote active plans get --output-format json > active_plans.json
 COMMITTEE_ADDR_COUNTER=$(jcli rest v0 account get "$COMMITTEE_ADDR" --output-format json|jq -r .counter)
