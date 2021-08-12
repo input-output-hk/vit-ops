@@ -1,12 +1,8 @@
 { config, self, lib, pkgs, ... }:
 let
-  namespaces = builtins.attrNames config.services.nomad.namespaces;
-  isLocal = namespace: lib.hasPrefix "catalyst-sync-" namespace;
-  isGluster = namespace: !(isLocal namespace);
-
   volumes = {
-    local = lib.filter isLocal namespaces;
-    gluster = lib.filter isGluster namespaces;
+    local = [ "catalyst-sync-mainnet" "catalyst-sync-testnet" ];
+    gluster = builtins.attrNames config.services.nomad.namespaces;
   };
 
   mkVolumes = names: pathFun:
