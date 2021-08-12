@@ -1,19 +1,12 @@
 { config, self, lib, pkgs, ... }:
 let
+  namespaces = builtins.attrNames config.services.nomad.namespaces;
+  isLocal = namespace: lib.hasPrefix "catalyst-sync-" namespace;
+  isGluster = namespace: !(isLocal namespace);
+
   volumes = {
-    local = [ "catalyst-sync-testnet" "catalyst-sync-mainnet" ];
-    gluster = [
-      "catalyst-dryrun"
-      "catalyst-fund4"
-      "catalyst-fund5"
-      "catalyst-fund6"
-      "catalyst-fund7"
-      "catalyst-fund8"
-      "catalyst-fund9"
-      "catalyst-perf"
-      "catalyst-signoff"
-      "catalyst-test"
-    ];
+    local = lib.filter isLocal namespaces;
+    gluster = lib.filter isGluster namespaces;
   };
 
   mkVolumes = names: pathFun:
@@ -57,7 +50,6 @@ in {
   '' + (lib.pipe volumes.gluster [
     (map (d: ''
       mkdir -p /mnt/gv0/nomad/${d}
-      fd . -o root /mnt/gv0/nomad/${d} -X chown nobody:nogroup
     ''))
     (builtins.concatStringsSep "\n")
   ]);

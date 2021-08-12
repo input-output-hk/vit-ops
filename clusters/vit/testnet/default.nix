@@ -244,7 +244,10 @@ in {
         privateIP = "172.16.0.50";
         subnet = cluster.vpc.subnets.core-1;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules = [
+          (bitte + /profiles/glusterfs/storage.nix)
+          ./gluster-permissions.nix
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
