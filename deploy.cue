@@ -67,6 +67,7 @@ Namespace: [Name=_]: {
 	"catalyst-fund5": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
+			#flakes: #jormungandr: "github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
 		}
 		jobs: _defaultJobs
 	}
@@ -74,6 +75,7 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
+			#flakes: #jormungandr: "github:input-output-hk/jormungandr/c9aa8cd2bfcf20c77a6a59612638a7d7cbb24f38#jormungandr-entrypoint"
 			#rateLimit: {
 				average: 100000
 				burst:   200000

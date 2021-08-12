@@ -94,7 +94,7 @@ artifacts: {
 	"catalyst-fund5": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/block0.bin"
-			checksum: "sha256:d851936945aad9858400728394bb74a6dda43d3e67556de03d20e93a3034e998"
+			checksum: "sha256:cccaf82cd5d3124a48307ee9492f98699dd0c12a2d2870ba8f16e42c0bdd6bcb"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/database.sqlite3"
