@@ -3,6 +3,7 @@
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte";
+    nix.follows = "bitte/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -20,12 +21,12 @@
       "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, nix, ... }@inputs:
     utils.lib.simpleFlake {
       inherit nixpkgs;
       systems = [ "x86_64-linux" ];
 
-      preOverlays = [ bitte ];
+      preOverlays = [ bitte nix.overlay ];
       overlay = import ./overlay.nix { inherit inputs self; };
 
       extraOutputs = let
@@ -41,10 +42,11 @@
           clusters nomadJobs nixosConfigurations consulTemplates;
       };
 
-      packages = { checkFmt, checkCue }@pkgs: pkgs;
+      packages = { checkFmt, checkCue, nix, nixFlakes }@pkgs: pkgs;
 
       devShell = { bitteShell, cue }:
         (bitteShell {
+          inherit self;
           extraPackages = [ cue ];
           cluster = "vit-testnet";
           profile = "vit";

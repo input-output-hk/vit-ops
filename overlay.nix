@@ -16,7 +16,7 @@ in {
 
   print-env = final.callPackage ./pkgs/print-env.nix { };
 
-  zipkin-server = final.callPackage ./pkgs/zipkin-server.nix {};
+  zipkin-server = final.callPackage ./pkgs/zipkin-server.nix { };
 
   jormungandr-monitor-entrypoint =
     final.callPackage ./pkgs/jormungandr-monitor.nix { };
@@ -105,8 +105,7 @@ in {
 
   # Used for caching
   devShellPath = prev.symlinkJoin {
-    paths = final.devShell.buildInputs
-      ++ [ final.nixFlakes ];
+    paths = final.devShell.buildInputs ++ [ final.nixFlakes ];
     name = "devShell";
   };
 
