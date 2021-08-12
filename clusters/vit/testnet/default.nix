@@ -86,7 +86,6 @@ in {
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./docker-auth.nix
         ./host-volumes.nix
-        ./nspawn.nix
       ];
 
       withNamespace = name:
