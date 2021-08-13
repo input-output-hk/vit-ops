@@ -34,7 +34,7 @@ import (
 			address_mode: "host"
 			port:         "web"
 
-			#paths: "/api/{x:(vit-version|v0/(block0|fund|proposals|challenges).*)}"
+			#paths: "/api/{x:(vit-version|v0/(block0|fund|proposals|reviews|challenges).*)}"
 
 			tags: [
 				namespace,
