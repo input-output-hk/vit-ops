@@ -41,8 +41,8 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.1"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/07ff20e009dc7ab354651f419b279db30641158e#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/70c54048d18835cdd34aedcbd3a9365c38eb7304#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/0c128de718718b4c00f3f67e54763734bb98e5b9#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/a71e05a36e33cc41a9ad1b86692d0308d1d3a878#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
