@@ -98,7 +98,7 @@ artifacts: {
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/database.sqlite3"
-			checksum: "sha256:2cbf9dad131df7a022dde20e3797cb897390751ac043e4f7006cd0ae7ff076ec"
+			checksum: "sha256:8f14d5eaf4054032f2cb39cfba293e347de1508cb3c429a8841113ab1aeace5e"
 		}
 	}
 	"vit-testnet": {
