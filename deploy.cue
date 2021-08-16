@@ -41,8 +41,8 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.1"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/70c54048d18835cdd34aedcbd3a9365c38eb7304#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/0c128de718718b4c00f3f67e54763734bb98e5b9#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/02d6274e878b3b6a411ae8cb68357c00320229c4#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -67,7 +67,6 @@ Namespace: [Name=_]: {
 	"catalyst-fund5": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
-			#flakes: #jormungandr: "github:input-output-hk/jormungandr/edfe2c2a73de1d6548eaecbfb19b7c32aadbf178#jormungandr-entrypoint"
 		}
 		jobs: _defaultJobs
 	}

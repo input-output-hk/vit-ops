@@ -14,11 +14,11 @@ artifacts: {
 	"catalyst-dryrun": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/block0.bin"
-			checksum: "sha256:27df2da8cb051b0ecaf2645949dae352999b73588c1bafd810811193b2b049cf"
+			checksum: "sha256:08af35a82e5c267092b37ba20161f26fdc4b9f6767b36be80cc4190ba68daf7d"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-dryrun/database.sqlite3"
-			checksum: "sha256:4b5d74d05c35c3a55ee54e959c9a45b0b8ff42a860a72d9bc598690f6197146b"
+			checksum: "sha256:2cbf9dad131df7a022dde20e3797cb897390751ac043e4f7006cd0ae7ff076ec"
 		}
 	}
 	"catalyst-fund3": {
@@ -34,11 +34,11 @@ artifacts: {
 	"catalyst-signoff": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
-			checksum: "sha256:e8e4d1291909ecc2bb575ffc0c7eba59eec16f214a97ec79c99f7663d2d67fde"
+			checksum: "sha256:48fe90745c284b67119d4a0d94f553fc2a04baf18935e6ef3f01304cfc26a463"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
-			checksum: "sha256:129850688533d5add721ea39eab7294724e04f59b30c7da7758fc40bbfeaff67"
+			checksum: "sha256:b367ac5381eada521c6ddd779496c1b92cb502a21acd735df9eebbbc736a9489"
 		}
 	}
 	"catalyst-test": {
@@ -94,11 +94,21 @@ artifacts: {
 	"catalyst-fund5": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/block0.bin"
-			checksum: "sha256:cccaf82cd5d3124a48307ee9492f98699dd0c12a2d2870ba8f16e42c0bdd6bcb"
+			checksum: "sha256:08af35a82e5c267092b37ba20161f26fdc4b9f6767b36be80cc4190ba68daf7d"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-fund5/database.sqlite3"
-			checksum: "sha256:8583663a32e57396e8e36376a7b54b13e932c09f550524884f7f874a477ea84f"
+			checksum: "sha256:8f14d5eaf4054032f2cb39cfba293e347de1508cb3c429a8841113ab1aeace5e"
+		}
+	}
+	"vit-testnet": {
+		block0: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/block0.bin"
+			checksum: "sha256:c4e0ed507493a55fb23c53aaed3f381afa7210701e34009738bf1a33432e5476"
+		}
+		database: {
+			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/database.sqlite3"
+			checksum: "sha256:c43404c14d75f2db7795587d85a3c3c137d649c3b179ea71f1ee9588726e783a"
 		}
 	}
 }
