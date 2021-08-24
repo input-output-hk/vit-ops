@@ -28,15 +28,8 @@ in {
     };
   };
 
-  systemd.services.nomad.environment = {
-    # Try to work around Nix crashing.
-    GC_DONT_GC = "1";
-    CONSUL_HTTP_ADDR = "http://127.0.0.1:8500";
-    # certificates get rotated often, we got no way to update them while
-    # the jobs are running...
-    VAULT_SKIP_VERIFY = "true";
-    HOME = "/var/lib/nomad";
-  };
+  # Try to work around Nix crashing.
+  systemd.services.nomad.environment.GC_DONT_GC = "1";
 
   services.nomad.namespaces = {
     catalyst-dryrun.description = "Dryrun";
@@ -86,6 +79,7 @@ in {
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./docker-auth.nix
         ./host-volumes.nix
+        ./gluster-zfs-clients.nix
       ];
 
       withNamespace = name:
@@ -247,6 +241,7 @@ in {
         modules = [
           (bitte + /profiles/glusterfs/storage.nix)
           ./gluster-permissions.nix
+          ./gluster-zfs.nix
         ];
 
         securityGroupRules = {
@@ -259,7 +254,8 @@ in {
         privateIP = "172.16.1.50";
         subnet = cluster.vpc.subnets.core-2;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules =
+          [ (bitte + /profiles/glusterfs/storage.nix) ./gluster-zfs.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
@@ -271,7 +267,8 @@ in {
         privateIP = "172.16.2.50";
         subnet = cluster.vpc.subnets.core-3;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules =
+          [ (bitte + /profiles/glusterfs/storage.nix) ./gluster-zfs.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;

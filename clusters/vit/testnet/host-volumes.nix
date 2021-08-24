@@ -30,18 +30,16 @@ in {
   };
 
   system.activationScripts.nomad-host-volumes-local = ''
-    set -xu
     export PATH="${lib.makeBinPath (with pkgs; [ fd coreutils ])}:$PATH"
   '' + (lib.pipe volumes.local [
     (map (d: ''
       mkdir -p /var/lib/nomad-volumes/${d}
-      fd . -o root /var/lib/nomad-volumes/${d} -X chown nobody:nogroup
+      fd . -o root /var/lib/nomad-volumes/${d} -X chown nobody:nogroup || true
     ''))
     (builtins.concatStringsSep "\n")
   ]);
 
   system.activationScripts.nomad-host-volumes-gluster = ''
-    set -xu
     export PATH="${lib.makeBinPath (with pkgs; [ fd coreutils ])}:$PATH"
   '' + (lib.pipe volumes.gluster [
     (map (d: ''
