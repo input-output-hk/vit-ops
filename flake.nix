@@ -3,7 +3,7 @@
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte";
-    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.4";
+    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.5";
     nix.follows = "bitte/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
