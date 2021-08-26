@@ -3,6 +3,7 @@
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte";
+    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.4";
     nix.follows = "bitte/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
@@ -29,23 +30,25 @@
       preOverlays = [ bitte nix.overlay ];
       overlay = import ./overlay.nix { inherit inputs self; };
 
-      extraOutputs = let
-        hashiStack = bitte.lib.mkHashiStack {
-          flake = self // {
-            inputs = self.inputs // { inherit (bitte.inputs) terranix; };
+      extraOutputs =
+        let
+          hashiStack = bitte.lib.mkHashiStack {
+            flake = self // {
+              inputs = self.inputs // { inherit (bitte.inputs) terranix; };
+            };
+            domain = "vit.iohk.io";
           };
-          domain = "vit.iohk.io";
+        in
+        {
+          inherit self inputs;
+          inherit (hashiStack)
+            clusters nomadJobs nixosConfigurations consulTemplates;
         };
-      in {
-        inherit self inputs;
-        inherit (hashiStack)
-          clusters nomadJobs nixosConfigurations consulTemplates;
-      };
 
       packages = { checkFmt, checkCue, nix, nixFlakes }@pkgs: pkgs;
 
-      devShell = { bitteShell, cue }:
-        (bitteShell {
+      devShell = { bitteShellCompat, cue }:
+        (bitteShellCompat {
           inherit self;
           extraPackages = [ cue ];
           cluster = "vit-testnet";

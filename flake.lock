@@ -35,11 +35,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1629181278,
-        "narHash": "sha256-/17SKJQIogRVKkW/27zIIx+WtgvQ/Pm+xE2k27OPxFA=",
+        "lastModified": 1629957612,
+        "narHash": "sha256-MEpkbXLNTFiLIhiBuMLqGWMLz4t7DW0BJTI0drioyt4=",
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "rev": "3c802e7592aef64e203ed9a37d65d2b4ee3f79ee",
+        "rev": "70071224e1cce618350f3b482a927726a855f893",
         "type": "github"
       },
       "original": {

@@ -10,3 +10,4 @@ secrets/
 *.sig
 state*
 result*
+.direnv
