@@ -5,13 +5,14 @@ import (
 )
 
 #CardanoNode: types.#stanza.task & {
-	#dbSyncNetwork: string
+	#dbSyncNetwork:    string
+	#cardanoNodeFlake: string
 
 	driver: "exec"
 
 	resources: {
 		cpu:    3600
-		memory: 1024 * 8
+		memory: 1024 * 10
 	}
 
 	volume_mount: "persist": {
@@ -19,8 +20,8 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/cardano-node?rev=14229feb119cc3431515dde909a07bbf214f5e26#cardano-node-\(#dbSyncNetwork)-debug"
-		command: "/bin/cardano-node-entrypoint"
+		flake:   #cardanoNodeFlake
+		command: "/bin/cardano-db-sync-\(#dbSyncNetwork)"
 	}
 
 	env: {

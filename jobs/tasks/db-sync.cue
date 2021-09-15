@@ -5,11 +5,13 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 #DbSync: types.#stanza.task & {
 	#dbSyncRev:     types.#gitRevision
 	#dbSyncNetwork: string
-	driver:         "exec"
+	#dbSyncFlake:   string
+
+	driver: "exec"
 
 	resources: {
 		cpu:    3600
-		memory: 1024 * 12
+		memory: 1024 * 15
 	}
 
 	volume_mount: "persist": {
@@ -17,8 +19,8 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	}
 
 	config: {
-		flake:   "github:input-output-hk/cardano-db-sync?rev=\(#dbSyncRev)#cardano-db-sync-extended-\(#dbSyncNetwork)"
-		command: "/bin/cardano-db-sync-extended-entrypoint"
+		flake:   #dbSyncFlake
+		command: "/bin/cardano-node-testnet"
 	}
 
 	env: {

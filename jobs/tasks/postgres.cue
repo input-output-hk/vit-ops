@@ -3,7 +3,8 @@ package tasks
 import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 
 #Postgres: types.#stanza.task & {
-	#dbSyncRev: types.#gitRevision
+	#dbSyncRev:     types.#gitRevision
+	#postgresFlake: string
 
 	driver: "exec"
 
@@ -19,7 +20,7 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	}
 
 	config: {
-		flake:   "github:input-output-hk/cardano-db-sync?rev=\(#dbSyncRev)#postgres"
+		flake:   #postgresFlake
 		command: "/bin/postgres-entrypoint"
 	}
 

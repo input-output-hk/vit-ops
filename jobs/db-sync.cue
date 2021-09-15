@@ -6,15 +6,18 @@ import (
 )
 
 #DbSync: types.#stanza.job & {
-	_hex:                "[0-9a-f]"
-	#dbSyncNetwork:      "testnet" | "mainnet"
-	#dbSyncRev:          =~"^\(_hex){40}$"
-	#vitOpsRev:          string
-	#dbSyncInstance:     =~"^i-\(_hex){17}$"
-	#snapshotDomain:     string
-	#registrationDomain: string
+	_hex:                      "[0-9a-f]"
+	#dbSyncNetwork:            "testnet" | "mainnet"
+	#dbSyncRev:                =~"^\(_hex){40}$"
+	#vitOpsRev:                string
+	#dbSyncInstance:           =~"^i-\(_hex){17}$"
+	#dbSyncFlake:              string
+	#postgresFlake:            string
+	#cardanoNodeFlake:         string
+	#snapshotDomain:           string
+	#registrationDomain:       string
 	#registrationVerifyDomain: string
-	
+
 	namespace: string
 	type:      "service"
 
@@ -100,21 +103,27 @@ import (
 		}
 
 		let ref = {
-			dbSyncRev:     #dbSyncRev
-			dbSyncNetwork: #dbSyncNetwork
+			dbSyncRev:        #dbSyncRev
+			dbSyncNetwork:    #dbSyncNetwork
+			dbSyncFlake:      #dbSyncFlake
+			postgresFlake:    #postgresFlake
+			cardanoNodeFlake: #cardanoNodeFlake
 		}
 
 		task: "db-sync": tasks.#DbSync & {
 			#dbSyncRev:     ref.dbSyncRev
 			#dbSyncNetwork: ref.dbSyncNetwork
+			#dbSyncFlake:   ref.dbSyncFlake
 		}
 
 		task: "postgres": tasks.#Postgres & {
-			#dbSyncRev: ref.dbSyncRev
+			#dbSyncRev:     ref.dbSyncRev
+			#postgresFlake: ref.postgresFlake
 		}
 
 		task: "cardano-node": tasks.#CardanoNode & {
-			#dbSyncNetwork: ref.dbSyncNetwork
+			#dbSyncNetwork:    ref.dbSyncNetwork
+			#cardanoNodeFlake: ref.cardanoNodeFlake
 		}
 
 		task: "snapshot": tasks.#Snapshot & {
@@ -126,7 +135,6 @@ import (
 			#dbSyncNetwork: ref.dbSyncNetwork
 			#namespace:     namespace
 		}
-
 
 		task: "registration-verify": tasks.#RegistrationVerify & {
 			#dbSyncNetwork: ref.dbSyncNetwork

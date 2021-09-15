@@ -20,7 +20,12 @@ _defaultJobs: {
 #vitOpsRev: "55759981d7e693b0304ecf2d4bace0dc068caa6d"
 
 #flakes: {
-	devbox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/db-sync"
+	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/db-sync"
+	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
+	cardanoNodeTestnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/node"
+	cardanoNodeMainnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/node"
 }
 
 artifacts: [string]: [string]: {url: string, checksum: string}
@@ -93,9 +98,13 @@ Namespace: [Name=_]: {
 
 	"catalyst-test": {
 		jobs: {
+			let ref = {
+				cardanoNodeFlake: #flakes.cardanoNodeTestnet
+			}
 			devbox: jobDef.#DevBox & {
 				#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"
 				#flakes: devBox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+				#cardanoNodeFlake: ref.cardanoNodeFlake
 			}
 			wormhole: jobDef.#Wormhole
 		}
@@ -106,13 +115,19 @@ Namespace: [Name=_]: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
 				#dbSyncInstance:           "i-0ba0564889ae9094c"
+				#dbSyncFlake:              #flakes.dbSyncMainnet
+				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
+				#postgresFlake:            #flakes.postgres
 				#snapshotDomain:           "snapshot-mainnet.\(fqdn)"
 				#registrationDomain:       "registration-mainnet.\(fqdn)"
 				#registrationVerifyDomain: "registration-verify-mainnet.\(fqdn)"
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "testnet"
-				#dbSyncInstance:           "i-002a3025e13ed07ca"
+				#dbSyncInstance:           "i-0793243e0576fb317"
+				#dbSyncFlake:              #flakes.dbSyncTestnet
+				#cardanoNodeFlake:         #flakes.cardanoNodeTestnet
+				#postgresFlake:            #flakes.postgres
 				#snapshotDomain:           "snapshot-testnet.\(fqdn)"
 				#registrationDomain:       "registration-testnet.\(fqdn)"
 				#registrationVerifyDomain: "registration-verify-testnet.\(fqdn)"

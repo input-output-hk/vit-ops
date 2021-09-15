@@ -9,6 +9,14 @@ in {
       jormungandr-cli = final.jormungandr;
     };
 
+  nodePkgs = inputs.cardano-node.legacyPackages.${final.system};
+  node-scripts = final.nodePkgs.scripts;
+
+  dbSyncPkgs = inputs.cardano-db-sync.legacyPackages.${final.system};
+  db-sync-scripts = final.dbSyncPkgs.extendedScripts;
+
+  postgres-entrypoint = final.callPackage ./pkgs/postgres-entrypoint.nix { };
+
   inherit (inputs.vit-servicing-station.packages.${final.system})
     vit-servicing-station-server vit-servicing-station-cli;
 
@@ -26,10 +34,6 @@ in {
   nomad-driver-nspawn = final.callPackage ./pkgs/nomad-driver-nspawn.nix { };
 
   devbox-entrypoint = final.callPackage ./pkgs/devbox.nix { };
-
-  cardano-node = inputs.cardano-node.legacyPackages.${final.system};
-
-  inherit (final.cardano-node) cardano-cli;
 
   checkFmt = final.writeShellScriptBin "check_fmt.sh" ''
     export PATH="$PATH:${lib.makeBinPath (with final; [ git nixfmt gnugrep ])}"

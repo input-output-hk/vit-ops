@@ -7,6 +7,7 @@ import (
 
 #DevBox: types.#stanza.job & {
 	#flakes: [string]: types.#flake
+	#cardanoNodeFlake: string
 
 	type: "service"
 
@@ -15,8 +16,13 @@ import (
 			#flake: #flakes.devBox
 		}
 
+		let ref = {
+			cardanoNodeFlake: #cardanoNodeFlake
+		}
+
 		task: "cardano-node": tasks.#CardanoNode & {
-			#dbSyncNetwork: "testnet"
+			#dbSyncNetwork:    "testnet"
+			#cardanoNodeFlake: ref.cardanoNodeFlake
 		}
 	}
 }
