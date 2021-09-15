@@ -17,7 +17,7 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
-#vitOpsRev: "55759981d7e693b0304ecf2d4bace0dc068caa6d"
+#vitOpsRev: "ab2ce0d99e13e933c1ea26641248ed3a17ef1c81"
 
 #flakes: {
 	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
@@ -40,7 +40,7 @@ Namespace: [Name=_]: {
 		#database:   artifacts[Name].database
 		#domain:     string
 		#fqdn:       fqdn
-		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
+		#vitOpsRev:  =~"^\(hex){40}$" | *"ab2ce0d99e13e933c1ea26641248ed3a17ef1c81"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
 		#version:    string | *"3.1"
@@ -114,7 +114,7 @@ Namespace: [Name=_]: {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
-				#dbSyncInstance:           "i-0ba0564889ae9094c"
+				#dbSyncInstance:           "i-0a034a0f994dac4f8"
 				#dbSyncFlake:              #flakes.dbSyncMainnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
 				#postgresFlake:            #flakes.postgres

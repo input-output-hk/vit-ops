@@ -12,8 +12,11 @@ in {
   nodePkgs = inputs.cardano-node.legacyPackages.${final.system};
   node-scripts = final.nodePkgs.scripts;
 
-  dbSyncPkgs = inputs.cardano-db-sync.legacyPackages.${final.system};
-  db-sync-scripts = final.dbSyncPkgs.extendedScripts;
+  db-sync-testnet-scripts =
+    inputs.cardano-db-sync-testnet.legacyPackages.${final.system}.extendedScripts;
+
+  db-sync-mainnet-scripts =
+    inputs.cardano-db-sync-mainnet.legacyPackages.${final.system}.extendedScripts;
 
   postgres-entrypoint = final.callPackage ./pkgs/postgres-entrypoint.nix { };
 

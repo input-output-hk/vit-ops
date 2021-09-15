@@ -5,7 +5,7 @@
     bitte.url = "github:input-output-hk/bitte";
     bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli";
     bitte-iogo.url = "github:manveru/bitte-iogo";
-    nix.follows = "bitte/nix";
+    nix.url = "github:NixOS/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -27,10 +27,16 @@
       inputs.customConfig.url = "path:./pkgs/node-custom-config";
     };
 
-    cardano-db-sync = {
+    cardano-db-sync-testnet = {
       url =
         "github:input-output-hk/cardano-db-sync/b8901b6dee7258a6287803bfdf77b51be05c5704";
-      inputs.customConfig.url = "path:./pkgs/db-sync-custom-config";
+      inputs.customConfig.url = "path:./pkgs/db-sync-testnet";
+    };
+
+    cardano-db-sync-mainnet = {
+      url =
+        "github:input-output-hk/cardano-db-sync/b8901b6dee7258a6287803bfdf77b51be05c5704";
+      inputs.customConfig.url = "path:./pkgs/db-sync-mainnet";
     };
   };
 
@@ -56,12 +62,13 @@
       };
 
       packages = { checkFmt, checkCue, nix, nixFlakes, node-scripts
-        , db-sync-scripts, postgres-entrypoint }@pkgs:
+        , db-sync-testnet-scripts, db-sync-mainnet-scripts, postgres-entrypoint
+        }@pkgs:
         pkgs // {
           "testnet/node" = node-scripts.testnet.node;
           "mainnet/node" = node-scripts.mainnet.node;
-          "testnet/db-sync" = db-sync-scripts.testnet.db-sync;
-          "mainnet/db-sync" = db-sync-scripts.mainnet.db-sync;
+          "testnet/db-sync" = db-sync-testnet-scripts.testnet.db-sync;
+          "mainnet/db-sync" = db-sync-mainnet-scripts.mainnet.db-sync;
         };
 
       devShell = { bitteShellCompat, cue }:
