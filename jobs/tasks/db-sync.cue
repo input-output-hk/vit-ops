@@ -20,7 +20,7 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 
 	config: {
 		flake:   #dbSyncFlake
-		command: "/bin/cardano-node-testnet"
+		command: "/bin/cardano-db-sync-\(#dbSyncNetwork)"
 	}
 
 	env: {

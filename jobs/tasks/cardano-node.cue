@@ -21,7 +21,7 @@ import (
 
 	config: {
 		flake:   #cardanoNodeFlake
-		command: "/bin/cardano-db-sync-\(#dbSyncNetwork)"
+		command: "/bin/cardano-node-\(#dbSyncNetwork)"
 	}
 
 	env: {
