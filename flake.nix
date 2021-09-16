@@ -29,7 +29,7 @@
 
     cardano-db-sync-testnet = {
       url =
-        "github:input-output-hk/cardano-db-sync/636f0b606d41897a9bd0a0f9de0add2a984b112d";
+        "github:input-output-hk/cardano-db-sync/52f78bbd7767f95bf37cc9661833a84aee88af1c";
       inputs.customConfig.url = "path:./pkgs/db-sync-testnet";
     };
 

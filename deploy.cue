@@ -17,9 +17,7 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
-
-
-#vitOpsRev: "5582ec9556335c508658d4d0cab9a47d4a09c7b3"
+#vitOpsRev: "6adc4acb2d3b66b5cdb35f3c1c24e1b4692eb2c7"
 
 #flakes: {
 	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
@@ -42,7 +40,7 @@ Namespace: [Name=_]: {
 		#database:   artifacts[Name].database
 		#domain:     string
 		#fqdn:       fqdn
-		#vitOpsRev:  =~"^\(hex){40}$" | *"5582ec9556335c508658d4d0cab9a47d4a09c7b3"
+		#vitOpsRev:  =~"^\(hex){40}$" | *"6adc4acb2d3b66b5cdb35f3c1c24e1b4692eb2c7"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
 		#version:    string | *"3.1"

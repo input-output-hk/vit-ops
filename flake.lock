@@ -161,17 +161,17 @@
         "utils": "utils_7"
       },
       "locked": {
-        "lastModified": 1631775654,
-        "narHash": "sha256-FItNJwcFddBIDmZ0+c6iKJDRGeFPVMO84MEYzJndrlk=",
+        "lastModified": 1631777439,
+        "narHash": "sha256-FfjFQtJh2q1OF5Z8lD0eSRuTXjW+m7k5Bx+7CLrhY2o=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "636f0b606d41897a9bd0a0f9de0add2a984b112d",
+        "rev": "52f78bbd7767f95bf37cc9661833a84aee88af1c",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "636f0b606d41897a9bd0a0f9de0add2a984b112d",
+        "rev": "52f78bbd7767f95bf37cc9661833a84aee88af1c",
         "type": "github"
       }
     },
@@ -231,7 +231,7 @@
     },
     "customConfig_2": {
       "locked": {
-        "narHash": "sha256-5ZQJUccHoS7M14KUAeSBqWu3fqxDhCUFU2s3iCtvsYs=",
+        "narHash": "sha256-h+LfeeF7lSgQQWw7Tee71+QeMu9XRMUPZ10dY5C+Fxc=",
         "path": "./pkgs/db-sync-testnet",
         "type": "path"
       },
