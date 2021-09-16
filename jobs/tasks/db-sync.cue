@@ -19,7 +19,10 @@ import "github.com/input-output-hk/vit-ops/pkg/schemas/nomad:types"
 	}
 
 	config: {
-		flake:   #dbSyncFlake
+		flake: [
+			#dbSyncFlake,
+			"github:NixOS/nixpkgs#bashInteractive",
+		]
 		command: "/bin/cardano-db-sync-\(#dbSyncNetwork)"
 	}
 

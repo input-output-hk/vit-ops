@@ -218,10 +218,39 @@ import (
 		TaskName: string | *""
 	}
 
+	ExecConfig: {
+		flake_deps: [...string]
+		command: string
+		args: [...string]
+	}
+
+	#label: [string]: string
+
+	DockerConfigLogging: {
+		type: "journald"
+		config: [...DockerConfigLoggingConfig]
+	}
+
+	DockerConfigLoggingConfig: {
+		tag:    string
+		labels: string
+	}
+
+	DockerConfig: {
+		image:   string
+		command: *null | string
+		args: [...string]
+		ports: [...string]
+		labels: [...#label]
+		logging: DockerConfigLogging
+	}
+
+	TaskConfig: DockerConfig | ExecConfig
+
 	Task: {
 		Name:   string
 		Driver: "exec" | "docker" | "nspawn"
-		Config: #stanza.taskConfig & {#driver: Driver}
+		Config: #json.TaskConfig & {#driver: Driver}
 		Constraints: [...Constraint]
 		Affinities: [...Affinity]
 		Env: [string]: string
@@ -495,9 +524,21 @@ import (
 		}]
 
 		Tasks: [ for tName, t in tg.task {
-			Name:       tName
-			Driver:     t.driver
-			Config:     t.config
+			Name:   tName
+			Driver: t.driver
+
+			if t.driver == "docker" {
+				Config: t.config
+			}
+
+			if t.driver == "exec" {
+				Config: {
+					flake_deps: list.FlattenN([t.config.flake], 2)
+					command:    t.config.command
+					args:       t.config.args
+				}
+			}
+
 			Env:        t.env
 			KillSignal: t.kill_signal
 			if t.kill_timeout != null {
@@ -769,7 +810,7 @@ import (
 	taskConfig: dockerConfig | execConfig
 
 	execConfig: {
-		flake:   string
+		flake:   string | [...string]
 		command: string
 		args: [...string]
 	}
