@@ -38,7 +38,7 @@ let
     ln -sfn "${configs.postgres}" "$PGDATA/postgresql.conf"
 
     (
-      pg_isready --timeout 30 --host /alloc
+      until pg_isready --timeout 30 --host /alloc; do sleep 1; done
       createuser --createdb --superuser cexplorer
     ) &
 
