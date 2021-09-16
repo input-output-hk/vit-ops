@@ -36,6 +36,12 @@ let
     fi
 
     ln -sfn "${configs.postgres}" "$PGDATA/postgresql.conf"
+
+    (
+      pg_isready -t 30
+      createuser --createdb --superuser cexplorer
+    ) &
+
     exec postgres "$@"
   '';
 in symlinkJoin {
