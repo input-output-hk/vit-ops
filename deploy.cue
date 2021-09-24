@@ -41,8 +41,8 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.1"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund6#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund6#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/0c128de718718b4c00f3f67e54763734bb98e5b9#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/02d6274e878b3b6a411ae8cb68357c00320229c4#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -74,7 +74,7 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
-			#flakes: #jormungandr: "github:input-output-hk/jormungandr/c9aa8cd2bfcf20c77a6a59612638a7d7cbb24f38#jormungandr-entrypoint"
+			#flakes: #jormungandr: "github:input-output-hk/jormungandr/0c128de718718b4c00f3f67e54763734bb98e5b9#jormungandr-entrypoint"
 			#rateLimit: {
 				average: 100000
 				burst:   200000
