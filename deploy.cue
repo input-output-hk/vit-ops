@@ -114,7 +114,7 @@ Namespace: [Name=_]: {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
-				#dbSyncInstance:           "i-0a034a0f994dac4f8"
+				#dbSyncInstance:           "i-002a3025e13ed07ca"
 				#dbSyncFlake:              #flakes.dbSyncMainnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
 				#postgresFlake:            #flakes.postgres
