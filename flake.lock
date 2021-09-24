@@ -222,7 +222,7 @@
     },
     "customConfig": {
       "locked": {
-        "narHash": "sha256-Duz/8/AjGHgYAiC519UKTmNTrf6unQWZdiCdZZAkwBM=",
+        "narHash": "sha256-HDr1lrXD3i/IoFwU8VLfV9wUi9usojZkE8a9g6WIsaA=",
         "path": "./pkgs/db-sync-mainnet",
         "type": "path"
       },
