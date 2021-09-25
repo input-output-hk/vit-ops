@@ -4,8 +4,8 @@
   inputs = {
     bitte.url = "github:input-output-hk/bitte/sanitize-exempt";
     bitte.inputs.bitte-cli.follows = "bitte-cli";
-    bitte-cli.url = "github:input-output-hk/bitte-cli";
-    bitte-iogo.url = "github:manveru/bitte-iogo";
+    bitte-cli.url = "github:input-output-hk/bitte-cli/785b71fd808de16e0705236540239e063454ef5f";
+    # bitte-iogo.url = "github:manveru/bitte-iogo";
     nix.url = "github:NixOS/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     nixpkgs.follows = "bitte/nixpkgs";
