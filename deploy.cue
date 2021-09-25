@@ -43,7 +43,7 @@ Namespace: [Name=_]: {
 		#vitOpsRev:  =~"^\(hex){40}$" | *"46220aa46f838df7020a3a07e361b8811dceed07"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"3.1"
+		#version:    string | *"3.4"
 
 		#flakes: {
 			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund6#jormungandr-entrypoint"
@@ -69,7 +69,7 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund5": {
+	"catalyst-fund6": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
 		}
