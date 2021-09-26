@@ -70,6 +70,12 @@ Namespace: [Name=_]: {
 		}
 		jobs: _defaultJobs
 	}
+	"catalyst-fund6": {
+		vars: {
+			#domain: "servicing-station.\(fqdn)"
+		}
+		jobs: _defaultJobs
+	}
 
 	"catalyst-perf": {
 		vars: {
