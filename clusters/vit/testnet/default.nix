@@ -187,7 +187,7 @@ in {
         instanceType = "t3a.xlarge";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
-        volumeSize = 300;
+        volumeSize = 600;
         route53.domains = [
           "consul.${cluster.domain}"
           "docker.${cluster.domain}"
@@ -236,6 +236,7 @@ in {
       storage-0 = {
         instanceType = "t3a.small";
         privateIP = "172.16.0.50";
+        volumeSize = 60;
         subnet = cluster.vpc.subnets.core-1;
 
         modules = [
@@ -252,6 +253,7 @@ in {
       storage-1 = {
         instanceType = "t3a.small";
         privateIP = "172.16.1.50";
+        volumeSize = 60;
         subnet = cluster.vpc.subnets.core-2;
 
         modules =
@@ -265,6 +267,7 @@ in {
       storage-2 = {
         instanceType = "t3a.small";
         privateIP = "172.16.2.50";
+        volumeSize = 60;
         subnet = cluster.vpc.subnets.core-3;
 
         modules =

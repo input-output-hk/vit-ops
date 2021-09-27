@@ -40,8 +40,8 @@ let
   db-storage = mkStorages "" { };
   zfs-storage = mkStorages "-zfs" {
     size = 200;
-    iops = 6000;
-    throughput = 500;
+    iops = 16000;
+    throughput = 1000;
   };
 in {
   tf.core.configuration = {
