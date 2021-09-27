@@ -1,7 +1,8 @@
 { self, config, pkgs, ... }: {
-  imports = [
-    (self.inputs.bitte + /profiles/monitoring.nix)
-    ./secrets.nix
+  imports = [ (self.inputs.bitte + /profiles/monitoring.nix) ./secrets.nix ];
+
+  users.extraUsers.root.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKad42tJ+z7APPA7pJPRPKOy1FP2ZZZ4XtNi8i0Pq9Lk deployer0"
   ];
 
   services.grafana.provision.dashboards = [{
