@@ -38,7 +38,7 @@ Namespace: [Name=_]: {
 		#vitOpsRev:  =~"^\(hex){40}$" | *"55759981d7e693b0304ecf2d4bace0dc068caa6d"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"3.1"
+		#version:    string | *"3.4"
 
 		#flakes: {
 			#jormungandr:      string | *"github:input-output-hk/jormungandr/0c128de718718b4c00f3f67e54763734bb98e5b9#jormungandr-entrypoint"
