@@ -136,17 +136,17 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1631783028,
-        "narHash": "sha256-Cq3TcimbvosxIw33d9vGPwRaSrJai+Jr5cDgXcsCFNc=",
+        "lastModified": 1633092352,
+        "narHash": "sha256-zJDQIWBBfbREyFMGzQJLPQ3xt8jEx7OIdsEcJRObvcY=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "7e049be27df4571db9595ce45c8f76c25dbdd909",
+        "rev": "f0e790040afffbf1e1a91e9c34fec73e3e4196ed",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "7e049be27df4571db9595ce45c8f76c25dbdd909",
+        "rev": "f0e790040afffbf1e1a91e9c34fec73e3e4196ed",
         "type": "github"
       }
     },
@@ -163,17 +163,17 @@
         "utils": "utils_7"
       },
       "locked": {
-        "lastModified": 1631777439,
-        "narHash": "sha256-FfjFQtJh2q1OF5Z8lD0eSRuTXjW+m7k5Bx+7CLrhY2o=",
+        "lastModified": 1633092395,
+        "narHash": "sha256-ZYxRpZ2RZKOEEPkp+gDwrQICE1ZivI8w0s0QqOMFmGc=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "52f78bbd7767f95bf37cc9661833a84aee88af1c",
+        "rev": "b5fff2b0ac71614111c2a0616f44da7a79cab341",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "52f78bbd7767f95bf37cc9661833a84aee88af1c",
+        "rev": "b5fff2b0ac71614111c2a0616f44da7a79cab341",
         "type": "github"
       }
     },
@@ -423,7 +423,6 @@
         "hpc-coveralls": "hpc-coveralls",
         "nix-tools": "nix-tools",
         "nixpkgs": [
-          "cardano-node",
           "nixpkgs"
         ],
         "nixpkgs-2003": "nixpkgs-2003",
@@ -573,7 +572,6 @@
     "iohkNix": {
       "inputs": {
         "nixpkgs": [
-          "cardano-db-sync-mainnet",
           "nixpkgs"
         ]
       },
@@ -594,7 +592,6 @@
     "iohkNix_2": {
       "inputs": {
         "nixpkgs": [
-          "cardano-db-sync-testnet",
           "nixpkgs"
         ]
       },
@@ -615,7 +612,6 @@
     "iohkNix_3": {
       "inputs": {
         "nixpkgs": [
-          "cardano-node",
           "nixpkgs"
         ]
       },
