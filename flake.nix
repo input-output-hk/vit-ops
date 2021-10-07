@@ -2,7 +2,7 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/sanitize-exempt";
+    bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase";
     bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli";
     bitte-iogo.url = "github:manveru/bitte-iogo";
     nix.url = "github:NixOS/nix";
