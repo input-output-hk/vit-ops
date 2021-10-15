@@ -32,18 +32,13 @@
         "vulnix": "vulnix"
       },
       "locked": {
-        "lastModified": 1633586321,
-        "narHash": "sha256-4JkQynpqyil7F6UlF+o/LmsKGWeC9fTlF90Qj43zhaI=",
-        "owner": "input-output-hk",
-        "repo": "bitte",
-        "rev": "3249bbdae234f28315ef5e33841983b1822fdc17",
-        "type": "github"
+        "narHash": "sha256-qMpgiO5cyflNj90aONFYIIiub2blqNHcXUDKQ76AIHo=",
+        "path": "/home/const/iohk/src/bitte",
+        "type": "path"
       },
       "original": {
-        "owner": "input-output-hk",
-        "ref": "vault-agent-ttl-increase",
-        "repo": "bitte",
-        "type": "github"
+        "path": "/home/const/iohk/src/bitte",
+        "type": "path"
       }
     },
     "bitte-cli": {
@@ -54,16 +49,12 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1633543355,
-        "narHash": "sha256-Gn4dXHkLBcDReSgvjwlz2kiXD0LFtfsVPEci3T/DtAs=",
-        "owner": "input-output-hk",
-        "repo": "bitte-cli",
-        "rev": "48750c01ff361b7ec309f9412046a05cb076104a",
-        "type": "github"
+        "narHash": "sha256-tZ6/HYhQFsHhzD0UzG0U4EOPFX2FntoI4lzgGMPfC/4=",
+        "path": "/home/const/iohk/src/bitte-cli",
+        "type": "path"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "v0.3.5",
         "repo": "bitte-cli",
         "type": "github"
       }
@@ -547,11 +538,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1633542890,
-        "narHash": "sha256-aH6cCdKPX2YUmzdd9ier3g9f8trVjxlDwyOaSYR3Hgs=",
+        "lastModified": 1634280588,
+        "narHash": "sha256-1AAzAwY4XpWRdxFkkmCFyX1wbxK1ql4BRuyCuNLSzR0=",
         "owner": "input-output-hk",
         "repo": "bitte-iogo",
-        "rev": "33c413bfd13927565be4299e4ed4dd4e97d43752",
+        "rev": "db43a876989148c07586539de2ca1c473850e512",
         "type": "github"
       },
       "original": {
@@ -824,16 +815,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1630598110,
-        "narHash": "sha256-FD1xIDoKMOjBE8tHHp95aa5HfxKDCa+3kf5T7AA47tY=",
+        "lastModified": 1633329294,
+        "narHash": "sha256-0LpQLS4KMgxslMgmDHmxG/5twFlXDBW9z4Or1iOrCvU=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6bfe71f2a4e2e425dee26b25d2309f341ff1600d",
+        "rev": "ee084c02040e864eeeb4cf4f8538d92f7c675671",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-21.05",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -1645,15 +1636,16 @@
     "vulnix": {
       "flake": false,
       "locked": {
-        "lastModified": 1627294547,
-        "narHash": "sha256-C3PM19Y4YxLBJ3V6LBJzpwSJwDjJH7vkWOe4hBppQvQ=",
-        "owner": "flyingcircusio",
+        "lastModified": 1632431644,
+        "narHash": "sha256-iePIr+z/YxrST5pLKnhF666cAMme90dAOS5vgAiwmxg=",
+        "owner": "dermetfan",
         "repo": "vulnix",
-        "rev": "06daccda0e51098fbdbc65f61b6663c5c6df9358",
+        "rev": "cea4e8973a39377aa42541b9dbf3a13ab46d51db",
         "type": "github"
       },
       "original": {
-        "owner": "flyingcircusio",
+        "owner": "dermetfan",
+        "ref": "runtime-deps",
         "repo": "vulnix",
         "type": "github"
       }

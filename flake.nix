@@ -2,8 +2,8 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase";
-    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli";
+    bitte.url = "path:/home/const/iohk/src/bitte";
+    bitte.inputs.bitte-cli.url = "path:/home/const/iohk/src/bitte-cli";
     bitte-iogo.url = "github:manveru/bitte-iogo";
     nix.url = "github:NixOS/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";

@@ -4,7 +4,7 @@ artifacts: {
 	"catalyst-perf": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-perf/block0.bin"
-			checksum: "sha256:853c5312a4934827787b832dc71724ed662204376400ec67439ae1d94f41b124"
+			checksum: "sha256:200eecfe5e19b7ae95443603f0546dac8cb4f90b48caf2dddcda128ef060ff81"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-perf/database.sqlite3"
