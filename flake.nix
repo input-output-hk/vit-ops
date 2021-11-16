@@ -3,11 +3,11 @@
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase";
-    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli";
-    bitte-iogo.url = "github:manveru/bitte-iogo";
+    bitte.inputs.bitte-cli.follows = "bitte-cli";
+    bitte-cli.url = "github:input-output-hk/bitte-cli/v0.4.2";
     nix.url = "github:NixOS/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
-    nixpkgs.follows = "bitte/nixpkgs";
+    nixpkgs.follows = "bitte-cli/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
     utils.url = "github:kreisys/flake-utils";
@@ -45,7 +45,7 @@
       inherit nixpkgs;
       systems = [ "x86_64-linux" ];
 
-      preOverlays = [ bitte nix.overlay ];
+      preOverlays = [ bitte nix.overlay bitte.inputs.bitte-cli.overlay ];
       overlay = import ./overlay.nix { inherit inputs self; };
 
       extraOutputs = let
@@ -71,8 +71,8 @@
           "mainnet/db-sync" = db-sync-mainnet-scripts.mainnet.db-sync;
         };
 
-      devShell = { bitteShellCompat, cue }:
-        (bitteShellCompat {
+      devShell = { bitteShell, cue }:
+        (bitteShell {
           inherit self;
           extraPackages = [ cue ];
           cluster = "vit-testnet";
