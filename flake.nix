@@ -21,9 +21,7 @@
       "github:input-output-hk/vit-servicing-station/a0d61cbb69608a834cfe30b60d526822fb69b47e";
 
     cardano-node = {
-      # custom-config handling patch on top of 1.29:
-      url =
-        "github:input-output-hk/cardano-node/397078b4c302e2983a7c060778bcb062aa3435b7";
+      url = "github:input-output-hk/cardano-node/1.31.0";
       inputs.customConfig.url = "path:./pkgs/node-custom-config";
     };
 
