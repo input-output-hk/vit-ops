@@ -17,7 +17,7 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
-#vitOpsRev: "75c77002365bc67232b32bd8bfdc39a5477d59fe"
+#vitOpsRev: "5174b396ab0f58a096809f5c51279a19b9ca08d0"
 
 #flakes: {
 	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"

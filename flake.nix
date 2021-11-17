@@ -2,12 +2,10 @@
   description = "Bitte for VIT";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase";
-    bitte.inputs.bitte-cli.follows = "bitte-cli";
-    bitte-cli.url = "github:input-output-hk/bitte-cli/v0.4.2";
+    bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase-2";
     nix.url = "github:NixOS/nix";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
-    nixpkgs.follows = "bitte-cli/nixpkgs";
+    nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
     utils.url = "github:kreisys/flake-utils";
@@ -59,7 +57,7 @@
 
       packages = { checkFmt, checkCue, nix, nixFlakes, node-scripts
         , db-sync-testnet-scripts, db-sync-mainnet-scripts, postgres-entrypoint
-        }@pkgs:
+        , bitte }@pkgs:
         pkgs // {
           "testnet/node" = node-scripts.testnet.node;
           "mainnet/node" = node-scripts.mainnet.node;
