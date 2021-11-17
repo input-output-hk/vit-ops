@@ -26,14 +26,12 @@
     };
 
     cardano-db-sync-testnet = {
-      url =
-        "github:input-output-hk/cardano-db-sync/b5fff2b0ac71614111c2a0616f44da7a79cab341";
+      url = "github:input-output-hk/cardano-db-sync/11.0.2";
       inputs.customConfig.url = "path:./pkgs/db-sync-testnet";
     };
 
     cardano-db-sync-mainnet = {
-      url =
-        "github:input-output-hk/cardano-db-sync/f0e790040afffbf1e1a91e9c34fec73e3e4196ed";
+      url = "github:input-output-hk/cardano-db-sync/11.0.2";
       inputs.customConfig.url = "path:./pkgs/db-sync-mainnet";
     };
   };

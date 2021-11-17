@@ -1,26 +1,26 @@
 { inputs, self }:
 final: prev:
-let lib = final.lib;
+let inherit (final) lib;
 in {
-  jormungandr = inputs.jormungandr.packages.${final.system}.jormungandr;
+  inherit (inputs.jormungandr.packages."${final.system}") jormungandr;
 
   jormungandr-monitor =
     final.callPackage (inputs.jormungandr-nix + "/nixos/jormungandr-monitor") {
       jormungandr-cli = final.jormungandr;
     };
 
-  nodePkgs = inputs.cardano-node.legacyPackages.${final.system};
+  nodePkgs = inputs.cardano-node.legacyPackages."${final.system}";
   node-scripts = final.nodePkgs.scripts;
 
   db-sync-testnet-scripts =
-    inputs.cardano-db-sync-testnet.legacyPackages.${final.system}.extendedScripts;
+    inputs.cardano-db-sync-testnet.legacyPackages."${final.system}".scripts;
 
   db-sync-mainnet-scripts =
-    inputs.cardano-db-sync-mainnet.legacyPackages.${final.system}.extendedScripts;
+    inputs.cardano-db-sync-mainnet.legacyPackages."${final.system}".scripts;
 
   postgres-entrypoint = final.callPackage ./pkgs/postgres-entrypoint.nix { };
 
-  inherit (inputs.vit-servicing-station.packages.${final.system})
+  inherit (inputs.vit-servicing-station.packages."${final.system}")
     vit-servicing-station-server vit-servicing-station-cli;
 
   jormungandr-entrypoint = final.callPackage ./pkgs/jormungandr.nix { };
@@ -72,7 +72,7 @@ in {
 
   devShell = let
     clusterName = builtins.elemAt (builtins.attrNames final.clusters) 0;
-    cluster = final.clusters.${clusterName}.proto.config.cluster;
+    inherit (final.clusters."${clusterName}".proto.config) cluster;
   in prev.mkShell {
     # for bitte-cli
     LOG_LEVEL = "debug";
@@ -116,5 +116,5 @@ in {
     name = "devShell";
   };
 
-  inherit (inputs.nixpkgs-unstable.legacyPackages.${final.system}) traefik;
+  inherit (inputs.nixpkgs-unstable.legacyPackages."${final.system}") traefik;
 }

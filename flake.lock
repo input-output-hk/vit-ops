@@ -117,17 +117,17 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1633092352,
-        "narHash": "sha256-zJDQIWBBfbREyFMGzQJLPQ3xt8jEx7OIdsEcJRObvcY=",
+        "lastModified": 1631703079,
+        "narHash": "sha256-SYNJinHs1lNZ/5LZ4aVJRSzs19S6aJU+iaJbFLMvwYo=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "f0e790040afffbf1e1a91e9c34fec73e3e4196ed",
+        "rev": "1b3c60514011e184b6493b6297843c143cb870f7",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "11.0.2",
         "repo": "cardano-db-sync",
-        "rev": "f0e790040afffbf1e1a91e9c34fec73e3e4196ed",
         "type": "github"
       }
     },
@@ -144,17 +144,17 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1633092395,
-        "narHash": "sha256-ZYxRpZ2RZKOEEPkp+gDwrQICE1ZivI8w0s0QqOMFmGc=",
+        "lastModified": 1631703079,
+        "narHash": "sha256-SYNJinHs1lNZ/5LZ4aVJRSzs19S6aJU+iaJbFLMvwYo=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "b5fff2b0ac71614111c2a0616f44da7a79cab341",
+        "rev": "1b3c60514011e184b6493b6297843c143cb870f7",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
+        "ref": "11.0.2",
         "repo": "cardano-db-sync",
-        "rev": "b5fff2b0ac71614111c2a0616f44da7a79cab341",
         "type": "github"
       }
     },
@@ -203,7 +203,7 @@
     },
     "customConfig": {
       "locked": {
-        "narHash": "sha256-HDr1lrXD3i/IoFwU8VLfV9wUi9usojZkE8a9g6WIsaA=",
+        "narHash": "sha256-hTMnnGymOCNT1y86nV1fZrWQmdPx+RAkdALsPXOZGwo=",
         "path": "./pkgs/db-sync-mainnet",
         "type": "path"
       },
@@ -214,7 +214,7 @@
     },
     "customConfig_2": {
       "locked": {
-        "narHash": "sha256-h+LfeeF7lSgQQWw7Tee71+QeMu9XRMUPZ10dY5C+Fxc=",
+        "narHash": "sha256-i4MU70MnFIQeJgY7mccIhseYoXvqeev7hyT2DpAZTM4=",
         "path": "./pkgs/db-sync-testnet",
         "type": "path"
       },
@@ -541,6 +541,7 @@
     "iohkNix": {
       "inputs": {
         "nixpkgs": [
+          "cardano-db-sync-mainnet",
           "nixpkgs"
         ]
       },
@@ -561,6 +562,7 @@
     "iohkNix_2": {
       "inputs": {
         "nixpkgs": [
+          "cardano-db-sync-testnet",
           "nixpkgs"
         ]
       },
