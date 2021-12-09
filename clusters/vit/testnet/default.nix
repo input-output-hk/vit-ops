@@ -70,6 +70,7 @@ in {
         ./docker-auth.nix
         ./host-volumes.nix
         ./gluster-zfs-clients.nix
+        ./fix-nvme.nix
       ];
     in lib.listToAttrs (lib.forEach [
       {
@@ -78,7 +79,6 @@ in {
         desiredCapacity = 3;
         instanceType = "r5a.2xlarge";
         volumeSize = 800;
-        modules = defaultModules ++ [ ./fix-nvme.nix ];
       }
       { region = "us-east-2"; }
       { region = "eu-west-1"; }
