@@ -4,8 +4,7 @@ let
   inherit (config) cluster;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
-in
-{
+in {
   imports = [ ./iam.nix ./terraform-storage.nix ./secrets.nix ];
 
   users.users.telegraf.group = "telegraf";
@@ -43,9 +42,8 @@ in
   nix = {
     binaryCaches = [ "https://hydra.iohk.io" ];
 
-    binaryCachePublicKeys = [
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    ];
+    binaryCachePublicKeys =
+      [ "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" ];
   };
 
   cluster = {
@@ -66,54 +64,41 @@ in
 
     autoscalingGroups = let
       defaultModules = [
-        (bitte + /profiles/client.nix)
+        bitte.profiles.client
         "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./docker-auth.nix
         ./host-volumes.nix
         ./gluster-zfs-clients.nix
       ];
-
-      withNamespace = name:
-        pkgs.writeText "nomad-tag.nix" ''
-          { services.nomad.client.meta.namespace = "${name}"; }
-        '';
-
-      mkModules = name: defaultModules ++ [ "${withNamespace name}" ];
     in lib.listToAttrs (lib.forEach [
       {
+        # used for db-sync
         region = "eu-central-1";
-        desiredCapacity = 4;
+        desiredCapacity = 3;
         instanceType = "r5a.2xlarge";
-        modules = mkModules "catalyst-dryrun";
+        volumeSize = 800;
+        modules = defaultModules ++ [ ./fix-nvme.nix ];
       }
-      {
-        region = "us-east-2";
-        desiredCapacity = 4;
-        modules = mkModules "catalyst-fund2";
-      }
-      {
-        region = "eu-west-1";
-        desiredCapacity = 5;
-        instanceType = "c5.4xlarge";
-        volumeSize = 200;
-        modules = mkModules "catalyst-sync";
-      }
+      { region = "us-east-2"; }
+      { region = "eu-west-1"; }
     ] (args:
       let
-        attrs = ({
-          desiredCapacity = 1;
-          instanceType = "t3a.large";
+        attrs = {
+          desiredCapacity = 6;
+          instanceType = "c5.4xlarge";
+          volumeSize = 200;
           associatePublicIP = true;
           maxInstanceLifetime = 0;
           node_class = "client";
+          modules = defaultModules;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
-        } // args);
+        } // args;
         asgName = "client-${attrs.region}-${
             builtins.replaceStrings [ "." ] [ "-" ] attrs.instanceType
           }";
