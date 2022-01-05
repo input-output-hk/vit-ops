@@ -45,10 +45,11 @@ import (
 				"traefik.http.routers.\(namespace)-servicing-station.tls=true",
 				"traefik.http.routers.\(namespace)-servicing-station.middlewares=\(namespace)-vss-ratelimit@consulcatalog, \(namespace)-vss-remove-origin@consulcatalog, \(namespace)-vss-cors-headers@consulcatalog",
 				"traefik.http.middlewares.\(namespace)-vss-remove-origin.headers.customrequestheaders.Origin=http://127.0.0.1",
-				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT",
+				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST",
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolalloworiginlist=*",
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolmaxage=100",
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.addvaryheader=true",
+				"traefik.http.middlewares.catalyst-dryrun-vss-cors-headers.headers.accesscontrolallowheaders=*"
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.average=\(#rateLimit.average)",
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.burst=\(#rateLimit.burst)",
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.period=\(#rateLimit.period)",
