@@ -69,7 +69,7 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund5": {
+	"catalyst-fund6": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
 		}
