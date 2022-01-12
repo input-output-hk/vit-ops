@@ -49,7 +49,7 @@ import (
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolalloworiginlist=*",
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.accesscontrolmaxage=100",
 				"traefik.http.middlewares.\(namespace)-vss-cors-headers.headers.addvaryheader=true",
-				"traefik.http.middlewares.catalyst-dryrun-vss-cors-headers.headers.accesscontrolallowheaders=*"
+				"traefik.http.middlewares.catalyst-dryrun-vss-cors-headers.headers.accesscontrolallowheaders=*",
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.average=\(#rateLimit.average)",
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.burst=\(#rateLimit.burst)",
 				"traefik.http.middlewares.\(namespace)-vss-ratelimit.ratelimit.period=\(#rateLimit.period)",
