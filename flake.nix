@@ -18,9 +18,9 @@
       flake = false;
     };
     jormungandr.url =
-      "github:input-output-hk/jormungandr/8178bc9149ea4629c8ae6f87bdd5be4a154db322";
+      "github:input-output-hk/jormungandr/3574c48caf0685d4065d0b96cad2cc275e66dd58";
     vit-servicing-station.url =
-      "github:input-output-hk/vit-servicing-station/a0d61cbb69608a834cfe30b60d526822fb69b47e";
+      "github:input-output-hk/vit-servicing-station/298960410599f0f90541d7371543bb55e086451f";
 
     cardano-node = {
       url = "github:input-output-hk/cardano-node/1.31.0";

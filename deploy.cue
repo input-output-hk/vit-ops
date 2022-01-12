@@ -43,7 +43,7 @@ Namespace: [Name=_]: {
 		#vitOpsRev:  =~"^\(hex){40}$" | *"75c77002365bc67232b32bd8bfdc39a5477d59fe"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"3.1"
+		#version:    string | *"3.4"
 
 		#flakes: {
 			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund6#jormungandr-entrypoint"
