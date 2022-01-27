@@ -24,6 +24,9 @@ in {
   # Try to work around Nix crashing.
   systemd.services.nomad.environment.GC_DONT_GC = "1";
 
+  # avoid CVE-2021-4034 (PwnKit)
+  security.polkit.enable = false;
+
   services.nomad.namespaces = {
     catalyst-dryrun.description = "Dryrun";
     catalyst-fund3.description = "Fund3";
