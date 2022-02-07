@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-
 set -exuo pipefail
 
-export JORMUNGANDR_RESTAPI_URL=https://dryrun-servicing-station.vit.iohk.io/api
+export JORMUNGANDR_RESTAPI_URL=https://*****/api
 
-if [ "$#" -ne 1 ]; then
-    echo "Script is expecting voteplan index: "
-	echo "./private.sh 0 "
+if [ "$#" -ne 2 ]; then
+    echo "Script is expecting voteplan index and expiry block date: "
+	echo "./private.sh 0 1.0"
 	exit -1
 fi
 
 VOTE_PLAN_INDEX=$1
+EXPIRY_BLOCK_DATE=$2
 
 VOTE_PLAN_ID=$(jcli rest v0 vote active plans get --output-format json|jq -r --arg VOTE_PLAN_INDEX "$VOTE_PLAN_INDEX" '.[$VOTE_PLAN_INDEX|tonumber].id')
 
@@ -28,6 +28,7 @@ jcli "certificate" "new" "encrypted-vote-tally" "--vote-plan-id" "$VOTE_PLAN_ID"
 jcli "transaction" "new" "--staging" "transaction.tx"
 jcli "transaction" "add-account" "$COMMITTEE_ADDR" "0" "--staging" "transaction.tx"
 jcli "transaction" "add-certificate" "$(< encrypted-vote-tally.certificate)" "--staging" "transaction.tx"
+jcli "transaction" "set-expiry-date" "$EXPIRY_BLOCK_DATE" "--staging" "transaction.tx"
 jcli "transaction" "finalize" "--staging" "transaction.tx"
 jcli "transaction" "data-for-witness" "--staging" "transaction.tx" > encrypted-vote-tally.witness_data
 
@@ -53,6 +54,7 @@ jcli "votes" "tally" "decrypt-results" "--vote-plan" "active_plans.json" "--vote
 jcli "certificate" "new" "vote-tally" "private" "--shares" "shares.json" "--vote-plan" "result.json" "--vote-plan-id" "$VOTE_PLAN_ID" --output "vote-tally.certificate"
 jcli "transaction" "new" "--staging" "transaction.tx"
 jcli "transaction" "add-account" "$COMMITTEE_ADDR" "0" "--staging" "transaction.tx"
+jcli "transaction" "set-expiry-date" "$EXPIRY_BLOCK_DATE" "--staging" "transaction.tx"
 jcli "transaction" "add-certificate" "$(< vote-tally.certificate)" "--staging" "transaction.tx"
 jcli "transaction" "finalize" "--staging" "transaction.tx"
 jcli "transaction" "data-for-witness" "--staging" "transaction.tx" > vote-tally.witness_data
