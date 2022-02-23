@@ -129,7 +129,7 @@ done
 sleep 10
 
 for job in leader-{0,1,2} follower-0 servicing-station; do
-  yes yes | iogo plan "$NOMAD_NAMESPACE" "$job" || true
+  (/nix/store/sc8n4z2g6q8fsmp513ya023xnnvszhla-iogo-2021.12.10.001/bin/iogo plan --namespace "$NOMAD_NAMESPACE" -o plan-$NOMAD_NAMESPACE-$job.hcl "$job" || true) && (nomad job run -check-index 0 plan-$NOMAD_NAMESPACE-$job.hcl || true)
 done
 
 
