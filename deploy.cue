@@ -113,7 +113,7 @@ Namespace: [Name=_]: {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
-				#dbSyncInstance:           "i-002a3025e13ed07ca"
+				#dbSyncInstance:           "i-0cd55c9eb12e663e6"
 				#dbSyncFlake:              #flakes.dbSyncMainnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
 				#postgresFlake:            #flakes.postgres
@@ -123,7 +123,7 @@ Namespace: [Name=_]: {
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "testnet"
-				#dbSyncInstance:           "i-0793243e0576fb317"
+				#dbSyncInstance:           "i-0052b9735a0abf850"
 				#dbSyncFlake:              #flakes.dbSyncTestnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeTestnet
 				#postgresFlake:            #flakes.postgres
