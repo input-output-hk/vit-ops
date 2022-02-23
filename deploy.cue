@@ -17,7 +17,7 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
-#vitOpsRev: "75c77002365bc67232b32bd8bfdc39a5477d59fe"
+#vitOpsRev: "3bc21f30f9491e03f42a5a89c70a021b09c3303e"
 
 #flakes: {
 	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
@@ -40,14 +40,14 @@ Namespace: [Name=_]: {
 		#database:   artifacts[Name].database
 		#domain:     string
 		#fqdn:       fqdn
-		#vitOpsRev:  =~"^\(hex){40}$" | *"75c77002365bc67232b32bd8bfdc39a5477d59fe"
+		#vitOpsRev:  =~"^\(hex){40}$" | *"3bc21f30f9491e03f42a5a89c70a021b09c3303e"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"3.1"
+		#version:    string | *"3.6"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund6#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund6#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund7#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -69,7 +69,7 @@ Namespace: [Name=_]: {
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund5": {
+	"catalyst-fund7": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
 		}
