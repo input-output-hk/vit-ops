@@ -44,11 +44,11 @@ artifacts: {
 	"catalyst-signoff": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
-			checksum: "sha256:d066f1d76bdb784031da2eccbb4ff5d8c84471d34120536f27754c0a69c0d1b9"
+			checksum: "sha256:2e78bf64670f1697e6da2c05b5858e2f91d15435e11559f63244a7b6215f24fc"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
-			checksum: "sha256:de5c0d0c104e88744cd2ba9523441e8eaf239885e51d4b4923b0d7d66d5a2e82"
+			checksum: "sha256:366496551331624621a97457a0a76a6de7e72a4b8b0ff2d88fed9e948cca5660"
 		}
 	}
 	"catalyst-sync": {
