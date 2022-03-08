@@ -82,7 +82,9 @@ import (
 		{
 		  "storage": "/persist/\(#role)-\(#index)",
 		  "bootstrap_from_trusted_peers": true,
-		  "prometheus": {"enabled": true},
+		  "prometheus": {
+		    "enabled": false
+		  },
 		  "explorer": {
 		    "enabled": false
 		  },

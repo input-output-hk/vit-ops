@@ -91,6 +91,7 @@ Namespace: [Name=_]: {
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
+			#flakes: #jormungandr: "github:input-output-hk/jormungandr/?rev=34190c0674a2e29ab55f7fbfec869a056983f5ba#jormungandr-entrypoint"
 		}
 		jobs: _defaultJobs
 	}
