@@ -46,7 +46,7 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.6"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund7#jormungandr-entrypoint"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/?rev=9e3c8b7e949798c66ed419d9f18481eb0a52b23a#jormungandr-entrypoint"
 			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
 		}
 
