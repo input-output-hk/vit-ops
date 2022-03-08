@@ -710,22 +710,6 @@
         "type": "github"
       }
     },
-    "jormungandr-nix": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1593011183,
-        "narHash": "sha256-1pWYThx+etgPaEQj1xs2M3mwOi4kx6fx3sE84m4L2WU=",
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
-        "rev": "fddf5dfe7716b3dc5bf17f5d483f957c38eb205d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "jormungandr-nix",
-        "type": "github"
-      }
-    },
     "lowdown-src": {
       "flake": false,
       "locked": {
@@ -1259,7 +1243,6 @@
         "cardano-db-sync-testnet": "cardano-db-sync-testnet",
         "cardano-node": "cardano-node",
         "jormungandr": "jormungandr",
-        "jormungandr-nix": "jormungandr-nix",
         "nix": "nix",
         "nixpkgs": [
           "bitte",
