@@ -82,8 +82,8 @@ import (
 		{
 		  "storage": "/persist/\(#role)-\(#index)",
 		  "bootstrap_from_trusted_peers": true,
-		  "explorer": {
-		    "enabled": false
+		  "prometheus": {
+		    "enabled": true
 		  },
 		  "leadership": {
 		    "logs_capacity": 1024

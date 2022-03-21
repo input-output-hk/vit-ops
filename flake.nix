@@ -13,10 +13,6 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
     utils.url = "github:kreisys/flake-utils";
-    jormungandr-nix = {
-      url = "github:input-output-hk/jormungandr-nix";
-      flake = false;
-    };
     jormungandr.url =
       "github:input-output-hk/jormungandr/8178bc9149ea4629c8ae6f87bdd5be4a154db322";
     vit-servicing-station.url =

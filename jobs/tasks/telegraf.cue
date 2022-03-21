@@ -5,7 +5,6 @@ import (
 )
 
 #Telegraf: types.#stanza.task & {
-	#prometheusPort: string
 	#clientId:       string | *"{{ env \"NOMAD_JOB_NAME\" }}-{{ env \"NOMAD_ALLOC_INDEX\" }}"
 
 	driver: "exec"
@@ -40,7 +39,7 @@ import (
 		[inputs.prometheus]
 		metric_version = 1
 
-		urls = [ "http://{{ env "NOMAD_ADDR_\(#prometheusPort)" }}" ]
+		urls = [ "http://{{ env "NOMAD_ADDR_rest" }}/prometheus" ]
 
 		[outputs.influxdb]
 		database = "telegraf"
