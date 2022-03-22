@@ -44,7 +44,7 @@ artifacts: {
 	"catalyst-signoff": {
 		block0: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/block0.bin"
-			checksum: "sha256:4be6e878ff68327d9e457b6ea4911cf45b47821685f69c07a7393aae9746e610"
+			checksum: "sha256:3a7fe87c6b8d32e740dd43637d1cc9d65dc5f4a6f4c373349c64ef1903837068"
 		}
 		database: {
 			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-signoff/database.sqlite3"
