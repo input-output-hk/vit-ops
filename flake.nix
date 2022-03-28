@@ -1,10 +1,15 @@
 {
   description = "Bitte for VIT";
-  nixConfig = {
-    allow-import-from-derivation = "true";
-    extra-substituters = "s3://iohk-vit-bitte/infra/binary-cache/?region=eu-central-1";
-    extra-trusted-public-keys = "vit-testnet-0:0lvkEoYh+XrBh7pr4bXjsUisUkUxsyLvvWBIJwym/RM=";
-  };
+
+  nixConfig.allow-import-from-derivation = "true";
+  nixConfig.extra-substituters = [
+    "https://vit-ops.cachix.org"
+    "https://hydra.iohk.io"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho="
+    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+  ];
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte";
