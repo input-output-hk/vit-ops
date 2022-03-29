@@ -44,11 +44,11 @@ in {
 
   nix = {
     binaryCaches = [
-      "https://vit-ops.cachix.org"
+      "https://vit.cachix.org"
     ];
 
     binaryCachePublicKeys = [
-      "vit-ops.cachix.org-1:LY84nIKdW7g1cvhJ6LsupHmGtGcKAlUXo+l1KByoDho="
+      "vit.cachix.org-1:tuLYwbnzbxLzQHHN0fvZI2EMpVm/+R7AKUGqukc6eh8="
     ];
   };
 
