@@ -65,6 +65,10 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr: "github:input-output-hk/jormungandr/catalyst-fund8#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/catalyst-fund8#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
