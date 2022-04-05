@@ -27,7 +27,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/aa9a545eb887bbafb6886da5311bc290045522bd#snapshot-trigger-service"
+		flake:   "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#snapshot-trigger-service"
 		command: "/bin/snapshot-trigger-service"
 		args: ["--config", "/secrets/snapshot.config"]
 	}
