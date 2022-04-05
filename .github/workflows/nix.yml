@@ -39,7 +39,7 @@ jobs:
         - "github:input-output-hk/jormungandr/catalyst-fund8#jormungandr-entrypoint"
         - "github:input-output-hk/jormungandr/master#jormungandr-entrypoint"
         - "github:input-output-hk/vit-ops#magic-wormhole"
-        - "github:input-output-hk/vit-ops#devbox-entrypoint"
+        - "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
         - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#mainnet/db-sync"
         - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#mainnet/node"
         - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#postgres-entrypoint"
