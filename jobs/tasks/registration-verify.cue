@@ -54,7 +54,8 @@ import (
 		  "port": {{ env "NOMAD_PORT_registration_verify" }},
 		  "jcli": "jcli",
 		  "snapshot-address": "\(_snapshot_address)",
-		  "snapshot-token": "\(_snapshot_token)"
+		  "snapshot-token": "\(_snapshot_token)",
+		  "network": "\(#dbSyncNetwork)"
 		}
 		"""
 	}
