@@ -12,7 +12,7 @@ import (
 
 	resources: {
 		cpu:    3600
-		memory: 1024 * 16
+		memory: 1024 * 10
 	}
 
 	volume_mount: "persist": {
