@@ -13,8 +13,8 @@
     };
 
     restoreSnapshot =
-      "https://updates-cardano-testnet.s3.amazonaws.com/cardano-db-sync/11/db-sync-snapshot-schema-11-block-3022711-x86_64.tgz";
+      "https://updates-cardano-testnet.s3.amazonaws.com/cardano-db-sync/12/db-sync-snapshot-schema-12-block-3449719-x86_64.tgz";
     restoreSnapshotSha =
-      "45c8390db0b7bf49ff0b27beab29d15c657421e0188a8448c44f49e37f5f901a";
+      "6f416afcbe7acc27df283c47124679d684b4fb1d003a1ec7e03ec2accd1f80b7";
   };
 }
