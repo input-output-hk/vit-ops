@@ -20,7 +20,7 @@ _defaultJobs: {
 #vitOpsRev: "5174b396ab0f58a096809f5c51279a19b9ca08d0"
 
 #flakes: {
-	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+	devbox:             "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
 	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/db-sync"
 	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/db-sync"
 	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"

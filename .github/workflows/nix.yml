@@ -1,0 +1,62 @@
+name: Nix
+on:
+  push:
+    branches:
+      - master
+      - catalyst-fund*
+  pull_request:
+
+jobs:
+  build:
+    name: Build ${{ matrix.flake }}
+    strategy:
+      fail-fast: false
+      matrix:
+        flake:
+        - "github:NixOS/nixpkgs#bashInteractive"
+        - "github:NixOS/nixpkgs#cacert"
+        - "github:NixOS/nixpkgs#coreutils"
+        - "github:NixOS/nixpkgs#curl"
+        - "github:NixOS/nixpkgs#findutils"
+        - "github:NixOS/nixpkgs#glibcLocales"
+        - "github:NixOS/nixpkgs#gnutar"
+        - "github:NixOS/nixpkgs#gzip"
+        - "github:NixOS/nixpkgs#iana-etc"
+        - "github:NixOS/nixpkgs#iproute"
+        - "github:NixOS/nixpkgs#iputils"
+        - "github:NixOS/nixpkgs#libidn"
+        - "github:NixOS/nixpkgs#libpqxx"
+        - "github:NixOS/nixpkgs#postgresql"
+        - "github:NixOS/nixpkgs#socat"
+        - "github:NixOS/nixpkgs/nixos-21.05#bashInteractive"
+        - "github:NixOS/nixpkgs/nixos-21.05#cacert"
+        - "github:NixOS/nixpkgs/nixos-21.05#coreutils"
+        - "github:NixOS/nixpkgs/nixos-21.05#glibcLocales"
+        - "github:NixOS/nixpkgs/nixos-21.05#grafana-loki"
+        - "github:NixOS/nixpkgs/nixos-21.05#postgresql_11"
+        - "github:NixOS/nixpkgs/nixos-21.05#telegraf"
+        - "github:input-output-hk/jormungandr/?rev=9e3c8b7e949798c66ed419d9f18481eb0a52b23a#jormungandr-entrypoint"
+        - "github:input-output-hk/jormungandr/catalyst-fund8#jormungandr-entrypoint"
+        - "github:input-output-hk/jormungandr/master#jormungandr-entrypoint"
+        - "github:input-output-hk/vit-ops#magic-wormhole"
+        - "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
+        - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#mainnet/db-sync"
+        - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#mainnet/node"
+        - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#postgres-entrypoint"
+        - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#testnet/db-sync"
+        - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#testnet/node"
+        - "github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
+        - "github:input-output-hk/vit-servicing-station/catalyst-fund8#vit-servicing-station-server"
+        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#registration-service"
+        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#registration-verify-service"
+        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#snapshot-trigger-service"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup
+      uses: ./.github/actions/nix-common-setup
+      with:
+        CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
+    - name: Build
+      run: nix build -L ${{ matrix.flake }}
