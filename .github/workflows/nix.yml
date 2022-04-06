@@ -47,9 +47,9 @@ jobs:
         - "github:input-output-hk/vit-ops?rev=5174b396ab0f58a096809f5c51279a19b9ca08d0#testnet/node"
         - "github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
         - "github:input-output-hk/vit-servicing-station/catalyst-fund8#vit-servicing-station-server"
-        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#registration-service"
-        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#registration-verify-service"
-        - "github:input-output-hk/vit-testing/86ab945e382eff6c2237947813f375c0f19b8a9f#snapshot-trigger-service"
+        - "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-service"
+        - "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-verify-service"
+        - "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#snapshot-trigger-service"
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
