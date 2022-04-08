@@ -35,7 +35,6 @@ import (
 		network: {
 			mode: "host"
 			port: {
-				prometheus: {}
 				rest: {}
 				rpc: {}
 				promtail: {}
@@ -70,10 +69,7 @@ import (
 			#flake:             #flakes.#jormungandr
 		}
 
-		task: "monitor": tasks.#JormungandrMonitor
-
 		task: "telegraf": tasks.#Telegraf & {
-			#prometheusPort: "prometheus"
 			#clientId:       "{{ env \"NOMAD_JOB_NAME\" }}"
 		}
 
@@ -133,7 +129,7 @@ import (
 					}
 				}
 
-				#paths: "/api/{x:(v0|v1)}/{y:(account|message|settings|vote|fragments|fragment).*}"
+				#paths: "/api/{x:(v0|v1)}/{y:(account|message|settings|vote|fragments|fragment|node).*}"
 
 				tags: [
 					#name,

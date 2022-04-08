@@ -17,10 +17,10 @@ _defaultJobs: {
 	wormhole:            jobDef.#Wormhole
 }
 
-#vitOpsRev: "75c77002365bc67232b32bd8bfdc39a5477d59fe"
+#vitOpsRev: "5174b396ab0f58a096809f5c51279a19b9ca08d0"
 
 #flakes: {
-	devbox:             "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
+	devbox:             "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
 	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/db-sync"
 	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/db-sync"
 	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
@@ -40,14 +40,14 @@ Namespace: [Name=_]: {
 		#database:   artifacts[Name].database
 		#domain:     string
 		#fqdn:       fqdn
-		#vitOpsRev:  =~"^\(hex){40}$" | *"75c77002365bc67232b32bd8bfdc39a5477d59fe"
+		#vitOpsRev:  =~"^\(hex){40}$" | *"5174b396ab0f58a096809f5c51279a19b9ca08d0"
 		#dbSyncRev:  =~"^\(hex){40}$" | *"af6f4d31d137388aa59bae10c2fa79c219ce433d"
 		datacenters: list.MinItems(1) & [...datacenter] | *[ "eu-central-1", "us-east-2", "eu-west-1"]
-		#version:    string | *"3.1"
+		#version:    string | *"3.6"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund6#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund6#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/?rev=9e3c8b7e949798c66ed419d9f18481eb0a52b23a#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -65,11 +65,15 @@ Namespace: [Name=_]: {
 	"catalyst-dryrun": {
 		vars: {
 			#domain: "dryrun-servicing-station.\(fqdn)"
+			#flakes: {
+				#jormungandr: "github:input-output-hk/jormungandr/catalyst-fund8#jormungandr-entrypoint"
+				#servicingStation: "github:input-output-hk/vit-servicing-station/catalyst-fund8#vit-servicing-station-server"
+			}
 		}
 		jobs: _defaultJobs
 	}
 
-	"catalyst-fund5": {
+	"catalyst-fund7": {
 		vars: {
 			#domain: "servicing-station.\(fqdn)"
 		}
@@ -79,7 +83,6 @@ Namespace: [Name=_]: {
 	"catalyst-perf": {
 		vars: {
 			#domain: "perf-servicing-station.\(fqdn)"
-			#flakes: #jormungandr: "github:input-output-hk/jormungandr/c9aa8cd2bfcf20c77a6a59612638a7d7cbb24f38#jormungandr-entrypoint"
 			#rateLimit: {
 				average: 100000
 				burst:   200000
@@ -92,6 +95,7 @@ Namespace: [Name=_]: {
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
+			#flakes: #jormungandr: "github:input-output-hk/jormungandr/master#jormungandr-entrypoint"
 		}
 		jobs: _defaultJobs
 	}
@@ -114,7 +118,7 @@ Namespace: [Name=_]: {
 		jobs: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
-				#dbSyncInstance:           "i-002a3025e13ed07ca"
+				#dbSyncInstance:           "i-0cd55c9eb12e663e6"
 				#dbSyncFlake:              #flakes.dbSyncMainnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
 				#postgresFlake:            #flakes.postgres
@@ -124,7 +128,7 @@ Namespace: [Name=_]: {
 			}
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "testnet"
-				#dbSyncInstance:           "i-0793243e0576fb317"
+				#dbSyncInstance:           "i-0052b9735a0abf850"
 				#dbSyncFlake:              #flakes.dbSyncTestnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeTestnet
 				#postgresFlake:            #flakes.postgres

@@ -7,29 +7,25 @@ let
 in {
   imports = [ ./iam.nix ./terraform-storage.nix ./secrets.nix ];
 
-  services.consul.policies.developer.servicePrefix."catalyst-" = {
-    policy = "write";
-    intentions = "write";
-  };
+  users.users.telegraf.group = "telegraf";
+  users.groups.telegraf = { };
 
-  services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
-  services.nomad.policies.developer = {
-    hostVolume."catalyst-*".policy = "write";
-    namespace."catalyst-*" = {
-      capabilities = [
-        "submit-job"
-        "dispatch-job"
-        "read-logs"
-        "alloc-exec"
-        "alloc-node-exec"
-        "alloc-lifecycle"
-      ];
-      policy = "write";
-    };
-  };
+  users.users.ssm-user.group = "ssm-user";
+  users.groups.ssm-user = { };
+
+  users.users.oauth2_proxy.group = "oauth2_proxy";
+  users.groups.oauth2_proxy = { };
+  users.users.oauth2_proxy.isSystemUser = true;
+
+  users.users.builder.group = "builder";
+  users.groups.builder = { };
+  users.users.builder.isSystemUser = true;
 
   # Try to work around Nix crashing.
   systemd.services.nomad.environment.GC_DONT_GC = "1";
+
+  # avoid CVE-2021-4034 (PwnKit)
+  security.polkit.enable = false;
 
   services.nomad.namespaces = {
     catalyst-dryrun.description = "Dryrun";
@@ -47,11 +43,12 @@ in {
   };
 
   nix = {
-    binaryCaches = [ "https://hydra.iohk.io" "https://hydra.mantis.ist" ];
+    binaryCaches = [
+      "https://vit.cachix.org"
+    ];
 
     binaryCachePublicKeys = [
-      "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      "hydra.mantis.ist-1:4LTe7Q+5pm8+HawKxvmn2Hx0E3NbkYjtf1oWv+eAmTo="
+      "vit.cachix.org-1:tuLYwbnzbxLzQHHN0fvZI2EMpVm/+R7AKUGqukc6eh8="
     ];
   };
 
@@ -73,54 +70,41 @@ in {
 
     autoscalingGroups = let
       defaultModules = [
-        (bitte + /profiles/client.nix)
-        self.inputs.ops-lib.nixosModules.zfs-runtime
+        bitte.profiles.client
         "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
         "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
         ./docker-auth.nix
         ./host-volumes.nix
         ./gluster-zfs-clients.nix
+        ./fix-nvme.nix
       ];
-
-      withNamespace = name:
-        pkgs.writeText "nomad-tag.nix" ''
-          { services.nomad.client.meta.namespace = "${name}"; }
-        '';
-
-      mkModules = name: defaultModules ++ [ "${withNamespace name}" ];
     in lib.listToAttrs (lib.forEach [
       {
+        # used for db-sync
         region = "eu-central-1";
-        desiredCapacity = 4;
+        desiredCapacity = 3;
         instanceType = "r5a.2xlarge";
-        modules = mkModules "catalyst-dryrun";
+        volumeSize = 800;
       }
-      {
-        region = "us-east-2";
-        desiredCapacity = 4;
-        modules = mkModules "catalyst-fund2";
-      }
-      {
-        region = "eu-west-1";
-        desiredCapacity = 5;
-        instanceType = "c5.4xlarge";
-        volumeSize = 200;
-        modules = mkModules "catalyst-sync";
-      }
+      { region = "us-east-2"; }
+      { region = "eu-west-1"; }
     ] (args:
       let
-        attrs = ({
-          desiredCapacity = 1;
-          instanceType = "t3a.large";
+        attrs = {
+          desiredCapacity = 6;
+          instanceType = "c5.4xlarge";
+          volumeSize = 200;
           associatePublicIP = true;
           maxInstanceLifetime = 0;
+          node_class = "client";
+          modules = defaultModules;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
 
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
-        } // args);
+        } // args;
         asgName = "client-${attrs.region}-${
             builtins.replaceStrings [ "." ] [ "-" ] attrs.instanceType
           }";
@@ -184,6 +168,7 @@ in {
       };
 
       monitoring = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.xlarge";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
@@ -206,6 +191,7 @@ in {
       };
 
       routing = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.small";
         privateIP = "172.16.1.20";
         subnet = cluster.vpc.subnets.core-2;
@@ -220,6 +206,7 @@ in {
       };
 
       routing-bench = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.small";
         privateIP = "172.16.2.20";
         subnet = cluster.vpc.subnets.core-3;
@@ -234,6 +221,7 @@ in {
       };
 
       storage-0 = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.small";
         privateIP = "172.16.0.50";
         volumeSize = 60;
@@ -251,6 +239,7 @@ in {
       };
 
       storage-1 = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.small";
         privateIP = "172.16.1.50";
         volumeSize = 60;
@@ -265,6 +254,7 @@ in {
       };
 
       storage-2 = {
+        ami = "ami-0a1a94722dcbff94c";
         instanceType = "t3a.small";
         privateIP = "172.16.2.50";
         volumeSize = 60;

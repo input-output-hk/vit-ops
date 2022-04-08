@@ -25,7 +25,7 @@ esac
 VOTE_PLAN_INDEX=$1
 MODE=$2
 
-JORMUNGANDR_ADDR=https://dryrun-servicing-station.vit.iohk.io
+JORMUNGANDR_ADDR=https://*******
 export JORMUNGANDR_RESTAPI_URL=$JORMUNGANDR_ADDR/api
 
 VOTE_PLAN_ID=$(jcli rest v0 vote active plans get --output-format json|jq -r --arg VOTE_PLAN_INDEX "$VOTE_PLAN_INDEX" '.[$VOTE_PLAN_INDEX|tonumber].id')

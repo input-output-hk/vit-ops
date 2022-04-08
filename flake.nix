@@ -1,20 +1,23 @@
 {
   description = "Bitte for VIT";
 
+  nixConfig.allow-import-from-derivation = "true";
+  nixConfig.extra-substituters = [
+    "https://vit.cachix.org"
+    "https://hydra.iohk.io"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "vit.cachix.org-1:tuLYwbnzbxLzQHHN0fvZI2EMpVm/+R7AKUGqukc6eh8="
+    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+  ];
+
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/vault-agent-ttl-increase";
-    bitte.inputs.bitte-cli.follows = "bitte-cli";
-    bitte-cli.url = "github:input-output-hk/bitte-cli/v0.4.2";
+    bitte.url = "github:input-output-hk/bitte";
     nix.url = "github:NixOS/nix";
-    ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
-    nixpkgs.follows = "bitte-cli/nixpkgs";
+    nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     terranix.follows = "bitte/terranix";
     utils.url = "github:kreisys/flake-utils";
-    jormungandr-nix = {
-      url = "github:input-output-hk/jormungandr-nix";
-      flake = false;
-    };
     jormungandr.url =
       "github:input-output-hk/jormungandr/8178bc9149ea4629c8ae6f87bdd5be4a154db322";
     vit-servicing-station.url =
@@ -36,45 +39,45 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, utils, bitte, nix, ... }@inputs:
-    utils.lib.simpleFlake {
-      inherit nixpkgs;
-      systems = [ "x86_64-linux" ];
+  outputs = { self, nixpkgs, utils, bitte, ... }@inputs:
+    let
 
-      preOverlays = [ bitte nix.overlay bitte.inputs.bitte-cli.overlay ];
-      overlay = import ./overlay.nix { inherit inputs self; };
+      system = "x86_64-linux";
 
-      extraOutputs = let
-        hashiStack = bitte.lib.mkHashiStack {
-          flake = self // {
-            inputs = self.inputs // { inherit (bitte.inputs) terranix; };
-          };
-          domain = "vit.iohk.io";
+      overlay = final: prev: (nixpkgs.lib.composeManyExtensions overlays) final prev;
+      overlays = [ (import ./overlay.nix { inherit inputs self; }) bitte.overlay ];
+
+      domain = "vit.iohk.io";
+
+      bitteStack =
+        let stack = bitte.lib.mkBitteStack {
+          inherit domain self inputs pkgs;
+          clusters = "${self}/clusters";
+          deploySshKey = "./secrets/ssh-vit-testnet";
+          hydrateModule = import ./hydrate.nix { inherit (bitte.lib) terralib; };
         };
-      in {
-        inherit self inputs;
-        inherit (hashiStack)
-          clusters nomadJobs nixosConfigurations consulTemplates;
+        in
+        stack // {
+          deploy = stack.deploy // { autoRollback = false; };
+        };
+
+      pkgs = import nixpkgs {
+        inherit overlays system;
+        config.allowUnfree = true;
       };
 
-      packages = { checkFmt, checkCue, nix, nixFlakes, node-scripts
-        , db-sync-testnet-scripts, db-sync-mainnet-scripts, postgres-entrypoint
-        }@pkgs:
-        pkgs // {
-          "testnet/node" = node-scripts.testnet.node;
-          "mainnet/node" = node-scripts.mainnet.node;
-          "testnet/db-sync" = db-sync-testnet-scripts.testnet.db-sync;
-          "mainnet/db-sync" = db-sync-mainnet-scripts.mainnet.db-sync;
-        };
+    in
+    {
+      inherit overlay;
+      legacyPackages.${system} = pkgs;
 
-      devShell = { bitteShell, cue }:
-        (bitteShell {
-          inherit self;
-          extraPackages = [ cue ];
-          cluster = "vit-testnet";
+      devShell.${system} = let name = "vit-testnet"; in
+        pkgs.bitteShell {
+          inherit self domain;
           profile = "vit";
-          region = "eu-central-1";
-          domain = "vit.iohk.io";
-        });
-    };
+          cluster = name;
+          namespace = "catalyst-dryrun";
+          extraPackages = [ pkgs.cue ];
+        };
+    } // bitteStack;
 }

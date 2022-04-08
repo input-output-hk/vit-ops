@@ -1,8 +1,21 @@
-{ lib, ... }: {
+{ pkgs, lib, ... }: {
   fileSystems."/mnt/gv1" = {
     device = "glusterd.service.consul:/gv1";
     fsType = "glusterfs";
   };
+
+  systemd.services.consul.serviceConfig.ExecStartPost =
+    let
+      post = pkgs.writeShellScriptBin
+        "consul-restart-gluster"
+        ''
+          ${pkgs.systemd}/bin/systemctl restart 'mnt-gv*.mount'
+        '';
+
+    in
+    lib.mkBefore [
+      "!${post}/bin/consul-restart-gluster"
+    ];
 
   services.zfs = {
     autoSnapshot = {

@@ -12,7 +12,12 @@ import (
 
 	resources: {
 		cpu:    3600
-		memory: 1024 * 10
+		if #dbSyncNetwork == "mainnet" {
+			memory: 1024 * 16
+		}
+		if #dbSyncNetwork == "testnet" {
+			memory: 1024 * 10
+		}
 	}
 
 	volume_mount: "persist": {
