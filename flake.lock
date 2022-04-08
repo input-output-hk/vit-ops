@@ -274,7 +274,6 @@
     },
     "customConfig": {
       "locked": {
-        "lastModified": 1,
         "narHash": "sha256-f4w8fKTa0HsJnyjTZdSg20TqxFGWCPJjRqqTzF2f9j4=",
         "path": "./pkgs/db-sync-mainnet",
         "type": "path"
@@ -286,7 +285,6 @@
     },
     "customConfig_2": {
       "locked": {
-        "lastModified": 1,
         "narHash": "sha256-SSB1UiNNm691QS36j58A0lMR038n+VyQhCwcGDjL9D0=",
         "path": "./pkgs/db-sync-testnet",
         "type": "path"
@@ -298,7 +296,6 @@
     },
     "customConfig_3": {
       "locked": {
-        "lastModified": 1,
         "narHash": "sha256-tPuyyO7MOkNKJZ4iQtQTTe8u92svbWtZOPu1QddA4fo=",
         "path": "./pkgs/node-custom-config",
         "type": "path"
