@@ -21,8 +21,8 @@ _defaultJobs: {
 
 #flakes: {
 	devbox:             "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
-	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/db-sync"
-	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/db-sync"
+	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#testnet/db-sync"
+	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#mainnet/db-sync"
 	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
 	cardanoNodeTestnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/node"
 	cardanoNodeMainnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/node"

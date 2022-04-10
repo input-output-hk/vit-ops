@@ -150,16 +150,16 @@
         "utils": "utils_4"
       },
       "locked": {
-        "lastModified": 1631703079,
-        "narHash": "sha256-SYNJinHs1lNZ/5LZ4aVJRSzs19S6aJU+iaJbFLMvwYo=",
+        "lastModified": 1644195760,
+        "narHash": "sha256-SXDF/IJZOoCow3qGaUrJSzu96BqI9nQDgj18gVR7hMk=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "1b3c60514011e184b6493b6297843c143cb870f7",
+        "rev": "935e1fe5d5d11d694e9b6c54030a592b85742671",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "11.0.2",
+        "ref": "12.0.2",
         "repo": "cardano-db-sync",
         "type": "github"
       }
@@ -177,16 +177,16 @@
         "utils": "utils_5"
       },
       "locked": {
-        "lastModified": 1631703079,
-        "narHash": "sha256-SYNJinHs1lNZ/5LZ4aVJRSzs19S6aJU+iaJbFLMvwYo=",
+        "lastModified": 1644195760,
+        "narHash": "sha256-SXDF/IJZOoCow3qGaUrJSzu96BqI9nQDgj18gVR7hMk=",
         "owner": "input-output-hk",
         "repo": "cardano-db-sync",
-        "rev": "1b3c60514011e184b6493b6297843c143cb870f7",
+        "rev": "935e1fe5d5d11d694e9b6c54030a592b85742671",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "11.0.2",
+        "ref": "12.0.2",
         "repo": "cardano-db-sync",
         "type": "github"
       }
@@ -274,7 +274,7 @@
     },
     "customConfig": {
       "locked": {
-        "narHash": "sha256-hTMnnGymOCNT1y86nV1fZrWQmdPx+RAkdALsPXOZGwo=",
+        "narHash": "sha256-f4w8fKTa0HsJnyjTZdSg20TqxFGWCPJjRqqTzF2f9j4=",
         "path": "./pkgs/db-sync-mainnet",
         "type": "path"
       },
@@ -285,7 +285,7 @@
     },
     "customConfig_2": {
       "locked": {
-        "narHash": "sha256-i4MU70MnFIQeJgY7mccIhseYoXvqeev7hyT2DpAZTM4=",
+        "narHash": "sha256-SSB1UiNNm691QS36j58A0lMR038n+VyQhCwcGDjL9D0=",
         "path": "./pkgs/db-sync-testnet",
         "type": "path"
       },

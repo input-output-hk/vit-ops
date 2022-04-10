@@ -29,12 +29,12 @@
     };
 
     cardano-db-sync-testnet = {
-      url = "github:input-output-hk/cardano-db-sync/11.0.2";
+      url = "github:input-output-hk/cardano-db-sync/12.0.2";
       inputs.customConfig.url = "path:./pkgs/db-sync-testnet";
     };
 
     cardano-db-sync-mainnet = {
-      url = "github:input-output-hk/cardano-db-sync/11.0.2";
+      url = "github:input-output-hk/cardano-db-sync/12.0.2";
       inputs.customConfig.url = "path:./pkgs/db-sync-mainnet";
     };
   };
