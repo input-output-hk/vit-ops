@@ -24,7 +24,7 @@
       "github:input-output-hk/vit-servicing-station/a0d61cbb69608a834cfe30b60d526822fb69b47e";
 
     cardano-node = {
-      url = "github:input-output-hk/cardano-node/1.31.0";
+      url = "github:input-output-hk/cardano-node/1.33.0";
       inputs.customConfig.url = "path:./pkgs/node-custom-config";
     };
 
