@@ -6,6 +6,7 @@ import (
 
 #Snapshot: types.#stanza.task & {
 	#dbSyncNetwork: string
+	#snapshotFlake: string
 	#namespace:     string
 
 	driver: "exec"
@@ -27,7 +28,7 @@ import (
 	}
 
 	config: {
-		flake:   "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#snapshot-trigger-service"
+		flake:   #snapshotFlake
 		command: "/bin/snapshot-trigger-service"
 		args: ["--config", "/secrets/snapshot.config"]
 	}

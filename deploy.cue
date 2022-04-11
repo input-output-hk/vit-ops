@@ -19,11 +19,17 @@ _defaultJobs: {
 #vitOpsRev: "5174b396ab0f58a096809f5c51279a19b9ca08d0"
 
 #flakes: {
-	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#testnet/db-sync"
-	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#mainnet/db-sync"
-	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
-	cardanoNodeTestnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/node"
-	cardanoNodeMainnet: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/node"
+	registrationTestnet:       "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-service"
+	registrationVerifyTestnet: "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-verify-service"
+	snapshotTestnet:           "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#snapshot-trigger-service"
+	registrationMainnet:       "github:input-output-hk/vit-testing/32d849099791a014902d4ff7dd8eb192afd868d8#registration-service"
+	registrationVerifyMainnet: "github:input-output-hk/vit-testing/32d849099791a014902d4ff7dd8eb192afd868d8#registration-verify-service"
+	snapshotMainnet:           "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#snapshot-trigger-service"
+	dbSyncTestnet:             "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#testnet/db-sync"
+	dbSyncMainnet:             "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#mainnet/db-sync"
+	postgres:                  "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
+	cardanoNodeTestnet:        "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#testnet/node"
+	cardanoNodeMainnet:        "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#mainnet/node"
 }
 
 artifacts: [string]: [string]: {url: string, checksum: string}
@@ -102,6 +108,9 @@ Namespace: [Name=_]: {
 			"db-sync-mainnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "mainnet"
 				#dbSyncInstance:           "i-0cd55c9eb12e663e6"
+				#registrationFlake:        #flakes.registrationMainnet
+				#registrationVerifyFlake:  #flakes.registrationVerifyMainnet
+				#snapshotFlake:            #flakes.snapshotMainnet
 				#dbSyncFlake:              #flakes.dbSyncMainnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeMainnet
 				#postgresFlake:            #flakes.postgres
@@ -112,6 +121,9 @@ Namespace: [Name=_]: {
 			"db-sync-testnet": jobDef.#DbSync & {
 				#dbSyncNetwork:            "testnet"
 				#dbSyncInstance:           "i-0052b9735a0abf850"
+				#registrationFlake:        #flakes.registrationTestnet
+				#registrationVerifyFlake:  #flakes.registrationVerifyTestnet
+				#snapshotFlake:            #flakes.snapshotTestnet
 				#dbSyncFlake:              #flakes.dbSyncTestnet
 				#cardanoNodeFlake:         #flakes.cardanoNodeTestnet
 				#postgresFlake:            #flakes.postgres

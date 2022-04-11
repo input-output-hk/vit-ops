@@ -5,8 +5,9 @@ import (
 )
 
 #Registration: types.#stanza.task & {
-	#dbSyncNetwork: string
-	#namespace:     string
+	#dbSyncNetwork:     string
+	#registrationFlake: string
+	#namespace:         string
 
 	driver: "exec"
 
@@ -27,14 +28,9 @@ import (
 	}
 
 	config: {
-		if #dbSyncNetwork == "mainnet" {
-			flake:   "github:input-output-hk/vit-testing/32d849099791a014902d4ff7dd8eb192afd868d8#registration-service"
-		}
-		if #dbSyncNetwork == "testnet" {
-			flake:   "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-service"
-		}
+		flake:   #registrationFlake
 		command: "/bin/registration-service"
-		args: ["--config", "/secrets/registration.config"]
+		args:    ["--config", "/secrets/registration.config"]
 	}
 
 	env: {

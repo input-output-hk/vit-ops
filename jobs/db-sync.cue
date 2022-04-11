@@ -11,6 +11,9 @@ import (
 	#dbSyncRev:                =~"^\(_hex){40}$"
 	#vitOpsRev:                string
 	#dbSyncInstance:           =~"^i-\(_hex){17}$"
+	#registrationFlake:        string
+	#registrationVerifyFlake:  string
+	#snapshotFlake:            string
 	#dbSyncFlake:              string
 	#postgresFlake:            string
 	#cardanoNodeFlake:         string
@@ -103,11 +106,14 @@ import (
 		}
 
 		let ref = {
-			dbSyncRev:        #dbSyncRev
-			dbSyncNetwork:    #dbSyncNetwork
-			dbSyncFlake:      #dbSyncFlake
-			postgresFlake:    #postgresFlake
-			cardanoNodeFlake: #cardanoNodeFlake
+			dbSyncRev:               #dbSyncRev
+			dbSyncNetwork:           #dbSyncNetwork
+			registrationFlake:       #registrationFlake
+			registrationVerifyFlake: #registrationVerifyFlake
+			snapshotFlake:           #snapshotFlake
+			dbSyncFlake:             #dbSyncFlake
+			postgresFlake:           #postgresFlake
+			cardanoNodeFlake:        #cardanoNodeFlake
 		}
 
 		task: "db-sync": tasks.#DbSync & {
@@ -128,18 +134,21 @@ import (
 
 		task: "snapshot": tasks.#Snapshot & {
 			#dbSyncNetwork: ref.dbSyncNetwork
+			#snapshotFlake: ref.snapshotFlake
 			#namespace:     namespace
 		}
 
 		task: "registration": tasks.#Registration & {
-			#dbSyncNetwork: ref.dbSyncNetwork
-			#namespace:     namespace
+			#dbSyncNetwork:     ref.dbSyncNetwork
+			#registrationFlake: ref.registrationFlake
+			#namespace:         namespace
 		}
 
 		task: "registration-verify": tasks.#RegistrationVerify & {
-			#dbSyncNetwork: ref.dbSyncNetwork
-			#namespace:     namespace
-			#domain:        ref.registrationVerifyDomain
+			#dbSyncNetwork:           ref.dbSyncNetwork
+			#registrationVerifyFlake: ref.registrationVerifyFlake
+			#namespace:               namespace
+			#domain:                  ref.registrationVerifyDomain
 		}
 
 		task: "promtail": tasks.#Promtail

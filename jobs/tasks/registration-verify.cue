@@ -5,9 +5,10 @@ import (
 )
 
 #RegistrationVerify: types.#stanza.task & {
-	#dbSyncNetwork: string
-	#namespace:     string
-	#domain:        string
+	#dbSyncNetwork:           string
+	#registrationVerifyFlake: string
+	#namespace:               string
+	#domain:                  string
 
 	driver: "exec"
 
@@ -28,14 +29,9 @@ import (
 	}
 
 	config: {
-		if #dbSyncNetwork == "mainnet" {
-			flake:   "github:input-output-hk/vit-testing/32d849099791a014902d4ff7dd8eb192afd868d8#registration-verify-service"
-		}
-		if #dbSyncNetwork == "testnet" {
-			flake:   "github:input-output-hk/vit-testing/2154fbfa0a0b8a146ab2f9df9704c75c190267b2#registration-verify-service"
-		}
+		flake:   #registrationVerifyFlake
 		command: "/bin/registration-verify-service"
-		args: ["--config", "/secrets/registration.config"]
+		args:    ["--config", "/secrets/registration.config"]
 	}
 
 	env: {
