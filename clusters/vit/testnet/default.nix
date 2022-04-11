@@ -39,7 +39,6 @@ in {
     catalyst-perf.description = "Perf";
     catalyst-signoff.description = "Signoff";
     catalyst-sync.description = "Sync";
-    catalyst-test.description = "Test";
   };
 
   nix = {

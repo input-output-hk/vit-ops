@@ -61,24 +61,4 @@ artifacts: {
 			checksum: "sha256:d4e6b39ad1e367fc89ba38738b5bcc25c37afe2ca49b378753066abb78843c00"
 		}
 	}
-	"catalyst-test": {
-		block0: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-test/block0.bin"
-			checksum: "sha256:2db6f2654ba9c4cf388a78d3b030ba687209d36ac84d01937d3f54f609d1d49d"
-		}
-		database: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/catalyst-test/database.sqlite3"
-			checksum: "sha256:a1fdbe68017cc91ad83fd5c26584b047fdbfd8b05b7cdbf7ad85bb2551dc6275"
-		}
-	}
-	"vit-testnet": {
-		block0: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/block0.bin"
-			checksum: "sha256:c4e0ed507493a55fb23c53aaed3f381afa7210701e34009738bf1a33432e5476"
-		}
-		database: {
-			url:      "s3::https://s3-eu-central-1.amazonaws.com/iohk-vit-artifacts/vit-testnet/database.sqlite3"
-			checksum: "sha256:c43404c14d75f2db7795587d85a3c3c137d649c3b179ea71f1ee9588726e783a"
-		}
-	}
 }

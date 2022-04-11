@@ -14,13 +14,11 @@ _defaultJobs: {
 	"leader-2":          jobDef.#Jormungandr & {#role: "leader", #index:   2}
 	"follower-0":        jobDef.#Jormungandr & {#role: "follower", #index: 0}
 	"servicing-station": jobDef.#ServicingStation
-	wormhole:            jobDef.#Wormhole
 }
 
 #vitOpsRev: "5174b396ab0f58a096809f5c51279a19b9ca08d0"
 
 #flakes: {
-	devbox:             "github:input-output-hk/vit-ops?rev=8acac60455b33432d9f64fce28c06d7cbc65b0df#devbox-entrypoint"
 	dbSyncTestnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#testnet/db-sync"
 	dbSyncMainnet:      "github:input-output-hk/vit-ops?rev=4aaa6c7d2166e87a5789ac62073a18f1e551d7ab#mainnet/db-sync"
 	postgres:           "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#postgres-entrypoint"
@@ -97,20 +95,6 @@ Namespace: [Name=_]: {
 			#domain: "signoff-servicing-station.\(fqdn)"
 		}
 		jobs: _defaultJobs
-	}
-
-	"catalyst-test": {
-		jobs: {
-			let ref = {
-				cardanoNodeFlake: #flakes.cardanoNodeTestnet
-			}
-			devbox: jobDef.#DevBox & {
-				#vitOpsRev: "a2f44c1c8f4259548674c9d284fdb302f3f0dba3"
-				#flakes: devBox: "github:input-output-hk/vit-ops?rev=\(#vitOpsRev)#devbox-entrypoint"
-				#cardanoNodeFlake: ref.cardanoNodeFlake
-			}
-			wormhole: jobDef.#Wormhole
-		}
 	}
 
 	"catalyst-sync": {
