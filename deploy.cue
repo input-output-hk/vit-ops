@@ -46,8 +46,8 @@ Namespace: [Name=_]: {
 		#version:    string | *"3.6"
 
 		#flakes: {
-			#jormungandr:      string | *"github:input-output-hk/jormungandr/?rev=9e3c8b7e949798c66ed419d9f18481eb0a52b23a#jormungandr-entrypoint"
-			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund7#vit-servicing-station-server"
+			#jormungandr:      string | *"github:input-output-hk/jormungandr/catalyst-fund8#jormungandr-entrypoint"
+			#servicingStation: string | *"github:input-output-hk/vit-servicing-station/catalyst-fund8#vit-servicing-station-server"
 		}
 
 		#rateLimit: {
@@ -95,7 +95,6 @@ Namespace: [Name=_]: {
 	"catalyst-signoff": {
 		vars: {
 			#domain: "signoff-servicing-station.\(fqdn)"
-			#flakes: #jormungandr: "github:input-output-hk/jormungandr/master#jormungandr-entrypoint"
 		}
 		jobs: _defaultJobs
 	}
