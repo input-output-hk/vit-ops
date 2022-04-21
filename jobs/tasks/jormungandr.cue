@@ -34,8 +34,8 @@ import (
 	}
 
 	resources: {
-		cpu:    4200
-		memory: 10 * 1024
+		cpu:    16000
+		memory: 14 * 1024
 	}
 
 	config: {
