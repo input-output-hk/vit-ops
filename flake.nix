@@ -26,7 +26,7 @@
     };
 
     cardano-db-sync-testnet = {
-      url = "github:input-output-hk/cardano-db-sync/13.0.0";
+      url = "github:input-output-hk/cardano-db-sync/12.0.2";
       inputs.customConfig.url = "path:./pkgs/db-sync-testnet";
     };
 
